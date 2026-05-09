@@ -847,7 +847,7 @@ export default function StatsIQ() {
     const scoreStr = todayScore ? ` · ${todayScore.toLocaleString()} pts` : "";
     const userStr = username ? `${username} | ` : "";
     const statPreview = Object.entries(stats).slice(0, 3).map(([k, v]) => `${k}: ${v}`).join(" / ");
-    navigator.clipboard?.writeText(`📊 STATSIQ [${cfg.label}] — ${date}\n${userStr}${won ? guesses.length : "X"}/${cfg.guesses}${scoreStr}\n${rows}\n\n${sport} · ${statPreview}\nPlay at statsiq.com`)
+    navigator.clipboard?.writeText(`📊 STATSIQ [${cfg.label}] — ${date}\n${userStr}${won ? guesses.length : "X"}/${cfg.guesses}${scoreStr}\n${rows}\n\n${sport} · ${statPreview}\nPlay at statsiq.io`)
       .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   };
 
@@ -1244,6 +1244,9 @@ export default function StatsIQ() {
         link.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>";
         return null;
       })()}
+    </div>
+  );
+}
     </div>
   );
 }
