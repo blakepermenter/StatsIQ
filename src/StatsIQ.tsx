@@ -948,7 +948,7 @@ export default function StatsIQ() {
             <h1 style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"3rem", color:"#ffd700", letterSpacing:"0.2em", lineHeight:1 }}>STATSIQ</h1>
             <p style={{ margin:"0 0 8px", color:"#6b7280", fontSize:"0.7rem", letterSpacing:"0.3em" }}>DAILY SPORTS TRIVIA</p>
             <p style={{ margin:"0 0 32px", color:"#9ca3af", fontSize:"0.9rem", lineHeight:1.6 }}>
-              A real stat line. 3 guesses.<br/>Can you identify the athlete?
+              3 puzzles a day — Easy, Medium, and Hard.<br/>Guess the athlete from a real stat line in 3 tries.
             </p>
             <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:28 }}>
               {[["📊","Guess the athlete from a real stat line — 3 guesses to get it right"],["🎯","3 daily puzzles — one Easy, one Medium, one Hard"],["🔍","Filter by sport or era to tailor the challenge to you"],["⭐","Score points, build streaks, climb the leaderboard"]].map(([icon,text],i) => (
