@@ -676,6 +676,14 @@ export default function StatsIQ() {
   const [copied, setCopied] = useState(false);
 
   // Track which difficulties have been completed today
+  // Set page title and favicon
+  useEffect(() => {
+    document.title = "StatsIQ — Daily Sports Trivia";
+    let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    if (!link) { link = document.createElement("link") as HTMLLinkElement; link.rel = "icon"; document.head.appendChild(link); }
+    link.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>";
+  }, []);
+
   const getTodayStr = () => new Date().toISOString().slice(0, 10);
   const getCompletedToday = (): Set<Difficulty> => {
     try {
@@ -788,21 +796,23 @@ export default function StatsIQ() {
         const entry = localStorage.getItem(key);
         if (entry) {
           const data = JSON.parse(entry);
-          // Only restore if it matches the current puzzle's player
-          if (data.player === puzzle?.player) {
-            setDone(true);
-            setWon(data.won);
-            setGuesses(Array(data.guesses).fill(null).map((_, i) =>
-              i === data.guesses - 1 && data.won
-                ? { text: data.player, ok: true }
-                : { text: "• • •", ok: false }
-            ));
-            setTodayScore(data.score);
-            setVisible(false); setTimeout(() => setVisible(true), 300);
-            return;
-          }
+          setDone(true);
+          setWon(data.won);
+          setGuesses(Array(data.guesses).fill(null).map((_, i) =>
+            i === data.guesses - 1 && data.won
+              ? { text: data.player, ok: true }
+              : { text: "• • •", ok: false }
+          ));
+          setTodayScore(data.score);
+          setVisible(false); setTimeout(() => setVisible(true), 300);
+          return;
         }
       } catch {}
+      // Even if no stored entry found, still lock it
+      setDone(true); setWon(false);
+      setGuesses([{ text: "• • •", ok: false }]);
+      setVisible(false); setTimeout(() => setVisible(true), 300);
+      return;
     }
     setGuesses([]); setInput(""); setDone(false); setWon(false); setMsg("");
     setTodayScore(null); setScoreBreakdown(null);
@@ -1140,7 +1150,7 @@ export default function StatsIQ() {
             const g = guesses[i]; const isActive = !done && i === guesses.length;
             const text = isActive ? input : (g?.text || ""); const submitted = !isActive && !!g;
             return (
-              <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:10, minHeight:44, transition:"all 0.2s", background:submitted?(g.ok?"rgba(34,197,94,0.15)":"rgba(239,68,68,0.1)"):"rgba(255,255,255,0.03)", border:isActive?`1px solid ${cfg.border}`:submitted?(g.ok?"1px solid rgba(34,197,94,0.4)":"1px solid rgba(239,68,68,0.25)"):"1px solid rgba(255,255,255,0.07)" }}>
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:10, minHeight:44, transition:"all 0.2s", background:submitted?(g.ok?"rgba(34,197,94,0.15)":"rgba(239,68,68,0.1)"):"rgba(255,255,255,0.03)", border:submitted?(g.ok?"1px solid rgba(34,197,94,0.4)":"1px solid rgba(239,68,68,0.25)"):"1px solid rgba(255,255,255,0.07)" }}>
                 {submitted ? (<>
                   <span style={{ fontSize:"1rem", flexShrink:0 }}>{g.ok?"✅":"❌"}</span>
                   <span style={{ color:g.ok?"#86efac":"#fca5a5", fontWeight:700, fontSize:"0.95rem", fontFamily:"'Barlow Condensed', sans-serif", flex:1 }}>{text}</span>
@@ -1162,9 +1172,9 @@ export default function StatsIQ() {
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === "Enter" && input.trim().length >= 3 && submit()}
               onFocus={e => { setTimeout(() => e.target.scrollIntoView({ behavior:"smooth", block:"center" }), 300); }}
-              placeholder="Type athlete name..."
+              placeholder="Type athlete name here..."
               autoFocus
-              style={{ flex:1, background:"rgba(255,255,255,0.05)", border:`1px solid ${input.trim().length >= 3 ? cfg.border : "rgba(255,255,255,0.1)"}`, borderRadius:10, padding:"12px 16px", color:"#fff", fontSize:"1rem", fontFamily:"'Barlow Condensed', sans-serif", outline:"none", transition:"border-color 0.3s" }} />
+              style={{ flex:1, background:"rgba(255,255,255,0.07)", border:`2px solid ${cfg.border}`, borderRadius:10, padding:"12px 16px", color:"#fff", fontSize:"1rem", fontFamily:"'Barlow Condensed', sans-serif", outline:"none", boxShadow:`0 0 12px ${cfg.color}44`, transition:"border-color 0.3s" }} />
             <button
               onClick={submit}
               disabled={input.trim().length < 3}
@@ -1238,14 +1248,6 @@ export default function StatsIQ() {
         input[type="text"], input:not([type]) { font-size:16px !important; }
         html { scroll-behavior:smooth; }
       `}</style>
-      {/* Page title and favicon */}
-      {typeof document !== "undefined" && (() => {
-        document.title = "StatsIQ — Daily Sports Trivia";
-        let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-        if (!link) { link = document.createElement("link") as HTMLLinkElement; link.rel = "icon"; document.head.appendChild(link); }
-        link.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>";
-        return null;
-      })()}
     </div>
   );
 }
