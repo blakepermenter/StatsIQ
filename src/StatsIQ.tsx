@@ -1249,6 +1249,3 @@ export default function StatsIQ() {
     </div>
   );
 }
-    </div>
-  );
-}
