@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 // ─── EASY (45 puzzles) ────────────────────────────────────────────────────────
 const EASY = [
@@ -1244,9 +1245,7 @@ export default function StatsIQ() {
         link.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>";
         return null;
       })()}
-    </div>
-  );
-}
+      <Analytics />
     </div>
   );
 }
