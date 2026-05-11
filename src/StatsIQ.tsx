@@ -600,7 +600,7 @@ const MEDIUM = [
   { player:"Jennifer Capriati", sport:"🎾 Tennis", answer:"CAPRIATI", era:"modern", stats:{W:"62",L:"16",GS:"3",RANK:"1"}, ctx:"2001 WTA Season — World No. 1 comeback", clues:["Made one of the greatest comebacks in tennis history","Won the Australian Open and French Open this year","Had struggled with personal problems before this comeback","Was a child prodigy who turned pro at age 13"] },
   { player:"Thomas Johansson", sport:"🎾 Tennis", answer:"JOHANSSON", era:"modern", stats:{W:"1",YEAR:"2002",SURFACE:"Hard",NATION:"Sweden"}, ctx:"2002 Australian Open — Surprise Grand Slam champion", clues:["Won the Australian Open as a major underdog at World No. 20","Swedish player who was never a top 10 player before or after","Beat Marat Safin in the final","This was his only Grand Slam title"] },
   { player:"Gaston Gaudio", sport:"🎾 Tennis", answer:"GAUDIO", era:"modern", stats:{W:"1",YEAR:"2004",SURFACE:"Clay",NATION:"Argentina"}, ctx:"2004 French Open — Surprise champion from Argentina", clues:["Won the French Open from match point down in the final","Beat Guillermo Coria who was the heavy favorite","Argentine clay court player ranked outside the top 10","This was his only Grand Slam title"] },
-  { player:"Vijay Singh", sport:"⛳ Golf", answer:"VIJAY", era:"modern", stats:{WINS:"9",MAJORS:"1",EARN:"$10.9M",YEAR:"2004"}, ctx:"2004 PGA Tour Season — World No. 1", clues:["Won 9 tournaments and dethroned Tiger Woods at World No. 1","Won the Masters in 1998 and 2 PGA Championships","From Lautoka, Fiji — first Fijian to reach World No. 1","Was known for his intense practice work ethic"] },
+
   { player:"Ernie Els", sport:"⛳ Golf", answer:"ELS", era:"modern", stats:{WINS:"4",MAJORS:"2",EARN:"$6.8M",YEAR:"1997"}, ctx:"1997 PGA Tour Season — The Big Easy", clues:["Won 2 US Opens and 2 British Opens in his career","Nicknamed The Big Easy for his smooth swing","From Johannesburg, South Africa","Won the US Open in 1994 and 1997"] },
   { player:"Retief Goosen", sport:"⛳ Golf", answer:"GOOSEN", era:"modern", stats:{WINS:"2",MAJORS:"2",EARN:"$4.9M",YEAR:"2004"}, ctx:"2004 US Open — Two-time US Open champion", clues:["Won his second US Open title this year","From Pietersburg, South Africa","Was struck by lightning as a teenager which affected him for years","Won the US Open in 2001 and 2004"] },
   { player:"Michael Campbell", sport:"⛳ Golf", answer:"CAMPBELL", era:"modern", stats:{WINS:"1",MAJORS:"1",YEAR:"2005",NATION:"New Zealand"}, ctx:"2005 US Open — Pinehurst No. 2", clues:["Won the US Open as a major underdog","Beat Tiger Woods down the stretch","From Hawera, New Zealand — of Maori descent","This was the only major of his career"] },
@@ -1037,6 +1037,61 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
           ))}
         </div>
 
+        {/* Badges */}
+        {(() => {
+          const badges: {icon:string,label:string,earned:boolean}[] = [
+            { icon:"🏆", label:"First Win", earned: wins.length >= 1 },
+            { icon:"🔥", label:"3-Day Streak", earned: bestStreak >= 3 },
+            { icon:"⚡", label:"7-Day Streak", earned: bestStreak >= 7 },
+            { icon:"🌟", label:"30-Day Streak", earned: bestStreak >= 30 },
+            { icon:"🎯", label:"First Hard Win", earned: wins.some(e => e.diff === "hard") },
+            { icon:"💎", label:"Perfect Day", earned: (() => { try { return localStorage.getItem("statsiq_had_perfect") === "1"; } catch { return false; } })() },
+            { icon:"🦅", label:"Guess 1 Win", earned: wins.some(e => e.guesses === 1) },
+            { icon:"📊", label:"10 Wins", earned: wins.length >= 10 },
+            { icon:"🏅", label:"50 Wins", earned: wins.length >= 50 },
+          ];
+          const earned = badges.filter(b => b.earned);
+          if (earned.length === 0) return null;
+          return (
+            <div style={{ marginBottom:14 }}>
+              <p style={{ margin:"0 0 8px", color:"#6b7280", fontSize:"0.62rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>BADGES EARNED</p>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                {badges.map(b => (
+                  <div key={b.label} style={{ display:"flex", alignItems:"center", gap:5, padding:"4px 10px", borderRadius:20, background: b.earned ? "rgba(255,215,0,0.08)" : "rgba(255,255,255,0.02)", border:`1px solid ${b.earned ? "rgba(255,215,0,0.3)" : "rgba(255,255,255,0.06)"}`, opacity: b.earned ? 1 : 0.35 }}>
+                    <span style={{ fontSize:"0.85rem", filter: b.earned ? "none" : "grayscale(1)" }}>{b.icon}</span>
+                    <span style={{ color: b.earned ? "#d1d5db" : "#4b5563", fontSize:"0.65rem", fontWeight:700 }}>{b.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Yesterday's answer */}
+        {(() => {
+          const yesterday = new Date(Date.now()-86400000);
+          const yStr = yesterday.toISOString().slice(0,10);
+          const yParts = yStr.split("-");
+          const yKeys = Object.keys(localStorage).filter(k => k.startsWith(`statsiq_day_${yParts[0]}_${parseInt(yParts[1])}_${parseInt(yParts[2])}_`));
+          if (yKeys.length === 0) return null;
+          const yEntries = yKeys.map(k => { try { return JSON.parse(localStorage.getItem(k)||"{}"); } catch { return null; } }).filter(Boolean);
+          if (yEntries.length === 0) return null;
+          return (
+            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:10, padding:"10px 14px", marginBottom:14, border:"1px solid rgba(255,255,255,0.07)" }}>
+              <p style={{ margin:"0 0 8px", color:"#6b7280", fontSize:"0.62rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>YESTERDAY'S ANSWERS</p>
+              {yEntries.map((e: any, i: number) => (
+                <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"5px 0", borderBottom: i < yEntries.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                    <span style={{ fontSize:"0.6rem", fontWeight:700, padding:"2px 6px", borderRadius:4, background: e.diff==="easy"?"rgba(34,197,94,0.2)":e.diff==="medium"?"rgba(59,130,246,0.2)":"rgba(168,85,247,0.2)", color: e.diff==="easy"?"#22c55e":e.diff==="medium"?"#3b82f6":"#a855f7", fontFamily:"'Bebas Neue',sans-serif" }}>{e.diff?.toUpperCase()}</span>
+                    <span style={{ color:"#d1d5db", fontSize:"0.78rem" }}>{e.player || "—"}</span>
+                  </div>
+                  <span style={{ fontSize:"0.85rem" }}>{e.won ? "✅" : "❌"}</span>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
+
         {/* Calendar */}
         <div style={{ marginBottom:14 }}>
           <p style={{ margin:"0 0 10px", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", textAlign:"center" }}>{monthName} {year}</p>
@@ -1130,6 +1185,12 @@ export default function StatsIQ() {
   const [showHistory, setShowHistory] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showUsernameModal, setShowUsernameModal] = useState(false);
+  const [showPractice, setShowPractice] = useState(false);
+  const [practiceIdx, setPracticeIdx] = useState(0);
+  const [pGuesses, setPGuesses] = useState<{text:string,ok:boolean}[]>([]);
+  const [pInput, setPInput] = useState("");
+  const [pDone, setPDone] = useState(false);
+  const [pWon, setPWon] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState<number>(() => {
     try { return localStorage.getItem("statsiq_visited") ? -1 : 0; } catch { return 0; }
   });
@@ -1140,6 +1201,53 @@ export default function StatsIQ() {
     try { return localStorage.getItem("statsiq_username") || ""; } catch { return ""; }
   });
   const [usernameInput, setUsernameInput] = useState("");
+
+  // Compute streak at top level so it's available everywhere
+  const computeStreak = (): { current: number; best: number } => {
+    try {
+      const keys = Object.keys(localStorage).filter(k => k.startsWith("statsiq_day_"));
+      const dayMap: Record<string, boolean> = {};
+      keys.forEach(k => {
+        try {
+          const parts = k.split("_"); // statsiq_day_YYYY_M_D_diff
+          if (parts.length < 6) return;
+          const dateStr = `${parts[2]}-${parts[3].padStart(2,"0")}-${parts[4].padStart(2,"0")}`;
+          const data = JSON.parse(localStorage.getItem(k) || "{}");
+          if (data.won) dayMap[dateStr] = true;
+        } catch {}
+      });
+      const days = Object.keys(dayMap).sort().reverse();
+      let current = 0, best = 0, streak = 0;
+      const today = new Date().toISOString().slice(0,10);
+      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+      if (!dayMap[today] && !dayMap[yesterday]) { best = days.reduce((b, _, i) => { /* calc best */ return b; }, 0); }
+      // Simple streak calc
+      const allDays = Object.keys(dayMap).sort().reverse();
+      let prev = "";
+      for (const d of allDays) {
+        if (!prev) { streak = 1; }
+        else {
+          const diff = (new Date(prev).getTime() - new Date(d).getTime()) / 86400000;
+          if (diff === 1) streak++;
+          else { best = Math.max(best, streak); streak = 1; }
+        }
+        prev = d;
+      }
+      best = Math.max(best, streak);
+      // Current streak only if includes today or yesterday
+      if (dayMap[today] || dayMap[yesterday]) {
+        let cs = 0, check = today;
+        for (let i = 0; i < 365; i++) {
+          if (dayMap[check]) { cs++; check = new Date(new Date(check).getTime() - 86400000).toISOString().slice(0,10); }
+          else break;
+        }
+        if (!dayMap[today]) { check = yesterday; cs = 0; for (let i = 0; i < 365; i++) { if (dayMap[check]) { cs++; check = new Date(new Date(check).getTime() - 86400000).toISOString().slice(0,10); } else break; } }
+        current = cs;
+      }
+      return { current, best };
+    } catch { return { current: 0, best: 0 }; }
+  };
+  const [streakData] = useState(computeStreak);
   const [guesses, setGuesses] = useState<{ text: string; ok: boolean }[]>([]);
   const [input, setInput] = useState("");
   const [done, setDone] = useState(false);
@@ -1155,6 +1263,21 @@ export default function StatsIQ() {
     let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
     if (!link) { link = document.createElement("link") as HTMLLinkElement; link.rel = "icon"; document.head.appendChild(link); }
     link.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>";
+
+    // og meta tags for rich link previews
+    const setMeta = (prop: string, val: string) => {
+      let el = document.querySelector(`meta[property="${prop}"]`) as HTMLMetaElement;
+      if (!el) { el = document.createElement("meta"); el.setAttribute("property", prop); document.head.appendChild(el); }
+      el.setAttribute("content", val);
+    };
+    setMeta("og:title", "StatsIQ — Daily Sports Trivia");
+    setMeta("og:description", "Guess the athlete from a real stat line. 3 daily puzzles — Easy, Medium, and Hard.");
+    setMeta("og:url", "https://statsiq.io");
+    setMeta("og:type", "website");
+    setMeta("og:image", "https://statsiq.io/og-image.png");
+    const twitterCard = document.createElement("meta");
+    twitterCard.setAttribute("name", "twitter:card"); twitterCard.setAttribute("content", "summary_large_image");
+    if (!document.querySelector('meta[name="twitter:card"]')) document.head.appendChild(twitterCard);
   }, []);
 
   const getTodayStr = () => new Date().toISOString().slice(0, 10);
@@ -1370,8 +1493,9 @@ export default function StatsIQ() {
     const rows = guesses.map(g => g.ok ? "🟩" : "🟥").join("");
     const scoreStr = todayScore ? ` · ${todayScore.toLocaleString()} pts` : "";
     const userStr = username ? `${username} | ` : "";
+    const streakStr = streakData.current > 1 ? ` 🔥 ${streakData.current}` : "";
     const statPreview = Object.entries(stats).slice(0, 3).map(([k, v]) => `${k}: ${v}`).join(" / ");
-    navigator.clipboard?.writeText(`📊 STATSIQ [${cfg.label}] — ${date}\n${userStr}${won ? guesses.length : "X"}/${cfg.guesses}${scoreStr}\n${rows}\n\n${sport} · ${statPreview}\nPlay at statsiq.io`)
+    navigator.clipboard?.writeText(`📊 STATSIQ [${cfg.label}] — ${date}\n${userStr}${won ? guesses.length : "X"}/${cfg.guesses}${scoreStr}${streakStr}\n${rows}\n\n${sport} · ${statPreview}\nPlay at statsiq.io`)
       .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   };
 
@@ -1672,6 +1796,12 @@ export default function StatsIQ() {
               <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>SCORE</p>
               <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif" }}>{totalScore.toLocaleString()}</p>
             </button>
+            {streakData.current > 0 && (
+              <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:44 }}>
+                <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>STREAK</p>
+                <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif" }}>{streakData.current}🔥</p>
+              </button>
+            )}
             <button onClick={() => setShowLeaderboard(true)} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }} title="Leaderboard">🏅</button>
           </div>
         </div>
@@ -1681,6 +1811,9 @@ export default function StatsIQ() {
             ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
           </button>
           <button onClick={() => setShowHow(true)} style={{ width:30, height:30, borderRadius:"50%", border:"1px solid rgba(255,200,0,0.2)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.82rem", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
+          <button onClick={() => { const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setShowPractice(true); }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
+            🎮 PRACTICE
+          </button>
         </div>
         <div style={{ display:"flex", gap:8, marginTop:12, marginBottom:4 }}>
           {(["easy","medium","hard"] as Difficulty[]).map(d => {
@@ -1774,9 +1907,44 @@ export default function StatsIQ() {
 
         {done && (
           <div style={{ background:won?"rgba(34,197,94,0.08)":"rgba(239,68,68,0.07)", border:`1px solid ${won?"rgba(34,197,94,0.35)":"rgba(239,68,68,0.3)"}`, borderRadius:14, padding:"18px", textAlign:"center" }}>
+
+            {/* Milestone celebration */}
+            {won && streakData.current > 0 && streakData.current % 7 === 0 && (
+              <div style={{ background:"linear-gradient(135deg,rgba(251,146,60,0.2),rgba(255,215,0,0.1))", border:"1px solid rgba(251,146,60,0.4)", borderRadius:10, padding:"10px 14px", marginBottom:12, animation:"pulse 1s ease-in-out" }}>
+                <p style={{ margin:0, fontSize:"1.4rem" }}>🔥</p>
+                <p style={{ margin:"2px 0 0", color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em" }}>{streakData.current} DAY STREAK!</p>
+              </div>
+            )}
+
+            {/* First perfect day */}
+            {(() => {
+              const todayStr = new Date().toISOString().slice(0,10);
+              const allDone = (["easy","medium","hard"] as const).every(d => completedToday.has(d));
+              const prevPerfect = (() => { try { return localStorage.getItem("statsiq_had_perfect") === "1"; } catch { return false; } })();
+              if (allDone && !prevPerfect) {
+                try { localStorage.setItem("statsiq_had_perfect","1"); } catch {}
+                return (
+                  <div style={{ background:"linear-gradient(135deg,rgba(255,215,0,0.15),rgba(34,197,94,0.1))", border:"1px solid rgba(255,215,0,0.4)", borderRadius:10, padding:"10px 14px", marginBottom:12 }}>
+                    <p style={{ margin:0, fontSize:"1.4rem" }}>🏆</p>
+                    <p style={{ margin:"2px 0 0", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em" }}>FIRST PERFECT DAY!</p>
+                    <p style={{ margin:"2px 0 0", color:"#9ca3af", fontSize:"0.72rem" }}>All 3 difficulties completed</p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+
             <p style={{ margin:"0 0 2px", fontSize:"1.6rem" }}>{won?"🏆":"😔"}</p>
             <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", color:won?"#22c55e":"#ef4444", letterSpacing:"0.1em" }}>{won?"CORRECT!":"GAME OVER"}</p>
             <p style={{ margin:"0 0 10px", color:"#d1d5db", fontSize:"0.85rem" }}>The answer was <span style={{ color:"#ffd700", fontWeight:900 }}>{player}</span></p>
+
+            {/* Streak display on win */}
+            {won && streakData.current > 1 && (
+              <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(251,146,60,0.12)", border:"1px solid rgba(251,146,60,0.3)", borderRadius:8, padding:"5px 12px", marginBottom:12 }}>
+                <span style={{ fontSize:"1rem" }}>🔥</span>
+                <span style={{ color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.1em" }}>{streakData.current} DAY STREAK</span>
+              </div>
+            )}
 
             {/* Score breakdown */}
             {won && scoreBreakdown && (
@@ -1801,13 +1969,18 @@ export default function StatsIQ() {
               </div>
             )}
 
-            {/* Total score */}
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", background:"rgba(255,215,0,0.06)", borderRadius:8, padding:"8px 14px", marginBottom:12, border:"1px solid rgba(255,215,0,0.2)" }}>
-              <span style={{ color:"#6b7280", fontSize:"0.7rem", letterSpacing:"0.12em", fontFamily:"'Bebas Neue',sans-serif" }}>TOTAL SCORE</span>
-              <div style={{ display:"flex", alignItems:"baseline", gap:6 }}>
-                <span style={{ color:"#ffd700", fontWeight:900, fontSize:"1.2rem", fontFamily:"'Bebas Neue',sans-serif" }}>{totalScore.toLocaleString()}</span>
-                <span style={{ color:"#4b5563", fontSize:"0.62rem" }}>all time</span>
+            {/* Total score + streak */}
+            <div style={{ display:"flex", gap:8, marginBottom:12 }}>
+              <div style={{ flex:1, display:"flex", justifyContent:"space-between", alignItems:"center", background:"rgba(255,215,0,0.06)", borderRadius:8, padding:"8px 14px", border:"1px solid rgba(255,215,0,0.2)" }}>
+                <span style={{ color:"#6b7280", fontSize:"0.65rem", letterSpacing:"0.12em", fontFamily:"'Bebas Neue',sans-serif" }}>TOTAL</span>
+                <span style={{ color:"#ffd700", fontWeight:900, fontSize:"1.1rem", fontFamily:"'Bebas Neue',sans-serif" }}>{totalScore.toLocaleString()}</span>
               </div>
+              {streakData.current > 0 && (
+                <div style={{ flex:1, display:"flex", justifyContent:"space-between", alignItems:"center", background:"rgba(251,146,60,0.06)", borderRadius:8, padding:"8px 14px", border:"1px solid rgba(251,146,60,0.2)" }}>
+                  <span style={{ color:"#6b7280", fontSize:"0.65rem", letterSpacing:"0.12em", fontFamily:"'Bebas Neue',sans-serif" }}>STREAK</span>
+                  <span style={{ color:"#fb923c", fontWeight:900, fontSize:"1.1rem", fontFamily:"'Bebas Neue',sans-serif" }}>{streakData.current}🔥</span>
+                </div>
+              )}
             </div>
 
             <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.68rem" }}>{sport} · {ctx}</p>
@@ -1821,12 +1994,85 @@ export default function StatsIQ() {
               </button>
               )}
             </div>
-            <p style={{ margin:"10px 0 0", color:"#374151", fontSize:"0.62rem", letterSpacing:"0.15em" }}>NEW STAT LINE EVERY DAY</p>
+            <p style={{ margin:"10px 0 0", color:"#374151", fontSize:"0.62rem", letterSpacing:"0.15em" }}>NEW STAT LINE EVERY DAY AT MIDNIGHT</p>
           </div>
         )}
       </div>
 
       {msg && <div style={{ position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", zIndex:100, background:"#fff", color:"#111", padding:"9px 22px", borderRadius:8, fontWeight:700, fontSize:"0.88rem", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", whiteSpace:"nowrap", fontFamily:"'Barlow Condensed', sans-serif" }}>{msg}</div>}
+
+      {/* PRACTICE MODE MODAL */}
+      {showPractice && (() => {
+        const allPools = [...EASY, ...MEDIUM, ...HARD];
+        const todayMs = new Date().setHours(0,0,0,0);
+        const seed = (todayMs + practiceIdx * 7919) % allPools.length;
+        const pp = allPools[seed];
+        const pParts = pp.player.split(" ");
+        const pValid = [pp.answer, pParts[0], pParts[pParts.length-1], pp.player.replace(/\s/g,"")];
+        const pNg = (s:string) => s.toUpperCase().replace(/[^A-Z]/g,"");
+        const pSubmit = () => {
+          const g = pInput.trim(); if (!g || pDone) return;
+          const ng = pNg(g);
+          const exact = pValid.some(v => v.length >= 2 && ng === pNg(v));
+          const fuzzy = !exact && ng.length >= 4 && pValid.some(v => { const nv = pNg(v); return nv.length >= 4 && levenshtein(ng,nv) <= 2; });
+          const win = exact || fuzzy;
+          const next = [...pGuesses, {text:g, ok:win}];
+          setPGuesses(next); setPInput("");
+          if (win) { setPDone(true); setPWon(true); }
+          else if (next.length >= 3) { setPDone(true); setPWon(false); }
+        };
+        return (
+          <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowPractice(false)}>
+            <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(6px)" }} />
+            <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"20px", width:"min(420px,94vw)", maxHeight:"85vh", overflowY:"auto" }} onClick={e => e.stopPropagation()}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
+                <div>
+                  <h3 style={{ margin:0, color:"#a78bfa", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.2rem", letterSpacing:"0.1em" }}>🎮 PRACTICE MODE</h3>
+                  <p style={{ margin:0, color:"#4b5563", fontSize:"0.65rem" }}>Unscored · doesn't affect your streak</p>
+                </div>
+                <button onClick={() => setShowPractice(false)} style={{ background:"none", border:"none", color:"#6b7280", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
+              </div>
+              <div style={{ background:"rgba(167,139,250,0.06)", border:"1px solid rgba(167,139,250,0.2)", borderRadius:10, padding:"10px 14px", marginBottom:10 }}>
+                <p style={{ margin:"0 0 2px", fontSize:"0.55rem", color:"rgba(167,139,250,0.5)", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>PERFORMANCE · {pp.sport} · {pp.era}</p>
+                <p style={{ margin:0, fontSize:"0.82rem", color:"#d1d5db" }}>{pp.ctx}</p>
+              </div>
+              <div style={{ display:"flex", gap:5, marginBottom:12 }}>
+                {Object.entries(pp.stats).map(([k,v]) => (
+                  <div key={k} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(167,139,250,0.2)", borderRadius:8, padding:"8px 4px" }}>
+                    <span style={{ fontSize:"1.2rem", fontWeight:900, color:"#a78bfa", fontFamily:"'Bebas Neue',sans-serif" }}>{v}</span>
+                    <span style={{ fontSize:"0.55rem", color:"rgba(167,139,250,0.6)", letterSpacing:"0.15em" }}>{k}</span>
+                  </div>
+                ))}
+              </div>
+              {pGuesses.map((g,i) => (
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:8, padding:"6px 10px", borderRadius:7, background: g.ok?"rgba(34,197,94,0.1)":"rgba(239,68,68,0.08)", border:`1px solid ${g.ok?"rgba(34,197,94,0.3)":"rgba(239,68,68,0.2)"}`, marginBottom:6 }}>
+                  <span style={{ fontSize:"0.9rem" }}>{g.ok?"✅":"❌"}</span>
+                  <span style={{ color: g.ok?"#22c55e":"#ef4444", fontWeight:700, fontSize:"0.85rem" }}>{g.text}</span>
+                </div>
+              ))}
+              {pDone ? (
+                <div style={{ textAlign:"center", padding:"10px 0" }}>
+                  <p style={{ margin:"0 0 4px", fontSize:"1.4rem" }}>{pWon?"🎯":"😅"}</p>
+                  <p style={{ margin:"0 0 10px", color: pWon?"#22c55e":"#ef4444", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem" }}>{pWon?"CORRECT!":"ANSWER: "+pp.player}</p>
+                  {!pWon && <p style={{ margin:"0 0 12px", color:"#9ca3af", fontSize:"0.82rem" }}>{pp.player}</p>}
+                  <button onClick={() => { setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPracticeIdx(i => i+1); }} style={{ padding:"10px 24px", borderRadius:8, border:"none", background:"rgba(167,139,250,0.8)", color:"#fff", fontWeight:900, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+                    NEXT PUZZLE →
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display:"flex", gap:8 }}>
+                  <input value={pInput} onChange={e => setPInput(e.target.value)} onKeyDown={e => e.key==="Enter" && pInput.trim().length >= 3 && pSubmit()} placeholder="Type athlete name..." style={{ flex:1, padding:"10px 12px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(255,255,255,0.05)", color:"#fff", fontSize:"0.9rem", fontFamily:"'Barlow Condensed',sans-serif" }} autoFocus />
+                  <button onClick={pSubmit} disabled={pInput.trim().length < 3} style={{ padding:"10px 16px", borderRadius:8, border:"none", background: pInput.trim().length >= 3 ? "rgba(167,139,250,0.8)" : "rgba(100,100,100,0.3)", color: pInput.trim().length >= 3 ? "#fff" : "#555", fontWeight:900, cursor: pInput.trim().length >= 3 ? "pointer" : "not-allowed", fontFamily:"'Bebas Neue',sans-serif" }}>GUESS</button>
+                </div>
+              )}
+              <p style={{ margin:"12px 0 0", color:"#374151", fontSize:"0.62rem", textAlign:"center" }}>Practice puzzles are drawn from the full puzzle bank · scores don't count</p>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* BADGES DISPLAY in score history - handled within ScoreHistoryModal */}
+
       <Analytics />
 
       <style>{`
@@ -1835,6 +2081,8 @@ export default function StatsIQ() {
         input::placeholder { color:rgba(255,255,255,0.2); } input:focus { outline:none; }
         input[type="text"], input:not([type]) { font-size:16px !important; }
         html { scroll-behavior:smooth; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
       `}</style>
     </div>
   );
