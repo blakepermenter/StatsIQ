@@ -1119,13 +1119,20 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
 
 export default function StatsIQ() {
   const [diff, setDiff] = useState<Difficulty>("easy");
-  const [filter, setFilter] = useState(new Set<string>());
-  const [eraFilter, setEraFilter] = useState(new Set<Era>());
+  const [filter, setFilter] = useState<Set<string>>(() => {
+    try { const s = localStorage.getItem("statsiq_filter"); return s ? new Set(JSON.parse(s)) : new Set<string>(); } catch { return new Set<string>(); }
+  });
+  const [eraFilter, setEraFilter] = useState<Set<Era>>(() => {
+    try { const s = localStorage.getItem("statsiq_era_filter"); return s ? new Set(JSON.parse(s)) : new Set<Era>(); } catch { return new Set<Era>(); }
+  });
   const [showFilter, setShowFilter] = useState(false);
   const [showHow, setShowHow] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showUsernameModal, setShowUsernameModal] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState<number>(() => {
+    try { return localStorage.getItem("statsiq_visited") ? -1 : 0; } catch { return 0; }
+  });
   const [showSplash, setShowSplash] = useState<boolean>(() => {
     try { return !localStorage.getItem("statsiq_visited"); } catch { return true; }
   });
@@ -1197,8 +1204,8 @@ export default function StatsIQ() {
   const { player, sport, answer, stats, ctx, clues } = puzzle;
   const wrongCount = guesses.filter(g => !g.ok).length;
 
-  const toggleSport = (e: string) => setFilter(prev => { const n = new Set(prev); n.has(e) ? n.delete(e) : n.add(e); return n; });
-  const toggleEra = (e: Era) => setEraFilter(prev => { const n = new Set(prev); n.has(e) ? n.delete(e) : n.add(e); return n; });
+  const toggleSport = (e: string) => setFilter(prev => { const n = new Set(prev); n.has(e) ? n.delete(e) : n.add(e); try { localStorage.setItem("statsiq_filter", JSON.stringify([...n])); } catch {} return n; });
+  const toggleEra = (e: Era) => setEraFilter(prev => { const n = new Set(prev); n.has(e) ? n.delete(e) : n.add(e); try { localStorage.setItem("statsiq_era_filter", JSON.stringify([...n])); } catch {} return n; });
 
   const filterLabel = () => {
     const parts = [];
@@ -1400,33 +1407,108 @@ export default function StatsIQ() {
 
       {/* SPLASH SCREEN */}
       {showSplash && (
-        <div style={{ position:"fixed", inset:0, zIndex:300, display:"flex", alignItems:"center", justifyContent:"center", background:"#080c14" }}>
+        <div style={{ position:"fixed", inset:0, zIndex:300, display:"flex", alignItems:"center", justifyContent:"center", background:"#080c14", overflowY:"auto" }}>
           <div style={{ position:"absolute", top:"-20%", left:"50%", transform:"translateX(-50%)", width:600, height:400, background:"radial-gradient(ellipse, rgba(255,200,0,0.12) 0%, transparent 70%)", pointerEvents:"none" }} />
-          <div style={{ textAlign:"center", padding:"0 32px", maxWidth:360 }}>
-            <div style={{ fontSize:"3.5rem", marginBottom:16 }}>📊</div>
-            <h1 style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"3rem", color:"#ffd700", letterSpacing:"0.2em", lineHeight:1 }}>STATSIQ</h1>
-            <p style={{ margin:"0 0 8px", color:"#6b7280", fontSize:"0.7rem", letterSpacing:"0.3em" }}>DAILY SPORTS TRIVIA</p>
-            <p style={{ margin:"0 0 32px", color:"#9ca3af", fontSize:"0.9rem", lineHeight:1.6 }}>
-              3 puzzles a day — Easy, Medium, and Hard.<br/>Guess the athlete from a real stat line in 3 tries.
-            </p>
-            <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:28 }}>
-              {[["📊","Guess the athlete from a real stat line — 3 guesses to get it right"],["🎯","3 daily puzzles — one Easy, one Medium, one Hard"],["🔍","Filter by sport or era to tailor the challenge to you"],["⭐","Score points, build streaks, climb the leaderboard"]].map(([icon,text],i) => (
-                <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"10px 14px", border:"1px solid rgba(255,255,255,0.07)" }}>
-                  <span style={{ fontSize:"1.2rem", flexShrink:0 }}>{icon}</span>
-                  <span style={{ color:"#d1d5db", fontSize:"0.82rem", textAlign:"left" }}>{text}</span>
-                </div>
-              ))}
+
+          {/* STEP 0 — WELCOME */}
+          {onboardingStep === 0 && (
+            <div style={{ textAlign:"center", padding:"0 32px", maxWidth:360 }}>
+              <div style={{ fontSize:"3.5rem", marginBottom:16 }}>📊</div>
+              <h1 style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"3rem", color:"#ffd700", letterSpacing:"0.2em", lineHeight:1 }}>STATSIQ</h1>
+              <p style={{ margin:"0 0 8px", color:"#6b7280", fontSize:"0.7rem", letterSpacing:"0.3em" }}>DAILY SPORTS TRIVIA</p>
+              <p style={{ margin:"0 0 32px", color:"#9ca3af", fontSize:"0.9rem", lineHeight:1.6 }}>
+                3 puzzles a day — Easy, Medium, and Hard.<br/>Guess the athlete from a real stat line in 3 tries.
+              </p>
+              <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:28 }}>
+                {[["📊","Guess the athlete from a real stat line"],["🎯","3 daily puzzles — Easy, Medium, and Hard"],["🔍","Filter by sport and era to personalize your game"],["⭐","Score points and build a daily streak"]].map(([icon,text],i) => (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:12, background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"10px 14px", border:"1px solid rgba(255,255,255,0.07)" }}>
+                    <span style={{ fontSize:"1.2rem", flexShrink:0 }}>{icon}</span>
+                    <span style={{ color:"#d1d5db", fontSize:"0.82rem", textAlign:"left" }}>{text}</span>
+                  </div>
+                ))}
+              </div>
+              <button onClick={() => setOnboardingStep(1)} style={{ width:"100%", padding:"14px", borderRadius:12, border:"none", background:"linear-gradient(135deg, #ffd700, #f59e0b)", color:"#0a0c10", fontWeight:900, fontSize:"1.1rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.15em", boxShadow:"0 4px 30px rgba(255,200,0,0.4)" }}>
+                GET STARTED →
+              </button>
             </div>
-            <button
-              onClick={() => {
+          )}
+
+          {/* STEP 1 — PICK SPORTS */}
+          {onboardingStep === 1 && (
+            <div style={{ textAlign:"center", padding:"0 28px", maxWidth:380, width:"100%" }}>
+              <p style={{ margin:"0 0 4px", color:"#6b7280", fontSize:"0.65rem", letterSpacing:"0.3em" }}>STEP 1 OF 2</p>
+              <h2 style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"2rem", color:"#fff", letterSpacing:"0.1em" }}>What sports do you know?</h2>
+              <p style={{ margin:"0 0 24px", color:"#6b7280", fontSize:"0.82rem" }}>Pick the ones you want to see. Leave all unselected to get every sport.</p>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:24 }}>
+                {SPORTS.map(s => {
+                  const label = SPORT_LABELS[s];
+                  const active = filter.has(s);
+                  return (
+                    <button key={s} onClick={() => {
+                      const next = new Set(filter);
+                      if (next.has(s)) next.delete(s); else next.add(s);
+                      setFilter(next);
+                      try { localStorage.setItem("statsiq_filter", JSON.stringify([...next])); } catch {}
+                    }} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6, padding:"16px 10px", borderRadius:12, border:`2px solid ${active ? "#ffd700" : "rgba(255,255,255,0.08)"}`, background:active ? "rgba(255,215,0,0.12)" : "rgba(255,255,255,0.03)", cursor:"pointer", transition:"all 0.15s" }}>
+                      <span style={{ fontSize:"1.8rem" }}>{s}</span>
+                      <span style={{ color: active ? "#ffd700" : "#9ca3af", fontSize:"0.72rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>{label.toUpperCase()}</span>
+                      {active && <span style={{ fontSize:"0.6rem", color:"#ffd700" }}>✓ SELECTED</span>}
+                    </button>
+                  );
+                })}
+              </div>
+              <p style={{ margin:"0 0 16px", color:"#4b5563", fontSize:"0.72rem" }}>
+                {filter.size === 0 ? "All sports selected — showing everything" : `${filter.size} sport${filter.size > 1 ? "s" : ""} selected`}
+              </p>
+              <button onClick={() => setOnboardingStep(2)} style={{ width:"100%", padding:"14px", borderRadius:12, border:"none", background:"linear-gradient(135deg, #ffd700, #f59e0b)", color:"#0a0c10", fontWeight:900, fontSize:"1.1rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.15em", boxShadow:"0 4px 30px rgba(255,200,0,0.3)" }}>
+                NEXT →
+              </button>
+            </div>
+          )}
+
+          {/* STEP 2 — PICK ERA */}
+          {onboardingStep === 2 && (
+            <div style={{ textAlign:"center", padding:"0 28px", maxWidth:380, width:"100%" }}>
+              <p style={{ margin:"0 0 4px", color:"#6b7280", fontSize:"0.65rem", letterSpacing:"0.3em" }}>STEP 2 OF 2</p>
+              <h2 style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"2rem", color:"#fff", letterSpacing:"0.1em" }}>Which era is your era?</h2>
+              <p style={{ margin:"0 0 24px", color:"#6b7280", fontSize:"0.82rem" }}>Pick the eras you want to see. Leave all unselected for the full range.</p>
+              <div style={{ display:"flex", flexDirection:"column", gap:10, marginBottom:24 }}>
+                {(["modern","classic","legends"] as Era[]).map(era => {
+                  const cfg2 = ERA_CONFIG[era];
+                  const active = eraFilter.has(era);
+                  return (
+                    <button key={era} onClick={() => {
+                      const next = new Set(eraFilter);
+                      if (next.has(era)) next.delete(era); else next.add(era);
+                      setEraFilter(next);
+                      try { localStorage.setItem("statsiq_era_filter", JSON.stringify([...next])); } catch {}
+                    }} style={{ display:"flex", alignItems:"center", gap:14, padding:"14px 16px", borderRadius:12, border:`2px solid ${active ? cfg2.activeBorder : "rgba(255,255,255,0.08)"}`, background:active ? cfg2.activeBg : "rgba(255,255,255,0.03)", cursor:"pointer", textAlign:"left", transition:"all 0.15s" }}>
+                      <span style={{ fontSize:"1.6rem", flexShrink:0 }}>{cfg2.icon}</span>
+                      <div style={{ flex:1 }}>
+                        <div style={{ color: active ? "#fff" : "#9ca3af", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em" }}>{cfg2.label} {active && "✓"}</div>
+                        <div style={{ color:"#4b5563", fontSize:"0.72rem", marginTop:2 }}>{cfg2.range} · {cfg2.examples}</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <p style={{ margin:"0 0 16px", color:"#4b5563", fontSize:"0.72rem" }}>
+                {eraFilter.size === 0 ? "All eras selected — showing everything" : `${eraFilter.size} era${eraFilter.size > 1 ? "s" : ""} selected`}
+              </p>
+              <button onClick={() => {
                 setShowSplash(false);
+                setOnboardingStep(-1);
                 try { localStorage.setItem("statsiq_visited", "1"); } catch {}
                 if (!username) { setUsernameInput(""); setShowUsernameModal(true); }
-              }}
-              style={{ width:"100%", padding:"14px", borderRadius:12, border:"none", background:"linear-gradient(135deg, #ffd700, #f59e0b)", color:"#0a0c10", fontWeight:900, fontSize:"1.1rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.15em", boxShadow:"0 4px 30px rgba(255,200,0,0.4)" }}>
-              LET'S PLAY →
-            </button>
-          </div>
+              }} style={{ width:"100%", padding:"14px", borderRadius:12, border:"none", background:"linear-gradient(135deg, #ffd700, #f59e0b)", color:"#0a0c10", fontWeight:900, fontSize:"1.1rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.15em", boxShadow:"0 4px 30px rgba(255,200,0,0.3)" }}>
+                LET'S PLAY →
+              </button>
+              <button onClick={() => setOnboardingStep(1)} style={{ marginTop:10, width:"100%", padding:"10px", borderRadius:12, border:"1px solid rgba(255,255,255,0.08)", background:"transparent", color:"#6b7280", cursor:"pointer", fontSize:"0.78rem", fontFamily:"'Barlow Condensed',sans-serif", letterSpacing:"0.1em" }}>
+                ← BACK
+              </button>
+            </div>
+          )}
+
         </div>
       )}
 
