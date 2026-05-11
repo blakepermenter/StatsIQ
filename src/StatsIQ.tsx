@@ -389,12 +389,12 @@ const EASY = [
   { player:"Anthony Davis", sport:"🏀 NBA", answer:"AD DRAFT", era:"modern", stats:{PICK:"1",YEAR:"2012",TEAM:"New Orleans Hornets",SCHOOL:"Kentucky"}, ctx:"2012 NBA Draft — #1 Overall Pick", clues:["Won the NCAA championship at Kentucky before being drafted","Played one season at Kentucky and won the national championship","Was 19 years old when drafted","Known for his unibrow which became an iconic feature"] },
   { player:"Karl-Anthony Towns", sport:"🏀 NBA", answer:"KAT DRAFT", era:"modern", stats:{PICK:"1",YEAR:"2015",TEAM:"Minnesota Timberwolves",SCHOOL:"Kentucky"}, ctx:"2015 NBA Draft — #1 Overall Pick", clues:["Was considered the most skilled big man prospect in years","Played one season at Kentucky","From Piscataway, New Jersey — of Dominican descent","Was considered the most skilled big man prospect in years"] },
   { player:"Ben Simmons", sport:"🏀 NBA", answer:"SIMMONS DRAFT", era:"modern", stats:{PICK:"1",YEAR:"2016",TEAM:"Philadelphia 76ers",SCHOOL:"LSU"}, ctx:"2016 NBA Draft — #1 Overall Pick", clues:["Did not play his rookie year due to a foot injury","Played one season at LSU but did not play his rookie year due to injury","From Melbourne, Australia","Was known for refusing to shoot three-pointers"] },
-  { player:"Markelle Fultz", sport:"🏀 NBA", answer:"FULTZ", era:"modern", stats:{PICK:"1",YEAR:"2017",TEAM:"Philadelphia 76ers",SCHOOL:"Washington"}, ctx:"2017 NBA Draft — #1 Overall Pick", clues:["Had a mysterious shooting problem in his first season that baffled everyone","Had a mysterious shooting yips issue that derailed his early career","Played one season at the University of Washington","Boston gave up the pick that became him in exchange for Isaiah Thomas"] },
+  { player:"Markelle Fultz", sport:"🏀 NBA", answer:"FULTZ", era:"modern", stats:{PICK:"1",YEAR:"2017",TEAM:"Philadelphia 76ers",SCHOOL:"Washington"}, ctx:"2017 NBA Draft — #1 Overall Pick", clues:["Had a mysterious shooting problem in his first season that baffled everyone","Was the first #1 pick by Philadelphia since Allen Iverson in 1996","Played one season at the University of Washington","Boston gave up the pick that became him in exchange for Isaiah Thomas"] },
   { player:"Deandre Ayton", sport:"🏀 NBA", answer:"AYTON", era:"modern", stats:{PICK:"1",YEAR:"2018",TEAM:"Phoenix Suns",SCHOOL:"Arizona"}, ctx:"2018 NBA Draft — #1 Overall Pick", clues:["Was selected one pick before Luka Doncic","Played one season at the University of Arizona","From Nassau, Bahamas","Many consider the 2018 draft class one of the most talent-rich in recent memory"] },
-  { player:"Victor Wembanyama", sport:"🏀 NBA", answer:"WEMBY", era:"modern", stats:{PICK:"1",YEAR:"2023",TEAM:"San Antonio Spurs",HEIGHT:"7'4""}, ctx:"2023 NBA Draft — #1 Overall Pick", clues:["Had to serve 2 years in the US Navy before joining the team","Was 7 feet 4 inches tall with an enormous wingspan","From Le Chesnay, France","Was called a generational talent unlike anything seen before"] },
+  { player:"Victor Wembanyama", sport:"🏀 NBA", answer:"WEMBY", era:"modern", stats:{PICK:"1",YEAR:"2023",TEAM:"San Antonio Spurs",HEIGHT:"7ft4"}, ctx:"2023 NBA Draft — #1 Overall Pick", clues:["Had to serve 2 years in the US Navy before joining the team","Was 7 feet 4 inches tall with an enormous wingspan","From Le Chesnay, France","Was called a generational talent unlike anything seen before"] },
   { player:"Cade Cunningham", sport:"🏀 NBA", answer:"CUNNINGHAM DRAFT", era:"modern", stats:{PICK:"1",YEAR:"2021",TEAM:"Detroit Pistons",SCHOOL:"Oklahoma State"}, ctx:"2021 NBA Draft — #1 Overall Pick", clues:["Plays in one of the smallest markets in the NBA","Played one season at Oklahoma State","From Montverde, Florida","Was considered the face of the rebuilding Detroit franchise"] },
   { player:"Patrick Ewing", sport:"🏀 NBA", answer:"EWING DRAFT", era:"classic", stats:{PICK:"1",YEAR:"1985",TEAM:"New York Knicks",SCHOOL:"Georgetown"}, ctx:"1985 NBA Draft — First Lottery Pick Ever", clues:["Was the very first #1 pick selected by the new lottery system","New York Knicks won the first-ever draft lottery","Played 4 seasons at Georgetown under John Thompson","From Kingston, Jamaica — came to the US at age 13"] },
-  { player:"Magic Johnson", sport:"🏀 NBA", answer:"MAGIC DRAFT", era:"classic", stats:{PICK:"1",YEAR:"1979",TEAM:"Los Angeles Lakers",SCHOOL:"Michigan State"}, ctx:"1979 NBA Draft — #1 Overall Pick", clues:["Had just won the NCAA championship at Michigan State","Had just won the NCAA championship at Michigan State","Was 19 years old when drafted","Immediately joined Kareem Abdul-Jabbar on the Lakers"] },
+  { player:"Magic Johnson", sport:"🏀 NBA", answer:"MAGIC DRAFT", era:"classic", stats:{PICK:"1",YEAR:"1979",TEAM:"Los Angeles Lakers",SCHOOL:"Michigan State"}, ctx:"1979 NBA Draft — #1 Overall Pick", clues:["Had just won the NCAA championship at Michigan State","Led the Spartans past Larry Bird and Indiana State in the title game","Was 19 years old when drafted","Immediately joined Kareem Abdul-Jabbar on the Lakers"] },
   { player:"David Robinson", sport:"🏀 NBA", answer:"ROBINSON DRAFT", era:"classic", stats:{PICK:"1",YEAR:"1987",TEAM:"San Antonio Spurs",SCHOOL:"Navy"}, ctx:"1987 NBA Draft — #1 Overall Pick", clues:["San Antonio waited patiently two years while he fulfilled his Navy duty","Had to serve 2 years in the Navy before joining the Spurs","Played at the US Naval Academy","San Antonio waited patiently 2 years for him to complete his service"] },
   { player:"Hakeem Olajuwon", sport:"🏀 NBA", answer:"HAKEEM DRAFT", era:"classic", stats:{PICK:"1",YEAR:"1984",TEAM:"Houston Rockets",SCHOOL:"Houston"}, ctx:"1984 NBA Draft — #1 Overall Pick ahead of Jordan", clues:["Was picked BEFORE Michael Jordan — two picks before him","Was picked BEFORE Michael Jordan who went #3","Played at the University of Houston with Clyde Drexler","From Lagos, Nigeria — did not start playing basketball until age 17"] },
   { player:"Peyton Manning", sport:"🏈 NFL", answer:"PEYTON DRAFT", era:"modern", stats:{PICK:"1",YEAR:"1998",TEAM:"Indianapolis Colts",SCHOOL:"Tennessee"}, ctx:"1998 NFL Draft — #1 Overall Pick", clues:["Won the Outland Trophy and Lombardi Award in college","Ryan Leaf was the #2 pick — one of the biggest draft busts ever","Played at the University of Tennessee","The Colts chose him over Ryan Leaf in one of the most debated picks ever"] },
@@ -619,8 +619,8 @@ const MEDIUM = [
   { player:"Earl Monroe", sport:"🏀 NBA", answer:"MONROE", era:"legends", stats:{PTS:"23.8",AST:"5.5",REB:"4.0",YEAR:"1968"}, ctx:"1967-68 NBA Season — Baltimore Bullets Rookie of Year", clues:["Won Rookie of the Year with Baltimore Bullets","Famous for his spinning moves in the lane","Nicknamed Earl the Pearl and Black Jesus","Later won a championship with the New York Knicks"] },
   { player:"Tim Tebow", sport:"🏈 NFL", answer:"TEBOW", era:"modern", stats:{YDS:"316",TD:"3",INT:"1",RTG:"125.6"}, ctx:"2012 NFL Wild Card — Denver Broncos vs Pittsburgh Steelers", clues:["Threw an 80-yard TD on the first play of overtime","Played for Denver Broncos","Famous for his religious celebrations on the field","Won the Heisman Trophy at Florida"] },
   { player:"Jeremy Lin", sport:"🏀 NBA", answer:"LIN", era:"modern", stats:{PTS:"22.5",AST:"8.7",REB:"3.6",W:"7"}, ctx:"February 2012 — New York Knicks Linsanity run", clues:["Led the Knicks on a 7-game winning streak as an unknown","Was sleeping on his brother's couch before his breakout","Harvard graduate who went undrafted","The phenomenon was called Linsanity"] },
-  { player:"Muggsy Bogues", sport:"🏀 NBA", answer:"BOGUES", era:"modern", stats:{PTS:"10.8",AST:"9.7",STL:"2.0",HT:"5'3\""}, ctx:"1994-95 NBA Season — Charlotte Hornets", clues:["Led the team in assists and steals","Played for Charlotte Hornets","Shortest player in NBA history at 5ft 3in","From Baltimore, Maryland"] },
-  { player:"Manute Bol", sport:"🏀 NBA", answer:"BOL", era:"classic", stats:{BLK:"5.0",PTS:"2.7",REB:"4.2",HT:"7'7\""}, ctx:"1985-86 NBA Season — Washington Bullets", clues:["Led the NBA in blocks per game with 5.0","Played for Washington Bullets","Tallest player in NBA history at 7ft 7in","From the Dinka tribe in Sudan"] },
+  { player:"Muggsy Bogues", sport:"🏀 NBA", answer:"BOGUES", era:"modern", stats:{PTS:"10.8",AST:"9.7",STL:"2.0",HT:"5ft3"}, ctx:"1994-95 NBA Season — Charlotte Hornets", clues:["Led the team in assists and steals","Played for Charlotte Hornets","Shortest player in NBA history at 5ft 3in","From Baltimore, Maryland"] },
+  { player:"Manute Bol", sport:"🏀 NBA", answer:"BOL", era:"classic", stats:{BLK:"5.0",PTS:"2.7",REB:"4.2",HT:"7ft7"}, ctx:"1985-86 NBA Season — Washington Bullets", clues:["Led the NBA in blocks per game with 5.0","Played for Washington Bullets","Tallest player in NBA history at 7ft 7in","From the Dinka tribe in Sudan"] },
   { player:"Xabi Alonso", sport:"⚽ Soccer", answer:"XABI", era:"modern", stats:{G:"2",AST:"4",APP:"38",MIN:"3285"}, ctx:"2013-14 La Liga Season — Real Madrid", clues:["Won La Liga and the Champions League this year","Played for Real Madrid","Spanish midfielder known for his passing range","Now manages Bayer Leverkusen to the Bundesliga title"] },
   { player:"Payne Stewart", sport:"⛳ Golf", answer:"STEWART", era:"classic", stats:{WINS:"3",MAJORS:"1",PUTT:"1.741",YEAR:"1999"}, ctx:"1999 US Open — Pinehurst No. 2", clues:["Sank the winning putt on the 18th to win the US Open","Was killed in a plane crash 4 months after this win","From Springfield, Missouri","Known for wearing knickerbockers and tam o'shanter caps"] },
   { player:"Bernhard Langer", sport:"⛳ Golf", answer:"LANGER", era:"classic", stats:{WINS:"4",MAJORS:"1",RYDER:"19.5",YEAR:"1993"}, ctx:"1993 Masters — Augusta National", clues:["Won his second Masters title","Has never won a tournament outside of the Masters where he has 2 wins","From Anhausen, West Germany — now leads LIV Seniors Tour","Had the yips and reinvented his putting style multiple times"] },
@@ -744,6 +744,51 @@ const HARD = [
 type Era = "modern" | "classic" | "legends";
 type Puzzle = { player: string; sport: string; answer: string; era: Era; stats: Record<string, string>; ctx: string; clues: string[] };
 type Difficulty = "easy" | "medium" | "hard";
+
+const levenshtein = (a: string, b: string): number => {
+  const m = a.length, n2 = b.length;
+  const dp: number[][] = Array.from({length: m+1}, (_, i) => Array.from({length: n2+1}, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n2; j++)
+    dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n2];
+};
+
+const NICKNAME_ALIASES: Record<string, string[]> = {
+  "WEMBY":["WEMBANYAMA"], "SHAQ":["ONEAL","SHAQUILLE"], "LEBRON":["JAMES"],
+  "KOBE":["BRYANT"], "MAGIC":["JOHNSON"], "BIRD":["LARRY"], "DRJ":["ERVING","JULIUS"],
+  "GREEKFREAK":["ANTETOKOUNMPO","GIANNIS"], "THEJOKER":["JOKIC","NIKOLA"],
+  "SID":["CROSBY","SIDNEY"], "OVI":["OVECHKIN","ALEXANDER"],
+  "THEGREAONE":["GRETZKY","WAYNE"], "THEGREATONE":["GRETZKY","WAYNE"], "MRHOCKEY":["HOWE","GORDIE"],
+  "THEROCKET":["RICHARD","MAURICE"], "PISTOLPETE":["MARAVICH"],
+  "SWEETNESS":["PAYTON","WALTER"], "PRIMETIME":["SANDERS","DEION"],
+  "LT":["TAYLOR","LAWRENCE"], "MINISTER":["WHITE","REGGIE"],
+  "THEANSWER":["IVERSON","ALLEN"], "AI":["IVERSON"],
+  "TIGER":["WOODS"], "THEGOLDENBEAR":["NICKLAUS","JACK"],
+  "ARNIE":["PALMER","ARNOLD"], "SEVE":["BALLESTEROS"],
+  "PELE":["NASCIMENTO","EDSON"], "KING":["HENRY","DERRICK"],
+  "THEFLASH":["WADE","DWYANE"], "FLASH":["WADE"],
+  "CP3":["PAUL","CHRIS"], "TMAC":["MCGRADY","TRACY"],
+  "MELO":["ANTHONY","CARMELO"], "GRONK":["GRONKOWSKI","ROB"],
+  "OBJ":["BECKHAM","ODELL"], "MEGATRON":["JOHNSON","CALVIN"],
+  "BROADWAYJOE":["NAMATH","JOE"], "SLINGINSAMMY":["BAUGH"],
+  "THEGALLOPINGGHOST":["GRANGE","RED"], "CRAZYLEGS":["HIRSCH","ELROY"],
+  "BULLETBILL":["DUDLEY"], "THEBIGO":["ROBERTSON","OSCAR"],
+  "TINY":["ARCHIBALD","NATE"], "CLYDE":["FRAZIER","WALT"],
+  "SWEETLOU":["HUDSON","LOU"], "THEADMIRAL":["ROBINSON","DAVID"],
+  "THEMAILMAN":["MALONE","KARL"], "PISTOL":["MARAVICH","PETE"],
+  "YAZ":["YASTRZEMSKI","CARL"], "THESPLENDIDSPLINTER":["WILLIAMS","TED"],
+  "THEYANKEE CLIPPER":["DIMAGGIO","JOE"], "JOLTINJOE":["DIMAGGIO"],
+  "THEBIGHURT":["THOMAS","FRANK"], "MROCTOBER":["JACKSON","REGGIE"],
+  "SATCHEL":["PAIGE"], "DIZZY":["DEAN"], "RAPIDROBERT":["FELLER","BOB"],
+  "TOMTERRIFIC":["SEAVER","TOM"], "LEFTY":["CARLTON","GROVE"],
+  "BLACKMAMBA":["BRYANT","KOBE"], "THEICEMAN":["GERVIN","GEORGE"], "ICEMAN":["GERVIN"],
+  "DERBOMBER":["MULLER","GERD"], "DERKAISR":["BECKENBAUER","FRANZ"],
+  "DERKAISER":["BECKENBAUER","FRANZ"], "THEBLACKPANTHER":["EUSEBIO"],
+  "BOOMBOOM":["BECKER","BORIS"], "GUGA":["KUERTEN"],
+  "SIDTHEKID":["CROSBY"], "SUPERMAR10":["LEMIEUX"], "SUPERMARIO":["LEMIEUX"],
+  "THEGOLDENJET":["HULL","BOBBY"], "MRGOALIE":["HALL","GLENN"],
+  "THEWORM":["RODMAN","DENNIS"], "THEGLOVE":["PAYTON","GARY"],
+};
 
 const DIFF_CONFIG: Record<Difficulty, { label: string; guesses: number; color: string; bg: string; border: string; clueStyle: string; desc: string }> = {
   easy:   { label: "EASY",   guesses: 3, color: "#22c55e", bg: "rgba(34,197,94,0.12)",  border: "rgba(34,197,94,0.5)",  clueStyle: "Generous clues", desc: "GOATs & household names" },
@@ -1286,11 +1331,20 @@ export default function StatsIQ() {
     const g = input.trim();
     if (!g) return;
     const n = (s: string) => s.toUpperCase().replace(/[^A-Z]/g, "");
+    const ng = n(g);
     const parts = player.split(" ");
-    // Match against: the answer key, first name, last name, or full name concatenated
-    // Use the current puzzle's player/answer only — no cross-contamination
+    // Match against: answer key, first name, last name, full name, nickname aliases
     const validAnswers = [answer, parts[0], parts[parts.length - 1], player.replace(/\s/g, "")];
-    const isWin = validAnswers.some(v => v.length >= 2 && n(g) === n(v));
+    // Check nickname aliases
+    const aliasMatch = NICKNAME_ALIASES[ng] && NICKNAME_ALIASES[ng].some(alias => validAnswers.some(v => n(v).includes(alias) || alias.includes(n(v))));
+    // Exact match or alias match
+    const exactMatch = validAnswers.some(v => v.length >= 2 && ng === n(v));
+    // Fuzzy match: within 2 chars BUT only if guess is at least 4 chars (avoid false positives on short names)
+    const fuzzyMatch = !exactMatch && ng.length >= 4 && validAnswers.some(v => {
+      const nv = n(v);
+      return nv.length >= 4 && levenshtein(ng, nv) <= 2;
+    });
+    const isWin = exactMatch || aliasMatch || fuzzyMatch;
     const next = [...guesses, { text: g, ok: isWin }];
     setGuesses(next); setInput("");
     if (isWin) {
