@@ -1191,6 +1191,11 @@ export default function StatsIQ() {
   const [pInput, setPInput] = useState("");
   const [pDone, setPDone] = useState(false);
   const [pWon, setPWon] = useState(false);
+  const [sharePreview, setSharePreview] = useState<string | null>(null);
+  const [showEmailCapture, setShowEmailCapture] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [emailSubmitted, setEmailSubmitted] = useState(() => { try { return localStorage.getItem("statsiq_email_submitted") === "1"; } catch { return false; } });
+  const [countdown, setCountdown] = useState("");
   const [onboardingStep, setOnboardingStep] = useState<number>(() => {
     try { return localStorage.getItem("statsiq_visited") ? -1 : 0; } catch { return 0; }
   });
@@ -1294,13 +1299,35 @@ export default function StatsIQ() {
     let lastDate = getTodayStr();
     const interval = setInterval(() => {
       const now = getTodayStr();
-      if (now !== lastDate) {
-        lastDate = now;
-        setCompletedToday(new Set());
-      }
-    }, 60000); // check every minute
+      if (now !== lastDate) { lastDate = now; setCompletedToday(new Set()); }
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  // Countdown to midnight
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const midnight = new Date(); midnight.setHours(24,0,0,0);
+      const diff2 = midnight.getTime() - now.getTime();
+      const h = Math.floor(diff2/3600000);
+      const m = Math.floor((diff2%3600000)/60000);
+      const s = Math.floor((diff2%60000)/1000);
+      setCountdown(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`);
+    };
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  // Show email capture after first perfect day if not already submitted
+  useEffect(() => {
+    const allDone = (["easy","medium","hard"] as Difficulty[]).every(d => completedToday.has(d));
+    if (allDone && !emailSubmitted) {
+      const t = setTimeout(() => setShowEmailCapture(true), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [completedToday, emailSubmitted]);
 
   const markDiffCompleted = (d: Difficulty) => {
     const next = new Set(completedToday);
@@ -1488,18 +1515,266 @@ export default function StatsIQ() {
     }
   }, [input, guesses, answer, player, clues.length, wrongCount, cfg.guesses, awardScore]);
 
-  const share = () => {
-    const date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    const rows = guesses.map(g => g.ok ? "🟩" : "🟥").join("");
-    const scoreStr = todayScore ? ` · ${todayScore.toLocaleString()} pts` : "";
-    const userStr = username ? `${username} | ` : "";
-    const streakStr = streakData.current > 1 ? ` 🔥 ${streakData.current}` : "";
-    const statPreview = Object.entries(stats).slice(0, 3).map(([k, v]) => `${k}: ${v}`).join(" / ");
-    navigator.clipboard?.writeText(`📊 STATSIQ [${cfg.label}] — ${date}\n${userStr}${won ? guesses.length : "X"}/${cfg.guesses}${scoreStr}${streakStr}\n${rows}\n\n${sport} · ${statPreview}\nPlay at statsiq.io`)
-      .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+
+  // Helper: draw rounded rect path (defined before generateShareCard uses it)
+  const roundRect = (c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) => {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.lineTo(x + w - r, y);
+    c.quadraticCurveTo(x + w, y, x + w, y + r);
+    c.lineTo(x + w, y + h - r);
+    c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    c.lineTo(x + r, y + h);
+    c.quadraticCurveTo(x, y + h, x, y + h - r);
+    c.lineTo(x, y + r);
+    c.quadraticCurveTo(x, y, x + r, y);
+    c.closePath();
   };
 
-  const nextDiff = diff === "easy" ? "MEDIUM" : "HARD";
+  const generateShareCard = async (): Promise<string> => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1080;
+    const ctx2 = canvas.getContext("2d")!;
+
+    // Background
+    ctx2.fillStyle = "#080c14";
+    ctx2.fillRect(0, 0, 1080, 1080);
+
+    // Subtle radial glow
+    const grd = ctx2.createRadialGradient(540, 400, 0, 540, 400, 600);
+    const glowColor = won
+      ? diff === "hard" ? "rgba(168,85,247,0.18)" : diff === "medium" ? "rgba(59,130,246,0.18)" : "rgba(34,197,94,0.15)"
+      : "rgba(239,68,68,0.12)";
+    grd.addColorStop(0, glowColor);
+    grd.addColorStop(1, "transparent");
+    ctx2.fillStyle = grd;
+    ctx2.fillRect(0, 0, 1080, 1080);
+
+    // Grid lines (subtle)
+    ctx2.strokeStyle = "rgba(255,255,255,0.03)";
+    ctx2.lineWidth = 1;
+    for (let x = 0; x < 1080; x += 60) { ctx2.beginPath(); ctx2.moveTo(x,0); ctx2.lineTo(x,1080); ctx2.stroke(); }
+    for (let y = 0; y < 1080; y += 60) { ctx2.beginPath(); ctx2.moveTo(0,y); ctx2.lineTo(1080,y); ctx2.stroke(); }
+
+    // Top border line
+    const accentColor = won
+      ? diff === "hard" ? "#a855f7" : diff === "medium" ? "#3b82f6" : "#22c55e"
+      : "#ef4444";
+    ctx2.fillStyle = accentColor;
+    ctx2.fillRect(0, 0, 1080, 6);
+
+    // STATSIQ logo
+    ctx2.font = "900 52px 'Arial Black', Arial, sans-serif";
+    ctx2.fillStyle = "#ffd700";
+    ctx2.letterSpacing = "8px";
+    ctx2.fillText("STATSIQ", 72, 100);
+
+    // Tagline
+    ctx2.font = "400 22px Arial, sans-serif";
+    ctx2.fillStyle = "#4b5563";
+    ctx2.letterSpacing = "4px";
+    ctx2.fillText("DAILY SPORTS TRIVIA", 72, 132);
+
+    // Date + difficulty pill
+    const date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    ctx2.font = "700 24px Arial, sans-serif";
+    ctx2.fillStyle = "#6b7280";
+    ctx2.letterSpacing = "2px";
+    ctx2.fillText(date.toUpperCase(), 72, 174);
+
+    // Difficulty badge
+    const diffLabel = diff === "easy" ? "EASY" : diff === "medium" ? "MEDIUM" : "HARD";
+    ctx2.font = "900 20px Arial, sans-serif";
+    const diffW = ctx2.measureText(diffLabel).width + 32;
+    ctx2.fillStyle = accentColor + "22";
+    roundRect(ctx2, 900 - diffW, 148, diffW + 8, 36, 8);
+    ctx2.fill();
+    ctx2.strokeStyle = accentColor + "66";
+    ctx2.lineWidth = 1.5;
+    roundRect(ctx2, 900 - diffW, 148, diffW + 8, 36, 8);
+    ctx2.stroke();
+    ctx2.fillStyle = accentColor;
+    ctx2.letterSpacing = "3px";
+    ctx2.fillText(diffLabel, 912 - diffW, 172);
+
+    // Divider
+    ctx2.fillStyle = "rgba(255,255,255,0.07)";
+    ctx2.fillRect(72, 196, 936, 1);
+
+    // Sport + context
+    ctx2.font = "400 28px Arial, sans-serif";
+    ctx2.fillStyle = "#6b7280";
+    ctx2.letterSpacing = "0px";
+    ctx2.fillText(sport, 72, 248);
+
+    ctx2.font = "700 32px Arial, sans-serif";
+    ctx2.fillStyle = "#d1d5db";
+    ctx2.letterSpacing = "0px";
+    const ctxWords = ctx.split(" ");
+    let line = "", lineY = 290;
+    for (const word of ctxWords) {
+      const test = line + (line ? " " : "") + word;
+      if (ctx2.measureText(test).width > 936) { ctx2.fillText(line, 72, lineY); line = word; lineY += 42; }
+      else line = test;
+    }
+    ctx2.fillText(line, 72, lineY);
+
+    // Stat boxes
+    const statEntries = Object.entries(stats).slice(0, 4);
+    const boxW = Math.floor(936 / statEntries.length) - 12;
+    statEntries.forEach(([key, val], i) => {
+      const bx = 72 + i * (boxW + 12);
+      const by = lineY + 40;
+      // Box bg
+      ctx2.fillStyle = "rgba(255,255,255,0.05)";
+      roundRect(ctx2, bx, by, boxW, 130, 12);
+      ctx2.fill();
+      ctx2.strokeStyle = accentColor + "44";
+      ctx2.lineWidth = 1.5;
+      roundRect(ctx2, bx, by, boxW, 130, 12);
+      ctx2.stroke();
+      // Value
+      ctx2.font = `900 ${val.length > 6 ? 40 : 52}px 'Arial Black', Arial, sans-serif`;
+      ctx2.fillStyle = accentColor;
+      ctx2.textAlign = "center";
+      ctx2.fillText(val, bx + boxW/2, by + 76);
+      // Key
+      ctx2.font = "700 20px Arial, sans-serif";
+      ctx2.fillStyle = accentColor + "99";
+      ctx2.letterSpacing = "3px";
+      ctx2.fillText(key, bx + boxW/2, by + 108);
+      ctx2.textAlign = "left";
+      ctx2.letterSpacing = "0px";
+    });
+
+    // Guess result boxes
+    const statBottom = lineY + 40 + 130 + 32;
+    const resultLabel = won ? `CORRECT IN ${guesses.length}/${cfg.guesses}` : `MISSED — ${player.toUpperCase()}`;
+    ctx2.font = "900 30px Arial, sans-serif";
+    ctx2.fillStyle = won ? "#22c55e" : "#ef4444";
+    ctx2.letterSpacing = "2px";
+    ctx2.fillText(resultLabel, 72, statBottom + 36);
+
+    // Guess squares
+    guesses.forEach((g, i) => {
+      const sqX = 72 + i * 72;
+      const sqY = statBottom + 54;
+      ctx2.fillStyle = g.ok ? "rgba(34,197,94,0.25)" : "rgba(239,68,68,0.2)";
+      roundRect(ctx2, sqX, sqY, 56, 56, 8);
+      ctx2.fill();
+      ctx2.strokeStyle = g.ok ? "#22c55e" : "#ef4444";
+      ctx2.lineWidth = 2;
+      roundRect(ctx2, sqX, sqY, 56, 56, 8);
+      ctx2.stroke();
+      ctx2.font = "900 28px Arial, sans-serif";
+      ctx2.textAlign = "center";
+      ctx2.fillStyle = g.ok ? "#22c55e" : "#ef4444";
+      ctx2.fillText(g.ok ? "✓" : "✗", sqX + 28, sqY + 38);
+      ctx2.textAlign = "left";
+    });
+
+    // Score + streak
+    const scoreY = statBottom + 160;
+    if (todayScore) {
+      ctx2.font = "900 48px 'Arial Black', Arial, sans-serif";
+      ctx2.fillStyle = "#ffd700";
+      ctx2.fillText(`+${todayScore.toLocaleString()} pts`, 72, scoreY);
+    }
+    if (streakData.current > 1) {
+      ctx2.font = "900 40px Arial, sans-serif";
+      ctx2.fillStyle = "#fb923c";
+      const scoreW = todayScore ? ctx2.measureText(`+${todayScore.toLocaleString()} pts`).width + 24 : 0;
+      ctx2.fillText(`🔥 ${streakData.current}`, 72 + scoreW, scoreY);
+    }
+
+    // Username
+    if (username) {
+      ctx2.font = "700 26px Arial, sans-serif";
+      ctx2.fillStyle = "#4b5563";
+      ctx2.letterSpacing = "1px";
+      ctx2.fillText(`@${username}`, 72, scoreY + 44);
+    }
+
+    // Bottom bar
+    ctx2.fillStyle = "rgba(255,255,255,0.04)";
+    ctx2.fillRect(0, 980, 1080, 100);
+    ctx2.fillStyle = "rgba(255,255,255,0.08)";
+    ctx2.fillRect(0, 980, 1080, 1);
+
+    ctx2.font = "900 30px 'Arial Black', Arial, sans-serif";
+    ctx2.fillStyle = "#ffd700";
+    ctx2.letterSpacing = "4px";
+    ctx2.fillText("STATSIQ.IO", 72, 1038);
+
+    ctx2.font = "400 22px Arial, sans-serif";
+    ctx2.fillStyle = "#4b5563";
+    ctx2.letterSpacing = "2px";
+    ctx2.textAlign = "right";
+    ctx2.fillText("DAILY SPORTS TRIVIA", 1008, 1038);
+    ctx2.textAlign = "left";
+
+    return canvas.toDataURL("image/png");
+  };
+
+  // Helper: draw rounded rect path
+
+  const share = async () => {
+    try {
+      const dataUrl = await generateShareCard();
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], "statsiq.png", { type: "image/png" });
+
+      // Try native share with image (mobile)
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: "StatsIQ — Daily Sports Trivia",
+          text: `Can you beat my score? Play at statsiq.io`,
+          files: [file],
+        });
+        return;
+      }
+
+      // Fallback: download the image + copy text
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "statsiq-result.png";
+      link.click();
+
+      // Also copy text to clipboard
+      const date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      const rows = guesses.map(g => g.ok ? "🟩" : "🟥").join("");
+      const scoreStr = todayScore ? ` · ${todayScore.toLocaleString()} pts` : "";
+      const streakStr = streakData.current > 1 ? ` 🔥 ${streakData.current}` : "";
+      const userStr = username ? `${username} | ` : "";
+      await navigator.clipboard?.writeText(`📊 STATSIQ [${cfg.label}] — ${date}\n${userStr}${won ? guesses.length : "X"}/${cfg.guesses}${scoreStr}${streakStr}\n${rows}\nPlay at statsiq.io`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Final fallback: just copy text
+      const date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      const rows = guesses.map(g => g.ok ? "🟩" : "🟥").join("");
+      const scoreStr = todayScore ? ` · ${todayScore.toLocaleString()} pts` : "";
+      const streakStr = streakData.current > 1 ? ` 🔥 ${streakData.current}` : "";
+      const userStr = username ? `${username} | ` : "";
+      navigator.clipboard?.writeText(`📊 STATSIQ [${cfg.label}] — ${date}\n${userStr}${won ? guesses.length : "X"}/${cfg.guesses}${scoreStr}${streakStr}\n${rows}\nPlay at statsiq.io`)
+        .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+    }
+  };
+
+
+  const handleEmailSubmit = () => {
+    if (!emailInput.includes("@")) return;
+    // Store email in localStorage and mark as submitted
+    try {
+      localStorage.setItem("statsiq_email", emailInput);
+      localStorage.setItem("statsiq_email_submitted", "1");
+    } catch {}
+    setEmailSubmitted(true);
+    // In production you'd POST to a backend/Mailchimp/ConvertKit endpoint here
+    // For now we store locally and show confirmation
+    toast("You're in! 🎉 See you tomorrow.", 3000);
+  };
 
   // Score display helpers
   const fmtMult = (m: number) => m === 1 ? "×1" : m === 1.5 ? "×1.5" : m === 2 ? "×2" : m === 5 ? "×5" : `×${m}`;
@@ -1984,9 +2259,19 @@ export default function StatsIQ() {
             </div>
 
             <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.68rem" }}>{sport} · {ctx}</p>
+
+            {/* Countdown to next puzzles */}
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginBottom:14, background:"rgba(255,255,255,0.03)", borderRadius:10, padding:"10px 16px", border:"1px solid rgba(255,255,255,0.07)" }}>
+              <span style={{ color:"#4b5563", fontSize:"0.65rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>NEXT PUZZLE IN</span>
+              <span style={{ color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", letterSpacing:"0.2em", minWidth:80, textAlign:"center" }}>{countdown}</span>
+            </div>
+
             <div style={{ display:"flex", gap:8, justifyContent:"center" }}>
-              <button onClick={share} style={{ padding:"10px 20px", borderRadius:8, border:"none", background:copied?"rgba(34,197,94,0.3)":"rgba(255,200,0,0.9)", color:copied?"#fff":"#0a0c10", fontWeight:900, fontSize:"0.85rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
-                {copied?"✓ COPIED!":"📤 SHARE"}
+              <button onClick={async () => {
+                const img = await generateShareCard();
+                setSharePreview(img);
+              }} style={{ padding:"10px 20px", borderRadius:8, border:"none", background:"rgba(255,200,0,0.9)", color:"#0a0c10", fontWeight:900, fontSize:"0.85rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+                📤 SHARE RESULT
               </button>
               {diff !== "hard" && (
               <button onClick={() => setDiff(diff==="easy"?"medium":"hard")} style={{ padding:"10px 20px", borderRadius:8, border:`1px solid ${cfg.border}`, background:cfg.bg, color:cfg.color, fontWeight:900, fontSize:"0.85rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
@@ -2072,6 +2357,128 @@ export default function StatsIQ() {
       })()}
 
       {/* BADGES DISPLAY in score history - handled within ScoreHistoryModal */}
+
+      {/* SHARE CARD PREVIEW MODAL */}
+      {sharePreview && (
+        <div style={{ position:"fixed", inset:0, zIndex:400, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setSharePreview(null)}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.92)", backdropFilter:"blur(8px)" }} />
+          <div style={{ position:"relative", width:"min(420px,92vw)", display:"flex", flexDirection:"column", alignItems:"center", gap:14 }} onClick={e => e.stopPropagation()}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", width:"100%" }}>
+              <p style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", letterSpacing:"0.1em" }}>YOUR RESULT CARD</p>
+              <button onClick={() => setSharePreview(null)} style={{ background:"none", border:"none", color:"#6b7280", cursor:"pointer", fontSize:"1.3rem" }}>✕</button>
+            </div>
+            <img src={sharePreview} alt="Share card" style={{ width:"100%", borderRadius:12, border:"1px solid rgba(255,255,255,0.1)", boxShadow:"0 20px 60px rgba(0,0,0,0.8)" }} />
+            <div style={{ display:"flex", gap:10, width:"100%" }}>
+              {/* Native share (mobile) */}
+              {typeof navigator !== "undefined" && navigator.share && (
+                <button onClick={() => { share(); setSharePreview(null); }} style={{ flex:1, padding:"13px", borderRadius:10, border:"none", background:"linear-gradient(135deg,#ffd700,#f59e0b)", color:"#0a0c10", fontWeight:900, fontSize:"0.9rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+                  📤 SHARE
+                </button>
+              )}
+              {/* Download */}
+              <button onClick={() => {
+                const a = document.createElement("a");
+                a.href = sharePreview;
+                a.download = "statsiq-result.png";
+                a.click();
+                setSharePreview(null);
+              }} style={{ flex:1, padding:"13px", borderRadius:10, border:"1px solid rgba(255,215,0,0.3)", background:"rgba(255,215,0,0.07)", color:"#ffd700", fontWeight:900, fontSize:"0.9rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+                ⬇ SAVE IMAGE
+              </button>
+              {/* Copy text fallback */}
+              <button onClick={() => {
+                const date = new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"});
+                const rows = guesses.map(g => g.ok?"🟩":"🟥").join("");
+                const scoreStr = todayScore ? ` · ${todayScore.toLocaleString()} pts` : "";
+                const streakStr = streakData.current > 1 ? ` 🔥 ${streakData.current}` : "";
+                const userStr = username ? `${username} | ` : "";
+                navigator.clipboard?.writeText(`📊 STATSIQ [${cfg.label}] — ${date}\n${userStr}${won?guesses.length:"X"}/${cfg.guesses}${scoreStr}${streakStr}\n${rows}\nPlay at statsiq.io`)
+                  .then(() => { setCopied(true); setTimeout(()=>setCopied(false),2000); setSharePreview(null); });
+              }} style={{ flex:1, padding:"13px", borderRadius:10, border:"1px solid rgba(255,255,255,0.1)", background:"rgba(255,255,255,0.04)", color: copied ? "#22c55e" : "#9ca3af", fontWeight:900, fontSize:"0.9rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+                {copied ? "✓ COPIED" : "📋 COPY TEXT"}
+              </button>
+            </div>
+            <p style={{ margin:0, color:"#374151", fontSize:"0.65rem", textAlign:"center" }}>Save the image and post it — tag someone who'd know this stat line</p>
+          </div>
+        </div>
+      )}
+
+      {/* EMAIL CAPTURE MODAL */}
+      {showEmailCapture && !emailSubmitted && (
+        <div style={{ position:"fixed", inset:0, zIndex:400, display:"flex", alignItems:"flex-end", justifyContent:"center" }} onClick={() => setShowEmailCapture(false)}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.7)", backdropFilter:"blur(4px)" }} />
+          <div style={{ position:"relative", background:"#0f1629", borderTop:"1px solid rgba(255,215,0,0.2)", borderLeft:"1px solid rgba(255,255,255,0.08)", borderRight:"1px solid rgba(255,255,255,0.08)", borderRadius:"20px 20px 0 0", padding:"28px 24px 40px", width:"min(500px,100vw)", boxShadow:"0 -20px 60px rgba(0,0,0,0.8)" }} onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowEmailCapture(false)} style={{ position:"absolute", top:16, right:16, background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.3rem" }}>✕</button>
+
+            <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:16 }}>
+              <span style={{ fontSize:"2rem" }}>📬</span>
+              <div>
+                <h3 style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", letterSpacing:"0.1em" }}>GET TOMORROW'S PUZZLE EARLY</h3>
+                <p style={{ margin:0, color:"#6b7280", fontSize:"0.75rem" }}>Be the first to play — delivered to your inbox at 11 PM</p>
+              </div>
+            </div>
+
+            <div style={{ background:"rgba(255,215,0,0.05)", border:"1px solid rgba(255,215,0,0.15)", borderRadius:10, padding:"12px 14px", marginBottom:16 }}>
+              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                {["🔔 Get notified before the day resets","📊 See tomorrow's stat line at 11 PM","🔥 Never miss a day and break your streak","🏆 Early access to weekly challenges"].map((t,i) => (
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:10 }}>
+                    <span style={{ fontSize:"0.9rem" }}>{t.slice(0,2)}</span>
+                    <span style={{ color:"#d1d5db", fontSize:"0.78rem" }}>{t.slice(3)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display:"flex", gap:8, marginBottom:10 }}>
+              <input
+                value={emailInput}
+                onChange={e => setEmailInput(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && emailInput.includes("@") && handleEmailSubmit()}
+                placeholder="your@email.com"
+                type="email"
+                style={{ flex:1, padding:"13px 14px", borderRadius:10, border:`1px solid ${emailInput.includes("@") ? "rgba(255,215,0,0.4)" : "rgba(255,255,255,0.1)"}`, background:"rgba(255,255,255,0.05)", color:"#fff", fontSize:"1rem", fontFamily:"'Barlow Condensed',sans-serif" }}
+                autoFocus
+              />
+              <button
+                onClick={handleEmailSubmit}
+                disabled={!emailInput.includes("@")}
+                style={{ padding:"13px 20px", borderRadius:10, border:"none", background: emailInput.includes("@") ? "linear-gradient(135deg,#ffd700,#f59e0b)" : "rgba(100,100,100,0.3)", color: emailInput.includes("@") ? "#0a0c10" : "#555", fontWeight:900, fontSize:"0.9rem", cursor: emailInput.includes("@") ? "pointer" : "not-allowed", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", whiteSpace:"nowrap" }}>
+                NOTIFY ME
+              </button>
+            </div>
+            <p style={{ margin:0, color:"#374151", fontSize:"0.62rem", textAlign:"center" }}>No spam. Just your daily stat line. Unsubscribe anytime.</p>
+          </div>
+        </div>
+      )}
+
+      {/* EMAIL SUBMITTED CONFIRMATION */}
+      {emailSubmitted && showEmailCapture && (
+        <div style={{ position:"fixed", inset:0, zIndex:400, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowEmailCapture(false)}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.8)" }} />
+          <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(34,197,94,0.3)", borderRadius:16, padding:"32px 28px", width:"min(340px,90vw)", textAlign:"center" }}>
+            <p style={{ margin:"0 0 8px", fontSize:"2.5rem" }}>🎉</p>
+            <h3 style={{ margin:"0 0 8px", color:"#22c55e", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", letterSpacing:"0.1em" }}>YOU'RE IN!</h3>
+            <p style={{ margin:"0 0 20px", color:"#9ca3af", fontSize:"0.82rem", lineHeight:1.5 }}>Tomorrow's puzzle hits your inbox at 11 PM. See you then.</p>
+            <button onClick={() => setShowEmailCapture(false)} style={{ padding:"12px 28px", borderRadius:10, border:"none", background:"rgba(34,197,94,0.2)", color:"#22c55e", fontWeight:900, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+              LET'S GO →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {msg && <div style={{ position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", zIndex:500, background:"#fff", color:"#111", padding:"9px 22px", borderRadius:8, fontWeight:700, fontSize:"0.88rem", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", whiteSpace:"nowrap", fontFamily:"'Barlow Condensed', sans-serif" }}>{msg}</div>}
+
+      {/* ABOUT FOOTER */}
+      <div style={{ width:"100%", maxWidth:500, padding:"24px 18px 8px", marginTop:16, borderTop:"1px solid rgba(255,255,255,0.05)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <div>
+          <p style={{ margin:0, color:"#374151", fontSize:"0.62rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>BUILT BY BLAKE PERMENTER</p>
+          <p style={{ margin:0, color:"#1f2937", fontSize:"0.58rem", marginTop:2 }}>statsiq.io · daily sports trivia</p>
+        </div>
+        <div style={{ display:"flex", gap:10, alignItems:"center" }}>
+          <a href="https://twitter.com" target="_blank" rel="noreferrer" style={{ color:"#374151", fontSize:"0.7rem", textDecoration:"none", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>𝕏</a>
+          <button onClick={() => setShowEmailCapture(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>📬 GET REMINDERS</button>
+        </div>
+      </div>
 
       <Analytics />
 
