@@ -1148,15 +1148,6 @@ export default function StatsIQ() {
     let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
     if (!link) { link = document.createElement("link") as HTMLLinkElement; link.rel = "icon"; document.head.appendChild(link); }
     link.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>";
-
-    // Google Analytics
-    const gaScript = document.createElement("script");
-    gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-ZRY9BE8EGF";
-    gaScript.async = true;
-    document.head.appendChild(gaScript);
-    const gaInline = document.createElement("script");
-    gaInline.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZRY9BE8EGF');`;
-    document.head.appendChild(gaInline);
   }, []);
 
   const getTodayStr = () => new Date().toISOString().slice(0, 10);
