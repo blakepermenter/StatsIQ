@@ -1623,19 +1623,6 @@ const HARD = [
   { player:"Richie Guerin", sport:"🏀 NBA", answer:"RICHIE GUERIN HC", era:"legends", stats:{PTS:"22.0",ALLSTAR:"6x",TEAM:"Knicks/Hawks",COACH:"Player-coach"}, ctx:"Career Totals — Six-time All-Star who served as player-coach of the Hawks", clues:["Was the New York Knicks best player in the late 1950s and early 1960s","Made six All-Star teams during his playing career","Became a player-coach for the St. Louis Hawks in 1964 while still active","From the Bronx New York — played at Iona College"] },
 
 
-
-
-      body: JSON.stringify({ username: newUsername }),
-    });
-    await sbFetch(`players?username=eq.anonymous`, {
-      method: "PATCH",
-      headers: { "Prefer": "return=minimal" },
-      body: JSON.stringify({ username: newUsername }),
-    });
-  } catch {}
-};
-
-// Save email to Supabase
 const sbSaveEmail = async (email: string, username: string) => {
   try {
     await sbFetch("emails?on_conflict=email", {
@@ -1895,7 +1882,22 @@ const SCORE_BADGES = [
 ];
 
 
-const getScoreBadge = (score: number) =>
+const sbUpdateUsername = async (newUsername: string) => {
+  try {
+    await sbFetch(`players?username=eq.${encodeURIComponent(newUsername)}`, {
+      method: "PATCH",
+      headers: { "Prefer": "return=minimal" },
+      body: JSON.stringify({ username: newUsername }),
+    });
+    await sbFetch(`players?username=eq.anonymous`, {
+      method: "PATCH",
+      headers: { "Prefer": "return=minimal" },
+      body: JSON.stringify({ username: newUsername }),
+    });
+  } catch {}
+};
+
+// Save email to Supabase
   SCORE_BADGES.find(b => score >= b.min) ?? null;
 
 
@@ -2369,7 +2371,7 @@ export default function StatsIQ() {
       stats: reportStats,
       reported_at: new Date().toISOString(),
     };
-    fetch("https://formsubmit.co/ajax/StatsIQ@yahoo.com", {
+    fetch("https://formsubmit.co/ajax/blakepermenter@gmail.com", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify({
