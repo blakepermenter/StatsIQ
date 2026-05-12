@@ -1838,7 +1838,7 @@ export default function StatsIQ() {
   // Build a stable filter key so the seen list is scoped to the current filter combo
   const filterKey = [...filter].sort().join(",") + "|" + [...eraFilter].sort().join(",");
   const puzzle = pickTodaysPuzzle(pool, diff, filterKey);
-  const { player, sport, answer, stats, ctx, clues } = puzzle ?? EASY[0];
+  const { player, sport, answer, stats, ctx, clues } = puzzle;
   const wrongCount = guesses.filter(g => !g.ok).length;
 
   const toggleSport = (e: string) => setFilter(prev => { const n = new Set(prev); n.has(e) ? n.delete(e) : n.add(e); try { localStorage.setItem("statsiq_filter", JSON.stringify([...n])); } catch {} return n; });
@@ -1897,9 +1897,10 @@ export default function StatsIQ() {
     return final;
   };
 
-  const reset = useCallback(() => {
+  const reset = useCallback((completed?: Set<Difficulty>) => {
+    const todayCompleted = completed ?? completedToday;
     // If this difficulty was already completed today, restore its result
-    if (completedToday.has(diff)) {
+    if (todayCompleted.has(diff)) {
       const today = new Date();
       const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
       try {
@@ -1918,7 +1919,6 @@ export default function StatsIQ() {
           return;
         }
       } catch {}
-      // Even if no stored entry found, still lock it
       setDone(true); setWon(false);
       setGuesses([{ text: "• • •", ok: false }]);
       setVisible(false); setTimeout(() => setVisible(true), 300);
