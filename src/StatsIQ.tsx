@@ -2538,58 +2538,75 @@ export default function StatsIQ() {
 
   // Helper: draw rounded rect path
 
+  const buildDayShareText = () => {
+    const date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
+    const badge = getScoreBadge(totalScore);
+    const badgeStr = badge ? ` ${badge.emoji}` : "";
+    const streakStr = streakData.current > 1 ? ` 🔥${streakData.current}` : "";
+    const userStr = username ? `${username}${badgeStr}${streakStr}` : `StatsIQ${streakStr}`;
+
+    const diffs: Difficulty[] = ["easy", "medium", "hard"];
+    const diffLabels: Record<Difficulty, string> = { easy: "Easy  ", medium: "Medium", hard: "Hard  " };
+    let dayTotal = 0;
+    let allDone = true;
+    const lines: string[] = [];
+
+    for (const d of diffs) {
+      try {
+        const entry = localStorage.getItem(`statsiq_day_${dateStr}_${d}`);
+        if (entry) {
+          const data = JSON.parse(entry);
+          const dc = DIFF_CONFIG[d];
+          const grid = Array(dc.guesses).fill(null).map((_,i) => {
+            if (i < data.guesses - 1) return "🟥";
+            if (i === data.guesses - 1) return data.won ? "🟩" : "🟥";
+            return "⬜";
+          }).join("");
+          const pts = data.score > 0 ? `+${data.score.toLocaleString()}` : data.won ? "" : "✗";
+          lines.push(`${diffLabels[d]}  ${grid}  ${pts}`);
+          dayTotal += data.score || 0;
+        } else {
+          lines.push(`${diffLabels[d]}  ⬜⬜⬜  —`);
+          allDone = false;
+        }
+      } catch {
+        lines.push(`${diffLabels[d]}  ⬜⬜⬜  —`);
+        allDone = false;
+      }
+    }
+
+    const totalLine = dayTotal > 0 ? `\nToday: ${dayTotal.toLocaleString()} pts` : "";
+    return `📊 StatsIQ — ${date}\n${userStr}\n\n${lines.join("\n")}${totalLine}\nstatsiq.io`;
+  };
+
   const share = async () => {
     try {
       const dataUrl = await generateShareCard();
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], "statsiq.png", { type: "image/png" });
+      const shareText = buildDayShareText();
 
-      // Try native share with image (mobile)
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: "StatsIQ — Daily Sports Trivia",
-          text: `Can you beat my score? Play at statsiq.io`,
+          text: shareText,
           files: [file],
         });
         return;
       }
 
-      // Fallback: download the image + copy text
       const link = document.createElement("a");
       link.href = dataUrl;
       link.download = "statsiq-result.png";
       link.click();
 
-      // Also copy text to clipboard
-      const date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
-      const sportEmoji = sport.split(" ")[0];
-      const badge = getScoreBadge(totalScore);
-      const badgeStr = badge ? ` ${badge.emoji}` : "";
-      const streakStr = streakData.current > 1 ? ` 🔥${streakData.current}` : "";
-      const userStr = username ? `${username}${badgeStr} · ` : "";
-      // Build guess grid: filled squares for guesses made, blank for unused
-      const rows = Array(cfg.guesses).fill(null).map((_, i) => {
-        if (i < guesses.length) return guesses[i].ok ? "🟩" : "🟥";
-        return "⬜";
-      }).join("");
-      const resultStr = won ? `Guess ${guesses.length}/${cfg.guesses}` : `X/${cfg.guesses}`;
-      const shareText = `📊 StatsIQ — ${cfg.label} ${sportEmoji} ${date}\n${userStr}${resultStr}${streakStr}\n${rows}\n${todayScore ? `+${todayScore} pts` : ""}\nstatsiq.io`;
       await navigator.clipboard?.writeText(shareText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      const date = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
-      const sportEmoji = sport.split(" ")[0];
-      const badge = getScoreBadge(totalScore);
-      const badgeStr = badge ? ` ${badge.emoji}` : "";
-      const streakStr = streakData.current > 1 ? ` 🔥${streakData.current}` : "";
-      const userStr = username ? `${username}${badgeStr} · ` : "";
-      const rows = Array(cfg.guesses).fill(null).map((_, i) => {
-        if (i < guesses.length) return guesses[i].ok ? "🟩" : "🟥";
-        return "⬜";
-      }).join("");
-      const resultStr = won ? `Guess ${guesses.length}/${cfg.guesses}` : `X/${cfg.guesses}`;
-      const shareText = `📊 StatsIQ — ${cfg.label} ${sportEmoji} ${date}\n${userStr}${resultStr}${streakStr}\n${rows}\n${todayScore ? `+${todayScore} pts` : ""}\nstatsiq.io`;
+      const shareText = buildDayShareText();
       navigator.clipboard?.writeText(shareText)
         .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
     }
@@ -2932,9 +2949,9 @@ export default function StatsIQ() {
             const c = DIFF_CONFIG[d]; const active = diff === d;
             const isCompleted = completedToday.has(d);
             return (
-              <button key={d} onClick={() => setDiff(d)} style={{ flex:1, padding:"8px 0", borderRadius:10, border:`2px solid ${active ? c.color : isCompleted ? c.color+"66" : "rgba(255,255,255,0.08)"}`, background:active ? c.bg : isCompleted ? c.bg+"88" : "rgba(255,255,255,0.02)", cursor:"pointer", fontFamily:"'Bebas Neue', sans-serif", transition:"all 0.2s" }}>
-                <div style={{ color:active ? c.color : isCompleted ? c.color+"aa" : "#4b5563", fontWeight:900, fontSize:"0.9rem", letterSpacing:"0.1em" }}>{isCompleted ? "✓ " : ""}{c.label}</div>
-                <div style={{ color:active ? c.color : isCompleted ? c.color+"88" : "#374151", fontSize:"0.55rem", letterSpacing:"0.08em", marginTop:1, opacity:0.8 }}>{isCompleted ? "DONE" : `${c.guesses} GUESSES`}</div>
+              <button key={d} onClick={() => setDiff(d)} style={{ flex:1, padding:"8px 0", borderRadius:10, border:`2px solid ${active ? c.color : isCompleted ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.08)"}`, background:active ? c.bg : isCompleted ? "rgba(34,197,94,0.08)" : "rgba(255,255,255,0.02)", cursor:"pointer", fontFamily:"'Bebas Neue', sans-serif", transition:"all 0.2s" }}>
+                <div style={{ color:active ? c.color : isCompleted ? "#86efac" : "#4b5563", fontWeight:900, fontSize:"0.9rem", letterSpacing:"0.1em" }}>{isCompleted ? "✓ " : ""}{c.label}</div>
+                <div style={{ color:active ? c.color : isCompleted ? "#4ade80" : "#374151", fontSize:"0.55rem", letterSpacing:"0.08em", marginTop:1, opacity:0.8 }}>{isCompleted ? "DONE" : `${c.guesses} GUESSES`}</div>
               </button>
             );
           })}
@@ -3292,15 +3309,7 @@ export default function StatsIQ() {
               </button>
               {/* Copy text fallback */}
               <button onClick={() => {
-                const date = new Date().toLocaleDateString("en-US",{month:"short",day:"numeric"});
-                const sportEmoji = sport.split(" ")[0];
-                const badge = getScoreBadge(totalScore);
-                const badgeStr = badge ? ` ${badge.emoji}` : "";
-                const streakStr = streakData.current > 1 ? ` 🔥${streakData.current}` : "";
-                const userStr = username ? `${username}${badgeStr} · ` : "";
-                const rows = Array(cfg.guesses).fill(null).map((_,i) => i < guesses.length ? (guesses[i].ok?"🟩":"🟥") : "⬜").join("");
-                const resultStr = won ? `Guess ${guesses.length}/${cfg.guesses}` : `X/${cfg.guesses}`;
-                navigator.clipboard?.writeText(`📊 StatsIQ — ${cfg.label} ${sportEmoji} ${date}\n${userStr}${resultStr}${streakStr}\n${rows}\n${todayScore ? `+${todayScore} pts` : ""}\nstatsiq.io`)
+                navigator.clipboard?.writeText(buildDayShareText())
                   .then(() => { setCopied(true); setTimeout(()=>setCopied(false),2000); setSharePreview(null); });
               }} style={{ flex:1, padding:"13px", borderRadius:10, border:"1px solid rgba(255,255,255,0.1)", background:"rgba(255,255,255,0.04)", color: copied ? "#22c55e" : "#9ca3af", fontWeight:900, fontSize:"0.9rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
                 {copied ? "✓ COPIED" : "📋 COPY TEXT"}
