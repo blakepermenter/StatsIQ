@@ -3072,7 +3072,16 @@ export default function StatsIQ() {
           }
           keys.forEach(k => localStorage.removeItem(k));
         } catch {}
+        // Reset all in-memory state so UI reflects fresh start immediately
         setTotalScore(0);
+        setCompletedToday(new Set());
+        setDone(false);
+        setWon(false);
+        setGuesses([]);
+        setInput("");
+        setTodayScore(null);
+        setScoreBreakdown(null);
+        setMsg("");
         setShowHistory(false);
       }} />}
 
