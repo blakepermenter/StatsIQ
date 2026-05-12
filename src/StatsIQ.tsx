@@ -1650,13 +1650,8 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
 }
 
 export default function StatsIQ() {
-  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 800);
-  useEffect(() => {
-    const handle = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handle);
-    return () => window.removeEventListener("resize", handle);
-  }, []);
-  const isDesktop = windowWidth >= 960;
+  // Desktop detection via CSS media query - no JS needed for layout
+  const isDesktop = typeof window !== "undefined" && window.innerWidth >= 960;
   const [diff, setDiff] = useState<Difficulty>("easy");
   const [filter, setFilter] = useState<Set<string>>(() => {
     try { const s = localStorage.getItem("statsiq_filter"); return s ? new Set(JSON.parse(s)) : new Set<string>(); } catch { return new Set<string>(); }
@@ -2547,47 +2542,10 @@ export default function StatsIQ() {
         </div>
       )}
 
-      {/* Desktop: full-width top bar */}
-      {isDesktop && (
-        <div style={{ position:"relative", zIndex:10, width:"100%", background:"rgba(8,12,20,0.95)", borderBottom:"1px solid rgba(255,255,255,0.07)", padding:"12px 40px", display:"flex", alignItems:"center", justifyContent:"space-between", backdropFilter:"blur(10px)" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <span style={{ fontSize:"1.6rem" }}>📊</span>
-            <div>
-              <h1 style={{ margin:0, fontFamily:"'Bebas Neue', sans-serif", fontSize:"2rem", color:"#ffd700", letterSpacing:"0.2em", lineHeight:1 }}>STATSIQ</h1>
-              <p style={{ margin:0, fontSize:"0.55rem", color:"#4b5563", letterSpacing:"0.3em" }}>DAILY SPORTS TRIVIA</p>
-            </div>
-          </div>
-          <div style={{ display:"flex", gap:10, alignItems:"center" }}>
-            <button onClick={() => { if (hasStarted) { toast("Filters lock once you start guessing", 2000); return; } setShowFilter(true); }} style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 14px", borderRadius:8, border:`1px solid ${hasStarted ? "rgba(255,255,255,0.06)" : hasFilter ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.12)"}`, background:hasStarted ? "rgba(255,255,255,0.02)" : hasFilter ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)", color:hasStarted ? "#374151" : hasFilter ? "#86efac" : "#9ca3af", cursor: hasStarted ? "not-allowed" : "pointer", fontSize:"0.72rem", fontWeight:700, letterSpacing:"0.1em", fontFamily:"'Barlow Condensed', sans-serif" }}>
-              ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
-            </button>
-            <button onClick={() => { const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setShowPractice(true); }} style={{ display:"flex", alignItems:"center", gap:5, padding:"6px 14px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.72rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
-              🎮 PRACTICE
-            </button>
-            <button onClick={() => setShowHow(true)} style={{ width:32, height:32, borderRadius:"50%", border:"1px solid rgba(255,200,0,0.2)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.9rem", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center" }}>?</button>
-            <div style={{ width:1, height:28, background:"rgba(255,255,255,0.08)" }} />
-            <button onClick={() => { setUsernameInput(username); setShowUsernameModal(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0 }}>
-              <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>PLAYER</p>
-              <p style={{ margin:0, fontSize:"0.82rem", fontWeight:900, color: username ? "#fff" : "#4b5563", fontFamily:"'Bebas Neue',sans-serif" }}>{username || "SET NAME"}</p>
-            </button>
-            <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:52 }}>
-              <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>SCORE</p>
-              <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif" }}>{totalScore.toLocaleString()}</p>
-            </button>
-            {streakData.current > 0 && (
-              <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:44 }}>
-                <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>STREAK</p>
-                <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif" }}>{streakData.current}🔥</p>
-              </button>
-            )}
-            <button onClick={() => setShowLeaderboard(true)} style={{ width:32, height:32, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.9rem", display:"flex", alignItems:"center", justifyContent:"center" }}>🏅</button>
-          </div>
-        </div>
-      )}
 
-      {/* Desktop 3-column layout */}
+      {/* HEADER */}
       {/* Mobile game content — hidden on desktop, always rendered */}
-      <header style={{ display: isDesktop ? "none" : "block", position:"relative", zIndex:10, width:"100%", maxWidth:500, padding:"14px 18px 0" }}>
+      <header style={{ display:"block", position:"relative", zIndex:10, width:"100%", maxWidth:500, padding:"14px 18px 0" }}>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", borderBottom:"1px solid rgba(255,255,255,0.07)", paddingBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <span style={{ fontSize:"1.5rem" }}>📊</span>
@@ -2638,68 +2596,8 @@ export default function StatsIQ() {
         <p style={{ margin:"4px 0 8px", fontSize:"0.65rem", color:"#4b5563", letterSpacing:"0.1em", textAlign:"center" }}>{cfg.desc} · {cfg.clueStyle}</p>
       </header>
 
-
-      {/* 3-column grid */}
-      <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "280px 1fr 280px" : "1fr", gap:0, width:"100%", maxWidth:1400, padding:"0 24px", marginTop:24, alignItems:"start" }}>
-
-          {/* LEFT PANEL — Stats & Badges */}
-          <div style={{ display: isDesktop ? "flex" : "none", flexDirection:"column", gap:14, paddingRight:20, position:"sticky", top:24 }}>
-            {/* Difficulty selector */}
-            <div>
-              <p style={{ margin:"0 0 8px", color:"#6b7280", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>TODAY'S PUZZLES</p>
-              <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-                {(["easy","medium","hard"] as Difficulty[]).map(d => {
-                  const c = DIFF_CONFIG[d]; const active = diff === d;
-                  const isCompleted = completedToday.has(d);
-                  return (
-                    <button key={d} onClick={() => setDiff(d)} style={{ padding:"10px 14px", borderRadius:10, border:`2px solid ${active ? c.color : isCompleted ? c.color+"66" : "rgba(255,255,255,0.08)"}`, background:active ? c.bg : isCompleted ? c.bg+"88" : "rgba(255,255,255,0.02)", cursor:"pointer", fontFamily:"'Bebas Neue', sans-serif", transition:"all 0.2s", textAlign:"left", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                      <span style={{ color:active ? c.color : isCompleted ? c.color+"aa" : "#4b5563", fontSize:"0.95rem", letterSpacing:"0.1em" }}>{isCompleted ? "✓ " : ""}{c.label}</span>
-                      <span style={{ color:active ? c.color : isCompleted ? c.color+"88" : "#374151", fontSize:"0.6rem" }}>{isCompleted ? "DONE" : `${c.guesses} GUESSES`}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Score + streak */}
-            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:12, padding:"14px", border:"1px solid rgba(255,255,255,0.07)" }}>
-              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>YOUR STATS</p>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
-                {[
-                  { label:"SCORE", val:totalScore.toLocaleString(), color:"#ffd700" },
-                  { label:"STREAK", val: streakData.current > 0 ? `${streakData.current}🔥` : "—", color:"#fb923c" },
-                  { label:"BEST STREAK", val:`${streakData.best}d`, color:"#a78bfa" },
-                  { label:"TODAY", val:`${completedToday.size}/3`, color:"#22c55e" },
-                ].map(item => (
-                  <div key={item.label} style={{ background:"rgba(255,255,255,0.03)", borderRadius:8, padding:"8px 10px" }}>
-                    <p style={{ margin:0, color:"#4b5563", fontSize:"0.52rem", letterSpacing:"0.12em" }}>{item.label}</p>
-                    <p style={{ margin:0, color:item.color, fontSize:"1rem", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif" }}>{item.val}</p>
-                  </div>
-                ))}
-              </div>
-              <button onClick={() => setShowHistory(true)} style={{ marginTop:10, width:"100%", padding:"7px", borderRadius:8, border:"1px solid rgba(255,255,255,0.08)", background:"transparent", color:"#6b7280", cursor:"pointer", fontSize:"0.65rem", fontFamily:"'Barlow Condensed',sans-serif", letterSpacing:"0.1em" }}>
-                VIEW FULL HISTORY →
-              </button>
-            </div>
-
-            {/* Countdown */}
-            {completedToday.size > 0 && (
-              <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:12, padding:"14px", border:"1px solid rgba(255,255,255,0.07)", textAlign:"center" }}>
-                <p style={{ margin:"0 0 4px", color:"#4b5563", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>NEXT PUZZLE IN</p>
-                <p style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", letterSpacing:"0.2em" }}>{countdown}</p>
-              </div>
-            )}
-
-            {/* How to play */}
-            <button onClick={() => setShowHow(true)} style={{ padding:"10px", borderRadius:10, border:"1px solid rgba(255,255,255,0.07)", background:"transparent", color:"#4b5563", cursor:"pointer", fontSize:"0.68rem", fontFamily:"'Barlow Condensed',sans-serif", letterSpacing:"0.1em" }}>
-              📖 HOW TO PLAY
-            </button>
-          </div>
-
-          {/* CENTER — Game */}
-          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", width:"100%", minWidth:0 }}>
       {/* GAME CONTENT — always visible, responsive width */}
-      <div style={{ position:"relative", zIndex:10, width:"100%", maxWidth: isDesktop ? 600 : 500, padding:"0 16px", display:"flex", flexDirection:"column", gap:12, marginTop:6 }}>
+      <div style={{ position:"relative", zIndex:10, width:"100%", maxWidth:500, padding:"0 16px", display:"flex", flexDirection:"column", gap:12, marginTop:6 }}>
         {/* Desktop difficulty label */}
         {isDesktop && (
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:2 }}>
@@ -2880,67 +2778,6 @@ export default function StatsIQ() {
           </div>
         )}
       </div>
-
-          </div>
-          {/* RIGHT PANEL */}
-          <div style={{ display: isDesktop ? "flex" : "none", flexDirection:"column", gap:14, paddingLeft:20, position:"sticky", top:24 }}>
-
-            {/* Filter status */}
-            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:12, padding:"14px", border:"1px solid rgba(255,255,255,0.07)" }}>
-              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>CURRENT FILTERS</p>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:8 }}>
-                {filter.size === 0
-                  ? <span style={{ color:"#4b5563", fontSize:"0.72rem" }}>All sports</span>
-                  : [...filter].map(s => <span key={s} style={{ fontSize:"1rem" }}>{s}</span>)
-                }
-              </div>
-              <div style={{ display:"flex", gap:5, marginBottom:10 }}>
-                {eraFilter.size === 0
-                  ? <span style={{ color:"#4b5563", fontSize:"0.72rem" }}>All eras</span>
-                  : [...eraFilter].map(e => <span key={e} style={{ color:ERA_CONFIG[e as Era].activeBorder, fontSize:"0.7rem", padding:"2px 8px", borderRadius:4, background:ERA_CONFIG[e as Era].activeBg, border:`1px solid ${ERA_CONFIG[e as Era].activeBorder}` }}>{ERA_CONFIG[e as Era].label}</span>)
-                }
-              </div>
-              <button onClick={() => { if (hasStarted) { toast("Filters lock once you start guessing", 2000); return; } setShowFilter(true); }} style={{ width:"100%", padding:"7px", borderRadius:8, border:`1px solid ${hasStarted ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.1)"}`, background:"transparent", color: hasStarted ? "#374151" : "#9ca3af", cursor: hasStarted ? "not-allowed" : "pointer", fontSize:"0.65rem", fontFamily:"'Barlow Condensed',sans-serif", letterSpacing:"0.1em" }}>
-                {hasStarted ? "🔒 LOCKED FOR TODAY" : "⚙️ CHANGE FILTERS"}
-              </button>
-            </div>
-
-            {/* Difficulty description */}
-            <div style={{ background:cfg.bg, borderRadius:12, padding:"14px", border:`1px solid ${cfg.border}` }}>
-              <p style={{ margin:"0 0 6px", color:cfg.color, fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>{cfg.label} DIFFICULTY</p>
-              <p style={{ margin:"0 0 8px", color:"#9ca3af", fontSize:"0.78rem", lineHeight:1.5 }}>{cfg.desc}</p>
-              <p style={{ margin:0, color:"#4b5563", fontSize:"0.68rem" }}>{cfg.clueStyle} · {cfg.guesses} guesses</p>
-            </div>
-
-            {/* Score multipliers reminder */}
-            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:12, padding:"14px", border:"1px solid rgba(255,255,255,0.07)" }}>
-              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>SCORE MULTIPLIERS</p>
-              {[
-                { label:"Hard", val:"×5", color:"#ef4444" },
-                { label:"Medium", val:"×2", color:"#f59e0b" },
-                { label:"Easy", val:"×1", color:"#22c55e" },
-                { label:"Guess 1", val:"1000pts", color:"#ffd700" },
-                { label:"Guess 2", val:"750pts", color:"#ffd700" },
-                { label:"Guess 3", val:"500pts", color:"#ffd700" },
-              ].map(item => (
-                <div key={item.label} style={{ display:"flex", justifyContent:"space-between", padding:"4px 0", borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
-                  <span style={{ color:"#6b7280", fontSize:"0.72rem" }}>{item.label}</span>
-                  <span style={{ color:item.color, fontWeight:700, fontSize:"0.72rem", fontFamily:"'Bebas Neue',sans-serif" }}>{item.val}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Email/reminders */}
-            {!emailSubmitted && (
-              <button onClick={() => setShowEmailCapture(true)} style={{ padding:"12px", borderRadius:10, border:"1px solid rgba(255,215,0,0.2)", background:"rgba(255,215,0,0.05)", color:"#ffd700", cursor:"pointer", fontSize:"0.72rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>
-                📬 GET DAILY REMINDERS
-              </button>
-            )}
-
-          </div>
-
-        </div> {/* Close desktop grid */}
-
 
 
       {msg && <div style={{ position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", zIndex:100, background:"#fff", color:"#111", padding:"9px 22px", borderRadius:8, fontWeight:700, fontSize:"0.88rem", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", whiteSpace:"nowrap", fontFamily:"'Barlow Condensed', sans-serif" }}>{msg}</div>}
@@ -3174,17 +3011,6 @@ export default function StatsIQ() {
 
       {msg && <div style={{ position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", zIndex:500, background:"#fff", color:"#111", padding:"9px 22px", borderRadius:8, fontWeight:700, fontSize:"0.88rem", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", whiteSpace:"nowrap", fontFamily:"'Barlow Condensed', sans-serif" }}>{msg}</div>}
 
-      {/* ABOUT FOOTER */}
-      <div style={{ width:"100%", maxWidth: isDesktop ? 1400 : 500, padding: isDesktop ? "20px 40px" : "24px 18px 8px", marginTop:16, borderTop:"1px solid rgba(255,255,255,0.05)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-        <div>
-          <p style={{ margin:0, color:"#374151", fontSize:"0.62rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>BUILT BY BP</p>
-          <p style={{ margin:0, color:"#1f2937", fontSize:"0.58rem", marginTop:2 }}>statsiq.io · daily sports trivia</p>
-        </div>
-        <div style={{ display:"flex", gap:10, alignItems:"center" }}>
-          <a href="https://twitter.com" target="_blank" rel="noreferrer" style={{ color:"#374151", fontSize:"0.7rem", textDecoration:"none", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>𝕏</a>
-          <button onClick={() => setShowEmailCapture(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>📬 GET REMINDERS</button>
-        </div>
-      </div>
 
       <Analytics />
 
