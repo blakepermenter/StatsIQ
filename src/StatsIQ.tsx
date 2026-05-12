@@ -1547,6 +1547,7 @@ const SCORE_BADGES = [
   { player:"Ryan Miller Hockey", sport:"🏒 NHL", answer:"RYAN MILLER HARD", era:"modern", stats:{OLYMPIC:"Silver 2010",VEZINA:"Finalist",WINS:"391",NATION:"USA"}, ctx:"Career Totals — Led USA to Olympic silver and was the best American goalie of his era", clues:["Led the United States to the Olympic silver medal at the 2010 Vancouver Games","Was the best American-born goaltender of his generation","Won 391 career NHL games","From East Lansing Michigan — played college hockey at Michigan State"] },
   { player:"Corey Crawford Hockey", sport:"🏒 NHL", answer:"COREY CRAWFORD HARD", era:"modern", stats:{CUPS:"2",GAA:"2.42",CONCUSSION:"Missed year",TEAM:"Chicago"}, ctx:"Career Totals — Two Cups with Chicago and overcame a serious concussion", clues:["Won 2 Stanley Cups with the Chicago Blackhawks in 2013 and 2015","Missed nearly an entire season due to a serious concussion suffered in 2017","Was one of the most underappreciated goaltenders of his era","From Montreal Quebec — was undrafted and had to work his way up through the minors"] },
 
+];
 
 const getScoreBadge = (score: number) =>
   SCORE_BADGES.find(b => score >= b.min) ?? null;
