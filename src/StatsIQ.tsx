@@ -503,6 +503,14 @@ const EASY = [
   { player:"Arthur Ashe Easy", sport:"🎾 ATP", answer:"ARTHUR ASHE EASY", era:"classic", stats:{GRAND_SLAMS:"3",WIMBLEDON:"1x winner",YEAR:"1975",FIRST:"Black Wimbledon winner"}, ctx:"1975 Wimbledon — Historic American champion", clues:["Became the first Black man to win Wimbledon in 1975","Won 3 Grand Slam singles titles in his career","Was a civil rights activist and social justice pioneer","Died from AIDS-related complications in 1993"] },
   { player:"Jonathan Quick Easy", sport:"🏒 NHL", answer:"JONATHAN QUICK EASY", era:"modern", stats:{GAA:"1.41","SV%":".946",W:"16",TEAM:"Kings"}, ctx:"Best Season — 2012 Stanley Cup Playoffs MVP performance", clues:["Won the Conn Smythe Trophy as playoff MVP with a 1.41 GAA","Led the LA Kings to their first Stanley Cup championship","From Milford Connecticut","Was one of the best big-game goalies of his generation"] },
   { player:"Henrik Lundqvist Easy", sport:"🏒 NHL", answer:"HENRIK LUNDQVIST EASY", era:"modern", stats:{GAA:"2.18","SV%":".921",W:"30",TEAM:"Rangers"}, ctx:"Best Season — 2011-12 New York Rangers Vezina winner", clues:["Won the Vezina Trophy as the best goaltender in the NHL","Played for the New York Rangers his entire career","From Are Sweden — nicknamed The King","Won Olympic gold with Sweden in 2006"] },
+  { player:"Corey Kluber", sport:"⚾ MLB", answer:"KLUBER", era:"modern", stats:{ERA:"2.25",W:"20",SO:"265",WHIP:"0.875"}, ctx:"2017 AL Cy Young Season — Cleveland Indians", clues:["Struck out over 200 batters for the 5th time","Struck out 265 batters","Played for Cleveland Indians","Nicknamed Klubot for his emotionless demeanor"] },
+
+  { player:"Felix Hernandez", sport:"⚾ MLB", answer:"FELIX", era:"modern", stats:{ERA:"2.27",W:"13",SO:"232",WHIP:"1.056"}, ctx:"2010 AL Cy Young Season — Seattle Mariners", clues:["His 1.83 ERA was despite playing for a poor offensive team","Led the AL in ERA and innings pitched","Played for Seattle Mariners","From Valencia, Venezuela — nicknamed King Felix"] },
+
+  { player:"David Ortiz", sport:"⚾ MLB", answer:"ORTIZ", era:"modern", stats:{HR:"54",AVG:".315",RBI:"137",OPS:".978"}, ctx:"2006 MLB Season — Boston Red Sox", clues:["Hit 54 home runs this season","Played for Boston Red Sox","Nicknamed Big Papi","From Santo Domingo, Dominican Republic"] },
+
+  { player:"Greg Oden", sport:"🏀 NBA", answer:"GREG ODEN", era:"modern", stats:{PICK:"1",YEAR:"2007",TEAM:"Portland Trail Blazers",SCHOOL:"Ohio State"}, ctx:"2007 NBA Draft — #1 Overall Pick over Kevin Durant", clues:["Was selected #1 overall over Kevin Durant who went #2","Played for the Portland Trail Blazers","Had his career devastated by multiple knee surgeries","Played only 82 games in his first 4 NBA seasons"] },
+
 ];
 
 // ─── MEDIUM (45 puzzles) ──────────────────────────────────────────────────────
@@ -625,10 +633,7 @@ const MEDIUM = [
   { player:"Reggie White", sport:"🏈 NFL", answer:"WHITE", era:"classic", stats:{SCK:"21",FF:"2",INT:"2",YEAR:"1987"}, ctx:"1987 NFL Season — Philadelphia Eagles Defensive MVP", clues:["Won Defensive Player of the Year with 21 sacks","Played for Philadelphia Eagles","Nicknamed The Minister of Defense","Considered one of the greatest defensive players ever"] },
   { player:"Dick Butkus", sport:"🏈 NFL", answer:"BUTKUS", era:"legends", stats:{SCK:"8",INT:"2",FF:"3",TD:"1"}, ctx:"1969 NFL Season — Chicago Bears All-Pro", clues:["Named to the All-Pro team for the 4th consecutive year","Played for Chicago Bears his entire career","Considered the most feared linebacker in NFL history","His name became synonymous with violent football"] },
   { player:"Zack Greinke", sport:"⚾ MLB", answer:"GREINKE", era:"modern", stats:{ERA:"1.66",W:"19",SO:"200",WHIP:"0.844"}, ctx:"2009 AL Cy Young Season — Kansas City Royals", clues:["Had the lowest ERA of any pitcher in 25 years","Turned his career around after dealing with social anxiety disorder","Had his famous pine tar incident in 1983 when a home run was called back — then reinstated","Had the lowest ERA by a qualified starter since 1968"] },
-  { player:"Felix Hernandez", sport:"⚾ MLB", answer:"FELIX", era:"modern", stats:{ERA:"2.27",W:"13",SO:"232",WHIP:"1.056"}, ctx:"2010 AL Cy Young Season — Seattle Mariners", clues:["His 1.83 ERA was despite playing for a poor offensive team","Led the AL in ERA and innings pitched","Played for Seattle Mariners","From Valencia, Venezuela — nicknamed King Felix"] },
-  { player:"Corey Kluber", sport:"⚾ MLB", answer:"KLUBER", era:"modern", stats:{ERA:"2.25",W:"20",SO:"265",WHIP:"0.875"}, ctx:"2017 AL Cy Young Season — Cleveland Indians", clues:["Struck out over 200 batters for the 5th time","Struck out 265 batters","Played for Cleveland Indians","Nicknamed Klubot for his emotionless demeanor"] },
   { player:"Jose Fernandez", sport:"⚾ MLB", answer:"FERNANDEZ", era:"modern", stats:{ERA:"2.86",W:"16",SO:"253",WHIP:"0.979"}, ctx:"2016 MLB Season — Miami Marlins (final season)", clues:["This was tragically his final season before his death","Led the NL in strikeouts","Played for Miami Marlins","Defected from Cuba at age 15 on his 4th attempt"] },
-  { player:"David Ortiz", sport:"⚾ MLB", answer:"ORTIZ", era:"modern", stats:{HR:"54",AVG:".315",RBI:"137",OPS:".978"}, ctx:"2006 MLB Season — Boston Red Sox", clues:["Hit 54 home runs this season","Played for Boston Red Sox","Nicknamed Big Papi","From Santo Domingo, Dominican Republic"] },
   { player:"Roy Halladay", sport:"⚾ MLB", answer:"HALLADAY", era:"modern", stats:{ERA:"2.35",W:"21",SO:"219",WHIP:"1.041"}, ctx:"2010 NL Cy Young — Philadelphia Phillies", clues:["Threw a no-hitter in the playoffs — only the 2nd ever","His no-hitter in the NLDS was the first in playoff history","Played for Philadelphia Phillies","Also threw a perfect game during the regular season this year"] },
   { player:"Dave Winfield", sport:"⚾ MLB", answer:"WINFIELD", era:"classic", stats:{HR:"27",AVG:".340",RBI:"106",H:"184"}, ctx:"1992 MLB Season — Toronto Blue Jays World Series MVP", clues:["Had the go-ahead RBI in Game 6 of the World Series at age 40","Was named in the Baseball Hall of Fame on the first ballot after a long dispute with George Steinbrenner","Drafted by 4 different professional sports leagues","From St. Paul, Minnesota"] },
   { player:"Gary Carter", sport:"⚾ MLB", answer:"GARY", era:"classic", stats:{HR:"32",AVG:".281",RBI:"106",GG:"3"}, ctx:"1985 MLB Season — Montreal Expos, final great year", clues:["Won 3 Gold Gloves in his career","Played for Montreal Expos","His 1986 World Series performance with the Mets was iconic","Nicknamed The Kid"] },
@@ -925,6 +930,16 @@ const MEDIUM = [
   { player:"Mike Gartner", sport:"🏒 NHL", answer:"MIKE GARTNER", era:"classic", stats:{G:"708",STREAK:"15 seasons 30+ goals",SPEED:"Fastest skater",NOTABLE:"Never won Stanley Cup"}, ctx:"Career Totals — 708 goals and 15 consecutive 30-goal seasons", clues:["Scored 30 or more goals in 15 consecutive seasons","Had 708 career goals — the fifth most in NHL history","Was considered the fastest skater of his era","Never won the Stanley Cup despite his longevity"] },
   { player:"Glenn Anderson", sport:"🏒 NHL", answer:"GLENN ANDERSON", era:"classic", stats:{G:"498",STANLEY_CUPS:"6",KNOWN_FOR:"Unpredictable style",EDMONTON:"Dynasty"}, ctx:"Career Totals — 6 Cups with the Edmonton Oilers dynasty", clues:["Won 6 Stanley Cups — 5 with Edmonton and 1 with Toronto","Scored 498 career goals","Was known for his unpredictable exciting style","From Vancouver British Columbia"] },
   { player:"Daunte Culpepper", sport:"🏈 NFL", answer:"DAUNTE CULPEPPER", era:"modern", stats:{YDS:"4717",TD:"39",INT:"11",RTG:"110.9"}, ctx:"Best Season — One of the best statistical QB seasons ever in 2004", clues:["Had one of the best statistical seasons ever by a quarterback","Played for the Minnesota Vikings","Was a massive mobile quarterback at 6ft 4in and 260 pounds","Had his career effectively ended by a devastating knee injury in 2005"] },
+  { player:"Clayton Kershaw", sport:"⚾ MLB", answer:"CLAYTON KERSHAW", era:"modern", stats:{ERA:"2.48",CY:"3",MVP:"2014",W:"19"}, ctx:"Career Totals — Three Cy Youngs and an MVP for the Dodgers", clues:["Won the NL MVP Award as a pitcher — extremely rare","Won 3 Cy Young Awards all with the Los Angeles Dodgers","Had a career ERA under 2.50 — the lowest of any active pitcher","From Dallas Texas — played college baseball at Texas A&M"] },
+
+  { player:"Madison Bumgarner", sport:"⚾ MLB", answer:"MADISON BUMGARNER", era:"modern", stats:{ERA:"2.11",IP:"52.2",WS_MVP:"2014",GS:"5"}, ctx:"2014 World Series — Greatest pitching performance in Fall Classic history", clues:["Had the greatest World Series pitching performance in history — 52.2 innings at a 2.11 ERA","Pitched 5 innings of shutout relief in Game 7 on two days rest to save the Series","Was the World Series MVP in 2014 with the San Francisco Giants","From Hudson North Carolina — also competes in rodeo under a pseudonym"] },
+
+  { player:"Roy Halladay", sport:"⚾ MLB", answer:"ROY HALLADAY", era:"modern", stats:{ERA:"3.38",CY:"2",NHIT:"NLCS",PERFECT:"1"}, ctx:"Career Totals — Threw a perfect game and a playoff no-hitter", clues:["Threw a perfect game and a no-hitter in the NLCS — the only pitcher to throw a postseason no-hitter","Won 2 Cy Young Awards in both leagues","Was nicknamed Doc for his relentless work ethic and preparation","Died in a private plane crash in 2017 at age 40"] },
+
+  { player:"Jake Arrieta", sport:"⚾ MLB", answer:"JAKE ARRIETA", era:"modern", stats:{ERA:"1.77",W:"22",CY:"2015",NHIT:"2"}, ctx:"2015 MLB Season — Won Cy Young with dominant second half", clues:["Had a 1.77 ERA in the second half of the season after struggling early in his career","Won the NL Cy Young Award with the Chicago Cubs","Threw a no-hitter in the postseason that year","From Farmington Missouri — was cut by the Baltimore Orioles before finding his form"] },
+
+  { player:"Dallas Keuchel", sport:"⚾ MLB", answer:"DALLAS KEUCHEL", era:"modern", stats:{ERA:"2.48",GG:"5",CY:"2015",W:"20"}, ctx:"2015 MLB Season — AL Cy Young and five Gold Gloves", clues:["Won five consecutive Gold Gloves as a pitcher — an extraordinary fielding accomplishment","Won the AL Cy Young Award with the Houston Astros","Was known for his full beard which became iconic","From Tulsa Oklahoma"] },
+
 ];
 
 const HARD = [
@@ -1189,7 +1204,6 @@ const HARD = [
   { player:"Frank Nighbor", sport:"🏒 NHL", answer:"FRANK NIGHBOR", era:"legends", stats:{G:"19",AST:"9",PTS:"28",YEAR:"1924"}, ctx:"Career — Ottawa Senators gentleman champion", clues:["Won the very first Hart Trophy as league MVP in 1924","Also won the first Lady Byng Trophy for sportsmanship","Won 5 Stanley Cups in his career","Nicknamed The Pembroke Peach"] },
   { player:"Roy Worters", sport:"🏒 NHL", answer:"ROY WORTERS", era:"legends", stats:{GAA:"1.61",SO:"13",YEAR:"1929",HT:"5'3\""}, ctx:"1928-29 NHL Season — Pittsburgh Pirates MVP", clues:["Won the Hart Trophy as league MVP as a goaltender","Was only 5ft 3in — one of the smallest players in NHL history","Played for the Pittsburgh Pirates","Nicknamed Shrimp for his small stature"] },
   { player:"Kwame Brown", sport:"🏀 NBA", answer:"KWAME BROWN", era:"modern", stats:{PICK:"1",YEAR:"2001",TEAM:"Washington Wizards",SCHOOL:"Glynn Academy HS"}, ctx:"2001 NBA Draft — #1 Overall Pick — biggest bust ever?", clues:["Was the first high school player ever selected 1st overall in the NBA Draft","Played for the Washington Wizards","Was selected by Michael Jordan who was then team president","Is widely considered the biggest bust at #1 in NBA history"] },
-  { player:"Greg Oden", sport:"🏀 NBA", answer:"GREG ODEN", era:"modern", stats:{PICK:"1",YEAR:"2007",TEAM:"Portland Trail Blazers",SCHOOL:"Ohio State"}, ctx:"2007 NBA Draft — #1 Overall Pick over Kevin Durant", clues:["Was selected #1 overall over Kevin Durant who went #2","Played for the Portland Trail Blazers","Had his career devastated by multiple knee surgeries","Played only 82 games in his first 4 NBA seasons"] },
   { player:"Michael Olowokandi", sport:"🏀 NBA", answer:"KANDI MAN", era:"classic", stats:{PICK:"1",YEAR:"1998",TEAM:"Los Angeles Clippers",SCHOOL:"Pacific"}, ctx:"1998 NBA Draft — #1 Overall Pick", clues:["Was selected #1 overall by the Los Angeles Clippers","Played at the University of Pacific — an obscure pick","Was considered a massive bust given his talent level","Was selected over Vince Carter Paul Pierce and Dirk Nowitzki"] },
   { player:"LaRue Martin", sport:"🏀 NBA", answer:"LARUE MARTIN", era:"classic", stats:{PICK:"1",YEAR:"1972",TEAM:"Portland Trail Blazers",SCHOOL:"Loyola"}, ctx:"1972 NBA Draft — #1 Overall Pick over Bob McAdoo", clues:["Was selected #1 overall over Bob McAdoo Julius Erving and Paul Westphal","Is considered the worst #1 pick in NBA Draft history","Played for the Portland Trail Blazers","Only played 4 seasons and never averaged more than 5 points per game"] },
   { player:"Joe Barry Carroll", sport:"🏀 NBA", answer:"JOE BARRY CARROLL", era:"classic", stats:{PICK:"1",YEAR:"1980",TEAM:"Golden State Warriors",SCHOOL:"Purdue"}, ctx:"1980 NBA Draft — #1 Overall Pick traded for Robert Parish and McHale", clues:["Was traded on draft night for Robert Parish and Kevin McHale who helped win multiple titles","Was selected #1 overall by Golden State Warriors","Played at Purdue University","The trade is considered the worst in NBA history for Golden State"] },
@@ -1219,20 +1233,14 @@ const HARD = [
   { player:"Felix Hernandez", sport:"⚾ MLB", answer:"FELIX HERNANDEZ", era:"modern", stats:{ERA:"2.27",W:"13",IP:"232",CY:"2010"}, ctx:"2010 MLB Season — Won Cy Young with losing record", clues:["Won the Cy Young Award despite having a losing win-loss record of 13-12","Had the lowest ERA in the American League this season","Pitched for the Seattle Mariners his entire career","From Valencia Venezuela — nicknamed King Felix"] },
   { player:"Justin Verlander", sport:"⚾ MLB", answer:"JUSTIN VERLANDER", era:"modern", stats:{ERA:"2.64",SO:"290",W:"21",MVP:"2011"}, ctx:"2011 MLB Season — Won MVP and Cy Young in same year", clues:["Won both the AL MVP and Cy Young Award — only the fifth pitcher to do so","Had 250+ strikeouts and under a 2.50 ERA this season","Played for the Detroit Tigers","From Manakin-Sabot Virginia"] },
   { player:"Max Scherzer", sport:"⚾ MLB", answer:"MAX SCHERZER", era:"modern", stats:{ERA:"2.53",SO:"300",W:"20",CY:"3"}, ctx:"Career Totals — Three Cy Young Awards in both leagues", clues:["Won the Cy Young Award in both the AL and NL — one of only four pitchers ever","Struck out 300 batters in a season","Had two no-hitters within 5 days in 2015","From St. Louis Missouri — known for his mismatched eye colors"] },
-  { player:"Clayton Kershaw", sport:"⚾ MLB", answer:"CLAYTON KERSHAW", era:"modern", stats:{ERA:"2.48",CY:"3",MVP:"2014",W:"19"}, ctx:"Career Totals — Three Cy Youngs and an MVP for the Dodgers", clues:["Won the NL MVP Award as a pitcher — extremely rare","Won 3 Cy Young Awards all with the Los Angeles Dodgers","Had a career ERA under 2.50 — the lowest of any active pitcher","From Dallas Texas — played college baseball at Texas A&M"] },
-  { player:"Jake Arrieta", sport:"⚾ MLB", answer:"JAKE ARRIETA", era:"modern", stats:{ERA:"1.77",W:"22",CY:"2015",NHIT:"2"}, ctx:"2015 MLB Season — Won Cy Young with dominant second half", clues:["Had a 1.77 ERA in the second half of the season after struggling early in his career","Won the NL Cy Young Award with the Chicago Cubs","Threw a no-hitter in the postseason that year","From Farmington Missouri — was cut by the Baltimore Orioles before finding his form"] },
-  { player:"Dallas Keuchel", sport:"⚾ MLB", answer:"DALLAS KEUCHEL", era:"modern", stats:{ERA:"2.48",GG:"5",CY:"2015",W:"20"}, ctx:"2015 MLB Season — AL Cy Young and five Gold Gloves", clues:["Won five consecutive Gold Gloves as a pitcher — an extraordinary fielding accomplishment","Won the AL Cy Young Award with the Houston Astros","Was known for his full beard which became iconic","From Tulsa Oklahoma"] },
   { player:"Chris Sale", sport:"⚾ MLB", answer:"CHRIS SALE", era:"modern", stats:{ERA:"2.90",SO:"11.17",W:"17",K9:"Highest"}, ctx:"Career Totals — Highest strikeout rate per 9 innings ever", clues:["Had one of the highest career strikeout rates per 9 innings in MLB history","Was nicknamed The Conductor for his unusual sidearm delivery","Was traded from the White Sox to the Red Sox for 4 top prospects","From Lakeland Florida"] },
-  { player:"Corey Kluber", sport:"⚾ MLB", answer:"COREY KLUBER", era:"modern", stats:{ERA:"2.89",CY:"2",SO:"265",W:"18"}, ctx:"Career Totals — Won two Cy Young Awards for Cleveland", clues:["Won 2 Cy Young Awards with the Cleveland Indians","Was nicknamed Klubot for his robotic consistency and lack of emotion on the mound","Was nearly out of baseball at age 26 before reinventing himself","From Birmingham Alabama"] },
   { player:"David Price", sport:"⚾ MLB", answer:"DAVID PRICE", era:"modern", stats:{ERA:"3.26",CY:"2012",W:"20",DRAFT:"1st"}, ctx:"Career Totals — Number 1 overall pick who won the Cy Young", clues:["Was the 1st overall pick in the 2007 MLB Draft by the Tampa Bay Rays","Won the AL Cy Young Award in 2012","Won a World Series with the Boston Red Sox in 2018","From Murfreesboro Tennessee"] },
   { player:"Cole Hamels", sport:"⚾ MLB", answer:"COLE HAMELS", era:"modern", stats:{ERA:"3.43",WS_MVP:"2008",W:"20",SO:"3000"}, ctx:"Career Totals — World Series MVP who struck out 3000 batters", clues:["Won the World Series MVP with the Philadelphia Phillies in 2008","Struck out 3,000 batters in his career","Was traded for a package of 5 prospects when he went to Texas","From San Diego California"] },
-  { player:"Roy Halladay", sport:"⚾ MLB", answer:"ROY HALLADAY", era:"modern", stats:{ERA:"3.38",CY:"2",NHIT:"NLCS",PERFECT:"1"}, ctx:"Career Totals — Threw a perfect game and a playoff no-hitter", clues:["Threw a perfect game and a no-hitter in the NLCS — the only pitcher to throw a postseason no-hitter","Won 2 Cy Young Awards in both leagues","Was nicknamed Doc for his relentless work ethic and preparation","Died in a private plane crash in 2017 at age 40"] },
   { player:"Johan Santana", sport:"⚾ MLB", answer:"JOHAN SANTANA", era:"modern", stats:{ERA:"3.20",CY:"2",SO:"1,988",NHIT:"Only Mets"}, ctx:"Career Totals — Two Cy Youngs and the only no-hitter in Mets history", clues:["Threw the only no-hitter in New York Mets history in 2012","Won 2 Cy Young Awards with the Minnesota Twins","Had one of the best changeups in baseball history","From Tovar Venezuela"] },
   { player:"Zack Greinke", sport:"⚾ MLB", answer:"ZACK GREINKE HARD", era:"modern", stats:{ERA:"1.66",CY:"2009",W:"17",YEAR:"2015"}, ctx:"2015 MLB Season — Had the lowest ERA in the NL since 1968", clues:["Posted a 1.66 ERA in 2015 — the lowest in the NL since Bob Gibson in 1968","Won the AL Cy Young Award with Kansas City in 2009","Has played for 7 different MLB teams in his career","Overcame social anxiety disorder that nearly ended his career"] },
   { player:"Jon Lester", sport:"⚾ MLB", answer:"JON LESTER", era:"modern", stats:{ERA:"3.64",WS:"3",CANCER:"Survived",W:"200"}, ctx:"Career Totals — Won three World Series after surviving cancer", clues:["Survived non-Hodgkin lymphoma in 2006 and returned to pitch at the highest level","Won 3 World Series championships — 2 with Boston and 1 with Chicago","Was the winning pitcher in Game 5 of the 2007 World Series in his first Series","From Tacoma Washington"] },
   { player:"Hyun-Jin Ryu", sport:"⚾ MLB", answer:"HYUN-JIN RYU", era:"modern", stats:{ERA:"2.32",LEAD:"2019 NL",W:"14",NATION:"South Korea"}, ctx:"2019 MLB Season — Led NL in ERA without winning Cy Young", clues:["Led the National League in ERA in 2019 but finished second in Cy Young voting","Was the first Korean pitcher signed directly from the KBO to a major MLB club","Played for the Los Angeles Dodgers for 7 seasons","From Incheon South Korea"] },
   { player:"Patrick Corbin", sport:"⚾ MLB", answer:"PATRICK CORBIN", era:"modern", stats:{SO:"238",W:"14",ERA:"3.25",WS:"2019"}, ctx:"2019 World Series — Key pitcher for the Nationals championship", clues:["Was the key bullpen weapon for the Washington Nationals 2019 World Series win","Appeared in three World Series games in relief including a save in Game 7","Signed a 6-year 140 million dollar contract before the season","From Binghamton New York"] },
-  { player:"Madison Bumgarner", sport:"⚾ MLB", answer:"MADISON BUMGARNER", era:"modern", stats:{ERA:"2.11",IP:"52.2",WS_MVP:"2014",GS:"5"}, ctx:"2014 World Series — Greatest pitching performance in Fall Classic history", clues:["Had the greatest World Series pitching performance in history — 52.2 innings at a 2.11 ERA","Pitched 5 innings of shutout relief in Game 7 on two days rest to save the Series","Was the World Series MVP in 2014 with the San Francisco Giants","From Hudson North Carolina — also competes in rodeo under a pseudonym"] },
   { player:"Noah Syndergaard", sport:"⚾ MLB", answer:"NOAH SYNDERGAARD", era:"modern", stats:{ERA:"3.24",SO:"9.9",NICK:"Thor",FB:"98mph"}, ctx:"Career Totals — The Mets ace nicknamed Thor", clues:["Was nicknamed Thor for his blond hair and 98mph fastball","Threw a fastball behind Mets nemesis Chase Utley in the 2015 NLCS causing a controversy","Was acquired from the Blue Jays in the R.A. Dickey trade","From Mansfield Texas"] },
   { player:"Carlos Martinez", sport:"⚾ MLB", answer:"CARLOS MARTINEZ", era:"modern", stats:{ERA:"3.17",SO:"8.2",W:"16",NATION:"Dominican"}, ctx:"2015-17 MLB Seasons — Cardinals ace from the Dominican Republic", clues:["Was one of the best starters in the National League for three consecutive seasons","Was known for throwing up to 100mph while also having outstanding control","Converted to a closer later in his career","From Monte Cristi Dominican Republic"] },
   { player:"Masahiro Tanaka", sport:"⚾ MLB", answer:"MASAHIRO TANAKA", era:"modern", stats:{ERA:"3.74",W:"78",SPLIT:"Elite",NATION:"Japan"}, ctx:"Career Totals — Japanese ace who starred for the Yankees", clues:["Had one of the best splitters in MLB history — nearly unhittable when located correctly","Was signed by the New York Yankees for 155 million dollars from Rakuten in Japan","Went 78-46 in the regular season with the Yankees","From Kakuda Miyagi Japan"] },
@@ -2102,11 +2110,11 @@ export default function StatsIQ() {
     return () => clearInterval(t);
   }, []);
 
-  // Show email capture after first perfect day if not already submitted
+  // Show email capture after first perfect day — long delay so it doesn't interrupt the moment
   useEffect(() => {
     const allDone = (["easy","medium","hard"] as Difficulty[]).every(d => completedToday.has(d));
     if (allDone && !emailSubmitted) {
-      const t = setTimeout(() => setShowEmailCapture(true), 2000);
+      const t = setTimeout(() => setShowEmailCapture(true), 12000); // 12 seconds — let them enjoy the win first
       return () => clearTimeout(t);
     }
   }, [completedToday, emailSubmitted]);
@@ -2943,6 +2951,16 @@ export default function StatsIQ() {
           <button onClick={() => { const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setShowPractice(true); }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
             🎮 PRACTICE
           </button>
+          {completedToday.size > 0 && (
+            <button onClick={async () => {
+              try {
+                await navigator.clipboard?.writeText(buildDayShareText());
+                toast("Copied! 📋", 2000);
+              } catch { toast("Open a puzzle to share", 1500); }
+            }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(255,200,0,0.35)", background:"rgba(255,200,0,0.08)", color:"#ffd700", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
+              📤 SHARE
+            </button>
+          )}
         </div>
         <div style={{ display:"flex", gap:8, marginTop:12, marginBottom:4 }}>
           {(["easy","medium","hard"] as Difficulty[]).map(d => {
@@ -3323,26 +3341,15 @@ export default function StatsIQ() {
       {/* EMAIL CAPTURE MODAL */}
       {showEmailCapture && !emailSubmitted && (
         <div style={{ position:"fixed", inset:0, zIndex:400, display:"flex", alignItems:"flex-end", justifyContent:"center" }} onClick={() => setShowEmailCapture(false)}>
-          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.7)", backdropFilter:"blur(4px)" }} />
-          <div style={{ position:"relative", background:"#0f1629", borderTop:"1px solid rgba(255,215,0,0.2)", borderLeft:"1px solid rgba(255,255,255,0.08)", borderRight:"1px solid rgba(255,255,255,0.08)", borderRadius:"20px 20px 0 0", padding:"28px 24px 40px", width:"min(500px,100vw)", boxShadow:"0 -20px 60px rgba(0,0,0,0.8)" }} onClick={e => e.stopPropagation()}>
-            <button onClick={() => setShowEmailCapture(false)} style={{ position:"absolute", top:16, right:16, background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.3rem" }}>✕</button>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.5)", backdropFilter:"blur(3px)" }} />
+          <div style={{ position:"relative", background:"#0f1629", borderTop:"1px solid rgba(255,255,255,0.08)", borderLeft:"1px solid rgba(255,255,255,0.06)", borderRight:"1px solid rgba(255,255,255,0.06)", borderRadius:"16px 16px 0 0", padding:"22px 22px 36px", width:"min(500px,100vw)", boxShadow:"0 -20px 60px rgba(0,0,0,0.6)" }} onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowEmailCapture(false)} style={{ position:"absolute", top:14, right:14, background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
 
-            <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:16 }}>
-              <span style={{ fontSize:"2rem" }}>📬</span>
+            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
+              <span style={{ fontSize:"1.5rem" }}>🔔</span>
               <div>
-                <h3 style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", letterSpacing:"0.1em" }}>GET TOMORROW'S PUZZLE EARLY</h3>
-                <p style={{ margin:0, color:"#6b7280", fontSize:"0.75rem" }}>Be the first to play — delivered to your inbox at 10 AM</p>
-              </div>
-            </div>
-
-            <div style={{ background:"rgba(255,215,0,0.05)", border:"1px solid rgba(255,215,0,0.15)", borderRadius:10, padding:"12px 14px", marginBottom:16 }}>
-              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                {["🔔 Get notified before the day resets","📊 Get your daily reminder at 10 AM","🔥 Never miss a day and break your streak","🏆 Early access to weekly challenges"].map((t,i) => (
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:10 }}>
-                    <span style={{ fontSize:"0.9rem" }}>{t.slice(0,2)}</span>
-                    <span style={{ color:"#d1d5db", fontSize:"0.78rem" }}>{t.slice(3)}</span>
-                  </div>
-                ))}
+                <h3 style={{ margin:0, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.2rem", letterSpacing:"0.08em" }}>NEVER MISS A DAY</h3>
+                <p style={{ margin:0, color:"#6b7280", fontSize:"0.7rem" }}>Get a daily reminder when your new puzzles drop</p>
               </div>
             </div>
 
@@ -3353,17 +3360,16 @@ export default function StatsIQ() {
                 onKeyDown={e => e.key === "Enter" && emailInput.includes("@") && handleEmailSubmit()}
                 placeholder="your@email.com"
                 type="email"
-                style={{ flex:1, padding:"13px 14px", borderRadius:10, border:`1px solid ${emailInput.includes("@") ? "rgba(255,215,0,0.4)" : "rgba(255,255,255,0.1)"}`, background:"rgba(255,255,255,0.05)", color:"#fff", fontSize:"1rem", fontFamily:"'Barlow Condensed',sans-serif" }}
-                autoFocus
+                style={{ flex:1, padding:"11px 14px", borderRadius:10, border:`1px solid ${emailInput.includes("@") ? "rgba(255,215,0,0.4)" : "rgba(255,255,255,0.1)"}`, background:"rgba(255,255,255,0.05)", color:"#fff", fontSize:"0.95rem", fontFamily:"'Barlow Condensed',sans-serif" }}
               />
               <button
                 onClick={handleEmailSubmit}
                 disabled={!emailInput.includes("@")}
-                style={{ padding:"13px 20px", borderRadius:10, border:"none", background: emailInput.includes("@") ? "linear-gradient(135deg,#ffd700,#f59e0b)" : "rgba(100,100,100,0.3)", color: emailInput.includes("@") ? "#0a0c10" : "#555", fontWeight:900, fontSize:"0.9rem", cursor: emailInput.includes("@") ? "pointer" : "not-allowed", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", whiteSpace:"nowrap" }}>
-                NOTIFY ME
+                style={{ padding:"11px 18px", borderRadius:10, border:"none", background: emailInput.includes("@") ? "linear-gradient(135deg,#ffd700,#f59e0b)" : "rgba(100,100,100,0.3)", color: emailInput.includes("@") ? "#0a0c10" : "#555", fontWeight:900, fontSize:"0.85rem", cursor: emailInput.includes("@") ? "pointer" : "not-allowed", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", whiteSpace:"nowrap" }}>
+                REMIND ME
               </button>
             </div>
-            <p style={{ margin:0, color:"#374151", fontSize:"0.62rem", textAlign:"center" }}>No spam. Just your daily stat line. Unsubscribe anytime.</p>
+            <p style={{ margin:0, color:"#374151", fontSize:"0.6rem", textAlign:"center" }}>No spam. Unsubscribe anytime.</p>
           </div>
         </div>
       )}
