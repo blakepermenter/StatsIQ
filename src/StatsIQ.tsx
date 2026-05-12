@@ -487,7 +487,7 @@ const EASY = [
   { player:"Andy Roddick", sport:"🎾 ATP", answer:"ANDY RODDICK", era:"modern", stats:{W:"1",GRAND_SLAMS:"1",WORLD_NO1:"Yes",SERVE:"155mph"}, ctx:"Best Season — 2003 US Open champion and World No. 1", clues:["Won the US Open and reached World No. 1 this year","Had the fastest serve in history at the time at 155 mph","From Omaha Nebraska","Was the last American man to win a Grand Slam singles title for many years"] },
   { player:"Lleyton Hewitt Easy", sport:"🎾 ATP", answer:"LLEYTON HEWITT EASY", era:"modern", stats:{GRAND_SLAMS:"2",WORLD_NO1:"Yes",WEEKS:"80",COMEON:"celebration"}, ctx:"Career Totals — Australian World No. 1 fighter", clues:["Spent 80 weeks at World No. 1","Won the US Open in 2001 and Wimbledon in 2002","From Adelaide South Australia","Was known for his intense competitiveness and Come On celebration"] },
   { player:"Gustavo Kuerten Easy", sport:"🎾 ATP", answer:"GUSTAVO KUERTEN EASY", era:"modern", stats:{GRAND_SLAMS:"3",WORLD_NO1:"Yes",CLAY:"Roland Garros x3",YEAR:"2000"}, ctx:"Career Totals — Brazilian Roland Garros king", clues:["Won Roland Garros 3 times in his career","Reached World No. 1 in 2000","From Florianopolis Brazil","Nicknamed Guga and was beloved by French crowds who adored him"] },
-  { player:"Thomas Muster Easy", sport:"🎾 ATP", answer:"THOMAS MUSTER EASY", era:"classic", stats:{W:"1",GRAND_SLAMS:"1",CLAY:"45 titles",COMEBACK:"car crash"}, ctx:"Best Season — 1995 French Open champion comeback story", clues:["Won the French Open and became World No. 1 in 1995","Won 45 clay court titles in his entire career","From Leibnitz Austria","Came back from a shattered knee hit by a drunk driver to win a Grand Slam"] },
+  { player:"Thomas Muster Easy", sport:"🎾 ATP", answer:"THOMAS MUSTER EASY", era:"classic", stats:{W:"1",GRAND_SLAMS:"1",CLAY:"45 titles",COMEBACK:"Yes"}, ctx:"Best Season — 1995 French Open champion comeback story", clues:["Won the French Open and became World No. 1 in 1995","Won 45 clay court titles in his entire career","From Leibnitz Austria","Came back from a shattered knee hit by a drunk driver to win a Grand Slam"] },
   { player:"Yevgeny Kafelnikov Easy", sport:"🎾 ATP", answer:"YEVGENY KAFELNIKOV EASY", era:"modern", stats:{GRAND_SLAMS:"2",WORLD_NO1:"Yes",YEAR:"1999",FIRST:"Russian No 1"}, ctx:"Career Totals — First Russian World No. 1", clues:["Won 2 Grand Slam titles and reached World No. 1","Won the French Open in 1996 and Australian Open in 1999","From Sochi Russia","Was the first Russian man to win a Grand Slam singles title"] },
   { player:"Michael Chang Easy", sport:"🎾 ATP", answer:"MICHAEL CHANG EASY", era:"classic", stats:{W:"1",GRAND_SLAMS:"1",AGE:"17",CRAMP:"vs Lendl"}, ctx:"Best Season — 1989 French Open youngest ever champion", clues:["Famously served underhand during a match to conserve energy while suffering from severe cramps","American player of Chinese descent","Beat Lendl in a famous match while cramping and used an underarm serve","Was a deeply religious player who thanked God after his wins"] },
   { player:"Carlos Moya Easy", sport:"🎾 ATP", answer:"CARLOS MOYA EASY", era:"classic", stats:{W:"1",GRAND_SLAMS:"1",WORLD_NO1:"Yes",YEAR:"1998"}, ctx:"1998 French Open — First Spanish World No. 1", clues:["Helped spark a golden era for Spanish tennis that produced Nadal and Ferrer","From Palma de Mallorca Spain","Was a huge star in Spain who helped inspire a generation","Later became Rafael Nadals personal coach"] },
@@ -542,7 +542,7 @@ const EASY = [
   { player:"Pancho Gonzales Easy", sport:"🎾 ATP", answer:"PANCHO GONZALES EASY", era:"legends", stats:{PRO:"Dominated",SERVE:"Fastest era",NATION:"USA",HERITAGE:"Mexican-American"}, ctx:"Career Totals — Dominated professional tennis for nearly a decade", clues:["Dominated professional tennis for nearly a decade after turning pro","Had the fastest and most feared serve of his era","From Los Angeles California of Mexican descent","Was largely denied Grand Slam play because he turned professional"] },
 
   // MEDIUM Bball Classic (need 5)
-  { player:"Dominique Wilkins Medium", sport:"🏀 NBA", answer:"DOMINIQUE WILKINS MEDIUM", era:"classic", stats:{PTS:"26.7",DUNK:"Human Highlight",ALL_STAR:"9x",TEAM:"Hawks"}, ctx:"Career Totals — The Human Highlight Film for the Atlanta Hawks", clues:["Nicknamed The Human Highlight Film for his spectacular dunking","Averaged 26.7 points per game for his career","Had legendary dunk contest battles with Michael Jordan","From Paris France but grew up in Washington State"] },
+  { player:"Dominique Wilkins Medium", sport:"🏀 NBA", answer:"DOMINIQUE WILKINS MEDIUM", era:"classic", stats:{PTS:"26.7",DUNK:"Human Highlight",ALLSTAR:"9x",TEAM:"Hawks"}, ctx:"Career Totals — The Human Highlight Film for the Atlanta Hawks", clues:["Nicknamed The Human Highlight Film for his spectacular dunking","Averaged 26.7 points per game for his career","Had legendary dunk contest battles with Michael Jordan","From Paris France but grew up in Washington State"] },
   { player:"Patrick Ewing Medium", sport:"🏀 NBA", answer:"PATRICK EWING MEDIUM", era:"classic", stats:{PTS:"24.0",REB:"11.2",BLK:"2.4",RINGS:"0"}, ctx:"Career Totals — The Knicks franchise center who never won a ring", clues:["Was the franchise center of the New York Knicks for 15 seasons","Averaged 24 points and 11 rebounds without ever winning a championship","Won 2 NCAA championships with Georgetown under John Thompson","From Kingston Jamaica"] },
   { player:"Karl Malone Medium", sport:"🏀 NBA", answer:"KARL MALONE MEDIUM", era:"classic", stats:{PTS:"25.0",MVP:"2x",RINGS:"0",TEAM:"Jazz"}, ctx:"Career Totals — Two-time MVP who finished as the second leading scorer", clues:["Finished his career as the second-highest scorer in NBA history at the time","Won 2 MVP awards with the Utah Jazz alongside John Stockton","Never won an NBA championship despite reaching the Finals twice","Nicknamed The Mailman because he always delivered"] },
   { player:"John Stockton Medium", sport:"🏀 NBA", answer:"JOHN STOCKTON MEDIUM", era:"classic", stats:{AST:"15806",STL:"3265",RECORDS:"Both all-time",TEAM:"Jazz"}, ctx:"Career Totals — All-time leader in both assists and steals", clues:["Holds the all-time NBA records for both assists and steals","The Jazz kept their New Orleans jazz-themed name even after relocating to Utah","Played alongside Karl Malone in one of the greatest duos in NBA history","From Spokane Washington — was considered undersized coming out of Gonzaga"] },
@@ -604,7 +604,7 @@ const EASY = [
   { player:"Newsy Lalonde Medium", sport:"🏒 NHL", answer:"NEWSY LALONDE MEDIUM", era:"legends", stats:{GOALS:"124",LACROSSE:"Also pro",SCORING:"Multiple titles",NICK:"Newsy"}, ctx:"Career Totals — Professional in both hockey and lacrosse simultaneously", clues:["Was one of the last players to compete professionally in both hockey and lacrosse","Led the NHL in scoring multiple times","Was nicknamed Newsy because he worked at a newsprint factory","From Cornwall Ontario — played for the Montreal Canadiens"] },
   { player:"Aurele Joliat Medium", sport:"🏒 NHL", answer:"AURELE JOLIAT MEDIUM", era:"legends", stats:{CUPS:"3",SEASONS:"16",WEIGHT:"136 lbs",NICK:"Mighty Atom"}, ctx:"Career Totals — The Mighty Atom won three Cups despite weighing 136 pounds", clues:["Nicknamed The Mighty Atom because he weighed only 136 pounds yet dominated opponents","Won 3 Stanley Cups with the Montreal Canadiens","Played 16 seasons in the NHL — all with Montreal","Was considered one of the fastest and most elusive players of his era"] },
   { player:"Bill Cook Medium", sport:"🏒 NHL", answer:"BILL COOK MEDIUM", era:"legends", stats:{CUPS:"2",SCORING:"Title",RANGERS:"First star",TEAM:"NY Rangers"}, ctx:"Career Totals — Won two Cups and a scoring title as the Rangers first great star", clues:["Was the first great star of the New York Rangers franchise","Won 2 Stanley Cups with the Rangers","Won the NHL scoring title in 1927","Played alongside his brother Bun Cook and Frank Boucher in the famous Rangers line"] },
-  { player:"Howie Morenz Medium", sport:"🏒 NHL", answer:"HOWIE MORENZ MEDIUM", era:"legends", stats:{HART:"3",GOALS:"270",GREATEST:"His era",DEATH:"1937"}, ctx:"Career Totals — Three Hart Trophies and the greatest player of his era", clues:["Won 3 Hart Trophies as league MVP — the most dominant player of his era","Was considered the greatest hockey player in the world through the late 1920s and early 1930s","Died tragically from complications of a broken leg at age 34","His funeral was held at centre ice of the Montreal Forum"] },
+  { player:"Howie Morenz Medium", sport:"🏒 NHL", answer:"HOWIE MORENZ MEDIUM", era:"legends", stats:{HART:"3",GOALS:"270",GREATEST:"His era",ERA:"1920s-30s"}, ctx:"Career Totals — Three Hart Trophies and the greatest player of his era", clues:["Won 3 Hart Trophies as league MVP — the most dominant player of his era","Was considered the greatest hockey player in the world through the late 1920s and early 1930s","Died tragically from complications of a broken leg at age 34","His funeral was held at centre ice of the Montreal Forum"] },
 
   // HARD Baseball Modern (need 5) — Freddie Sanchez moved to Medium, need different players
   { player:"Carlos Gomez Hard", sport:"⚾ MLB", answer:"CARLOS GOMEZ HARD", era:"modern", stats:{GG:"3",PACE:"Fastest",HR:"24",TEAM:"Milwaukee"}, ctx:"Career Totals — Three Gold Gloves and electrifying speed for the Brewers", clues:["Won 3 consecutive Gold Gloves in center field with the Milwaukee Brewers","Was considered one of the fastest and most athletic outfielders of his era","Had one of the most electric combinations of speed and power in the game","From Manoguayabo Dominican Republic — was originally a Mets prospect"] },
@@ -614,7 +614,7 @@ const EASY = [
   { player:"Brandon Webb Hard", sport:"⚾ MLB", answer:"BRANDON WEBB HARD", era:"modern", stats:{CY:"2006",ERA:"3.27",SINKER:"Best ever",INJURY:"Ended career"}, ctx:"Career Totals — Won the Cy Young with the best sinker in baseball before injury", clues:["Won the NL Cy Young Award in 2006 with the Arizona Diamondbacks","Was considered to have the best sinker of his generation","Had his career ended prematurely by a shoulder injury at age 29","From Ashland Kentucky"] },
 
   // HARD Basketball Modern (need 1)
-  { player:"Paul George Hard", sport:"🏀 NBA", answer:"PAUL GEORGE HARD", era:"modern", stats:{ALL_STAR:"9x",DPOY:"2x",INJURY:"Graphic 2014",TEAM:"Multiple"}, ctx:"Career Totals — Two Defensive Player of Year awards after gruesome injury comeback", clues:["Won 2 Defensive Player of the Year awards","Suffered one of the most graphic leg injuries in NBA history in 2014 but came back stronger","Was a 9-time All-Star with multiple teams including Indiana Oklahoma City and the Clippers","From Palmdale California — nicknamed PG-13"] },
+  { player:"Paul George Hard", sport:"🏀 NBA", answer:"PAUL GEORGE HARD", era:"modern", stats:{PPG:"21.7",ALLSTAR:"9x",DPOY:"2x",TEAMS:"IND/OKC/LAC"}, ctx:"Career Totals — Two Defensive Player of Year awards for a perennial All-Star", clues:["Won 2 Defensive Player of the Year awards","Was a 9-time All-Star with Indiana Oklahoma City and the Clippers","Missed nearly an entire season due to a serious leg injury but returned as one of the league's best","From Palmdale California — nicknamed PG-13"] },
 ];
 
 // ─── MEDIUM (45 puzzles) ──────────────────────────────────────────────────────
@@ -652,7 +652,7 @@ const MEDIUM = [
   { player:"Steve Yzerman", sport:"🏒 NHL", answer:"YZERMAN", era:"classic", stats:{G:"65",AST:"90",PTS:"155",PIM:"58"}, ctx:"1988-89 NHL Season — Detroit Red Wings", clues:["Scored 155 points in this season","The Red Wings won 4 Cups in 11 years forming the last great NHL dynasty","Won 3 Stanley Cups as captain","Nicknamed Stevie Y"] },
   // Basketball - Modern
   { player:"Damian Lillard", sport:"🏀 NBA", answer:"LILLARD", era:"modern", stats:{PTS:"37.5",AST:"9.9","3PT":"13",BUZZ:"1"}, ctx:"2019 NBA Playoffs — Series-winner vs Oklahoma City", clues:["Hit a 37-foot buzzer-beater to eliminate OKC — pointing to his watch afterward","Averaged 37.5 PPG and 9.9 APG in that playoff series","Scored 60+ points in a game to force overtime and eliminate a team himself","Has averaged over 25 PPG for 8 consecutive seasons"] },
-  { player:"Paul George", sport:"🏀 NBA", answer:"GEORGE", era:"modern", stats:{PTS:"20.7",REB:"5.9",AST:"3.9",DPOY:"1"}, ctx:"Career highlights — Perennial All-Star", clues:["Broke his leg in a gruesome compound fracture during a 2014 USA Basketball scrimmage","Came back the following season better than ever — finished top 3 in MVP voting","Won Defensive Player of the Year in 2019","Has averaged over 20 PPG in 10 different NBA seasons"] },
+  { player:"Paul George", sport:"🏀 NBA", answer:"GEORGE", era:"modern", stats:{PTS:"20.7",REB:"5.9",AST:"3.9",DPOY:"1"}, ctx:"Career highlights — Perennial All-Star", clues:["Missed nearly an entire season due to a serious leg injury but returned stronger than ever","Came back the following season better than ever — finished top 3 in MVP voting","Won Defensive Player of the Year in 2019","Has averaged over 20 PPG in 10 different NBA seasons"] },
   { player:"Jimmy Butler", sport:"🏀 NBA", answer:"BUTLER", era:"modern", stats:{PTS:"26.2",REB:"9.8",AST:"8.8",STL:"2.1"}, ctx:"2020 NBA Finals — Miami Heat", clues:["Led the Heat to the NBA Finals as an underdog","Averaged 26.2 PPG in the Finals","Played in South Beach for a franchise that attracted the biggest superstar names","Was homeless as a teenager and bounced between families"] },
   { player:"Devin Booker", sport:"🏀 NBA", answer:"BOOKER", era:"modern", stats:{PTS:"70",FG:"21",FT:"24",MIN:"44"}, ctx:"March 24, 2017 — Phoenix Suns vs Boston Celtics", clues:["Scored 70 points — the 5th highest single game score ever","Was only 20 years old at the time","The Suns invented the Seven Seconds or Less fast-break offense under coach Mike D'Antoni","Son of former NBA player Melvin Booker"] },
   { player:"Trae Young", sport:"🏀 NBA", answer:"TRAE", era:"modern", stats:{PTS:"28.8",AST:"9.4",REB:"3.9","3PM":"3.3"}, ctx:"2021 NBA Playoffs — Atlanta Hawks Eastern Conference Finals", clues:["Led Atlanta Hawks to the Eastern Conference Finals as an underdog","Silenced New York Knicks crowd with his performances","Played for a franchise that was originally called the Tri-Cities Blackhawks","From Norman, Oklahoma — was traded on draft night for Luka Doncic"] },
@@ -1488,15 +1488,15 @@ const HARD = [
   { player:"Anthony Davis", sport:"🏀 NBA", answer:"ANTHONY DAVIS HARD", era:"modern", stats:{FINALS_MVP:"2020",BLOCKS:"2.4",PICK:"1 overall",BROW:"Unibrow"}, ctx:"Career Totals — Championship with the Lakers and the most famous unibrow in sports", clues:["Won the NBA championship with the Los Angeles Lakers in 2020 in the Disney bubble","Was known for his distinctive unibrow which he trademarked","Was the 1st overall pick in the 2012 NBA Draft","From Chicago Illinois — averaged 3.1 blocks per game in his best defensive seasons"] },
 
   // HARD Basketball Classic (need 10 more to reach 21)
-  { player:"Dominique Wilkins", sport:"🏀 NBA", answer:"DOMINIQUE WILKINS HARD", era:"classic", stats:{PTS:"26.7",DUNK:"Human Highlight",ALL_STAR:"9x",RIVAL:"MJ"}, ctx:"Career Totals — The Human Highlight Film who rivaled Jordan", clues:["Nicknamed The Human Highlight Film for his spectacular dunking ability","Averaged 26.7 points per game for his career","Had epic dunk contest battles with Michael Jordan in the 1980s","From Paris France but grew up in Washington State"] },
+  { player:"Dominique Wilkins", sport:"🏀 NBA", answer:"DOMINIQUE WILKINS HARD", era:"classic", stats:{PTS:"26.7",DUNK:"Human Highlight",ALLSTAR:"9x",RIVAL:"MJ"}, ctx:"Career Totals — The Human Highlight Film who rivaled Jordan", clues:["Nicknamed The Human Highlight Film for his spectacular dunking ability","Averaged 26.7 points per game for his career","Had epic dunk contest battles with Michael Jordan in the 1980s","From Paris France but grew up in Washington State"] },
   { player:"Patrick Ewing", sport:"🏀 NBA", answer:"PATRICK EWING HARD", era:"classic", stats:{PTS:"24.0",REB:"11.2",BLK:"2.4",RINGS:"0"}, ctx:"Career Totals — The face of the Knicks who never won a ring", clues:["Was the franchise center of the New York Knicks for 15 seasons","Averaged 24 points and 11 rebounds but never won an NBA championship","Won two NCAA championships with Georgetown under John Thompson","From Kingston Jamaica — was the 1st overall pick in 1985"] },
   { player:"James Worthy", sport:"🏀 NBA", answer:"JAMES WORTHY HARD", era:"classic", stats:{FINALS_MVP:"1988",RINGS:"3",NICK:"Big Game James",PICK:"1 overall"}, ctx:"Career Totals — Big Game James won Finals MVP in 1988 for the Showtime Lakers", clues:["Won the Finals MVP in 1988 with the Los Angeles Lakers Showtime dynasty","Nicknamed Big Game James for his playoff performance","Was the 1st overall pick in the 1982 NBA Draft","From Gastonia North Carolina — played at UNC under Dean Smith"] },
   { player:"Kevin McHale", sport:"🏀 NBA", answer:"KEVIN MCHALE HARD", era:"classic", stats:{RINGS:"3",FG_PCT:".554",MOVES:"Best post",TEAM:"Celtics"}, ctx:"Career Totals — The best post moves in NBA history for the Celtics dynasty", clues:["Is considered by many to have had the best post moves and footwork of any power forward","Won 3 NBA championships with the Boston Celtics","His Hall of Fame lowpost repertoire is still studied by big men today","From Hibbing Minnesota — the same small town that produced Bob Dylan"] },
   { player:"Robert Parish", sport:"🏀 NBA", answer:"ROBERT PARISH HARD", era:"classic", stats:{RINGS:"4",GAMES:"1611",SEASONS:"21",NICK:"Chief"}, ctx:"Career Totals — Played 21 NBA seasons and won 4 championships", clues:["Played 21 seasons in the NBA — one of the longest careers in league history","Won 4 NBA championships — 3 with Boston and 1 with Chicago","Nicknamed The Chief after the character in One Flew Over the Cuckoo's Nest","From Shreveport Louisiana"] },
   { player:"Dan Issel", sport:"🏀 NBA", answer:"DAN ISSEL HARD", era:"classic", stats:{PTS:"27.2",ABA:"MVP",COMBINED:"27000+",NICK:"Horse"}, ctx:"Career Totals — ABA and NBA star with 27000 combined points", clues:["Scored over 27,000 combined points in the ABA and NBA","Won the ABA MVP award with the Kentucky Colonels","Nicknamed The Horse for his relentless work ethic and durability","From Batavia Illinois — one of the most underrated scorers in professional basketball history"] },
-  { player:"Alex English", sport:"🏀 NBA", answer:"ALEX ENGLISH HARD", era:"classic", stats:{PTS:"25.9",ALL_STAR:"8x",SCORING:"Leader 1980s",TEAM:"Nuggets"}, ctx:"Career Totals — Led the NBA in scoring in the 1980s for Denver", clues:["Scored more points than any other player in the entire decade of the 1980s","Averaged 25.9 points per game for his career with the Denver Nuggets","Was an 8-time All-Star who is often overlooked in historical discussions","From Columbia South Carolina — also published poetry during his career"] },
+  { player:"Alex English", sport:"🏀 NBA", answer:"ALEX ENGLISH HARD", era:"classic", stats:{PTS:"25.9",ALLSTAR:"8x",SCORING:"Leader 1980s",TEAM:"Nuggets"}, ctx:"Career Totals — Led the NBA in scoring in the 1980s for Denver", clues:["Scored more points than any other player in the entire decade of the 1980s","Averaged 25.9 points per game for his career with the Denver Nuggets","Was an 8-time All-Star who is often overlooked in historical discussions","From Columbia South Carolina — also published poetry during his career"] },
   { player:"World B. Free Classic", sport:"🏀 NBA", answer:"WORLD B FREE HARD", era:"classic", stats:{PTS:"30.2",LEGAL:"Changed name",HANG_TIME:"Legendary",TEAM:"Clippers"}, ctx:"Best Season — Led NBA in scoring at 30.2 PPG for San Diego Clippers", clues:["Led the NBA in scoring with 30.2 points per game this season","Legally changed his first name to World B — his birth name was Lloyd","Was known for extraordinary hang time and acrobatic finishing moves","Was drafted by the Philadelphia 76ers in 1975 before finding his scoring form in San Diego"] },
-  { player:"Mitch Richmond", sport:"🏀 NBA", answer:"MITCH RICHMOND HARD", era:"classic", stats:{PTS:"21.8",ALL_STAR:"6x",HALL:"2014",TEAM:"Kings"}, ctx:"Career Totals — Hall of Famer who excelled on losing teams", clues:["Was inducted into the Hall of Fame in 2014 after a career mostly on non-playoff teams","Was a 6-time All-Star and averaged 21.8 points per game for his career","Played for the Sacramento Kings for 8 seasons — one of their greatest players ever","From Fort Lauderdale Florida — nicknamed Rock"] },
+  { player:"Mitch Richmond", sport:"🏀 NBA", answer:"MITCH RICHMOND HARD", era:"classic", stats:{PTS:"21.8",ALLSTAR:"6x",HALL:"2014",TEAM:"Kings"}, ctx:"Career Totals — Hall of Famer who excelled on losing teams", clues:["Was inducted into the Hall of Fame in 2014 after a career mostly on non-playoff teams","Was a 6-time All-Star and averaged 21.8 points per game for his career","Played for the Sacramento Kings for 8 seasons — one of their greatest players ever","From Fort Lauderdale Florida — nicknamed Rock"] },
   { player:"Reggie Miller", sport:"🏀 NBA", answer:"REGGIE MILLER HARD", era:"classic", stats:{THREE_PT:"2560",RIVAL:"Spike Lee",CLUTCH:"8 pts 9 seconds",TEAM:"Pacers"}, ctx:"Career Totals — The clutch shooter who tormented the Knicks for a decade", clues:["Scored 8 points in 9 seconds against the New York Knicks in 1995 in one of the greatest clutch moments ever","Had a long-running feud with filmmaker Spike Lee who sat courtside at Knicks games","Scored 2,560 career three-pointers — was one of the all-time greats from distance","From Riverside California — his sister Cheryl Miller was also a basketball legend"] },
 
   // HARD Basketball Legends (need 13 more to reach 21)
@@ -1508,9 +1508,9 @@ const HARD = [
   { player:"Willis Reed Legends", sport:"🏀 NBA", answer:"WILLIS REED HARD", era:"legends", stats:{FINALS_MVP:"2",MVP:"1970",LIMP:"Iconic",RINGS:"2"}, ctx:"Career Totals — The iconic limping entrance in the 1970 Finals", clues:["Famously limped onto the court for Game 7 of the 1970 NBA Finals on an injured leg inspiring a Knicks victory","Won 2 Finals MVPs and the regular season MVP in 1970","Was the first player in NBA history to win MVP Finals MVP and All-Star MVP in the same year","From Bernice Louisiana — played for the New York Knicks his entire career"] },
   { player:"Dave Cowens Legends", sport:"🏀 NBA", answer:"DAVE COWENS HARD", era:"legends", stats:{MVP:"1973",RINGS:"2",ENERGY:"Maniacal",HEIGHT:"6ft9"}, ctx:"Career Totals — Won MVP and two rings as a undersized maniacal center", clues:["Won the NBA MVP in 1973 at just 6ft 9in — extremely undersized for a center","Won 2 NBA championships with the Boston Celtics","Was known for his maniacal energy and willingness to dive on loose balls","From Newport Kentucky — briefly left the NBA to drive a cab due to burnout"] },
   { player:"Jerry Lucas Legends", sport:"🏀 NBA", answer:"JERRY LUCAS HARD", era:"legends", stats:{REB:"15.6",ROY:"1964",FG_PCT:".499",MEMORY:"Photographic"}, ctx:"Career Totals — Hall of Famer with photographic memory who memorized phone books", clues:["Had a photographic memory and later wrote bestselling books on memory improvement","Averaged 15.6 rebounds per game for his career — elite even for his era","Won Rookie of the Year with the Cincinnati Royals in 1964","Was so intellectually curious that his teammate Bill Bradley called him the most unusual athlete he ever knew"] },
-  { player:"Hal Greer Legends", sport:"🏀 NBA", answer:"HAL GREER HARD", era:"legends", stats:{PTS:"19.2",ALL_STAR:"10x",RINGS:"1",JUMP_BALL:"Free throw"}, ctx:"Career Totals — 10-time All-Star known for jump-shooting free throws", clues:["Was the only NBA player in history to regularly shoot his free throws as jump shots rather than set shots","Was a 10-time All-Star and won a championship with the Philadelphia 76ers in 1967","Played all 15 seasons with the same franchise — the Syracuse Nationals who became the 76ers","From Huntington West Virginia — was the first Black scholarship athlete at Marshall University"] },
+  { player:"Hal Greer Legends", sport:"🏀 NBA", answer:"HAL GREER HARD", era:"legends", stats:{PTS:"19.2",ALLSTAR:"10x",RINGS:"1",JUMP_BALL:"Free throw"}, ctx:"Career Totals — 10-time All-Star known for jump-shooting free throws", clues:["Was the only NBA player in history to regularly shoot his free throws as jump shots rather than set shots","Was a 10-time All-Star and won a championship with the Philadelphia 76ers in 1967","Played all 15 seasons with the same franchise — the Syracuse Nationals who became the 76ers","From Huntington West Virginia — was the first Black scholarship athlete at Marshall University"] },
   { player:"Bob Pettit Legends", sport:"🏀 NBA", answer:"BOB PETTIT HARD", era:"legends", stats:{PTS:"26.4",MVP:"2x",FIRST:"20000 pts",REB:"16.2"}, ctx:"Career Totals — First player to score 20000 NBA points and two-time MVP", clues:["Was the first player in NBA history to score 20,000 career points","Won the NBA MVP award twice in 1956 and 1959","Averaged 26.4 points and 16.2 rebounds per game for his career","From Baton Rouge Louisiana — was cut from his high school team as a freshman"] },
-  { player:"Nate Thurmond Legends", sport:"🏀 NBA", answer:"NATE THURMOND HARD", era:"legends", stats:{REB:"15.0",BLK:"Pioneer",ALL_STAR:"7x",QUAD:"First"}, ctx:"Career Totals — Recorded the first quadruple-double in NBA history", clues:["Recorded the first official quadruple-double in NBA history in 1974","Averaged 15 rebounds per game for his career despite playing in an era with Wilt Chamberlain","Was a 7-time All-Star with the San Francisco and Golden State Warriors","From Akron Ohio — was considered the best defensive center of his era by many players"] },
+  { player:"Nate Thurmond Legends", sport:"🏀 NBA", answer:"NATE THURMOND HARD", era:"legends", stats:{REB:"15.0",BLK:"Pioneer",ALLSTAR:"7x",QUAD:"First"}, ctx:"Career Totals — Recorded the first quadruple-double in NBA history", clues:["Recorded the first official quadruple-double in NBA history in 1974","Averaged 15 rebounds per game for his career despite playing in an era with Wilt Chamberlain","Was a 7-time All-Star with the San Francisco and Golden State Warriors","From Akron Ohio — was considered the best defensive center of his era by many players"] },
   { player:"Billy Cunningham Legends", sport:"🏀 NBA", answer:"BILLY CUNNINGHAM HARD", era:"legends", stats:{RINGS:"1",ABA:"MVP",COACH:"76ers",NICK:"Kangaroo Kid"}, ctx:"Career Totals — Won ring as player and ABA MVP then coached the 76ers to a title", clues:["Won the ABA MVP award with the Carolina Cougars after jumping leagues","Coached the Philadelphia 76ers to the 1983 NBA championship","Nicknamed The Kangaroo Kid for his extraordinary leaping ability","From Brooklyn New York — played college ball at North Carolina under Dean Smith"] },
   { player:"Paul Arizin Legends", sport:"🏀 NBA", answer:"PAUL ARIZIN HARD", era:"legends", stats:{PTS:"22.8",SCORING:"2 titles",MARINES:"Missed 2 seasons",JUMP_SHOT:"Pioneer"}, ctx:"Career Totals — Pioneered the jump shot and won two scoring titles despite military service", clues:["Was one of the pioneers of the modern jump shot — transformed offensive basketball","Won 2 NBA scoring titles despite missing 2 full seasons serving in the US Marines","Was never recruited out of high school and walked onto the Villanova team","From Philadelphia Pennsylvania — played his entire NBA career with the Warriors"] },
 
@@ -1570,7 +1570,7 @@ const HARD = [
   { player:"Ken Dryden Classic", sport:"🏒 NHL", answer:"KEN DRYDEN CLASSIC HARD", era:"classic", stats:{CUPS:"6",VEZINA:"5",RETIRE:"Age 31",LAWYER:"Cornell"}, ctx:"Career Totals — Six Cups and five Vezinas before retiring at 31 to practice law", clues:["Won 6 Stanley Cups and 5 Vezina Trophies in just 8 NHL seasons","Retired at age 31 to practice law — leaving the game at the height of his powers","Was a Cornell University graduate who passed the bar exam during his hockey career","From Hamilton Ontario — won the Conn Smythe Trophy as a rookie before winning the Calder as a second-year player"] },
 
   // HARD Hockey Legends (need 9 more)
-  { player:"Howie Morenz Legends", sport:"🏒 NHL", answer:"HOWIE MORENZ LEGENDS HARD", era:"legends", stats:{HART:"3",GOALS:"270",GREATEST:"His era",DEATH:"1937 from broken leg"}, ctx:"Career Totals — Three Hart Trophies and the greatest player of his era", clues:["Won 3 Hart Trophies and was considered the greatest player in hockey in the 1920s and early 1930s","Played with such intensity that Conn Smythe said he was the greatest player who ever lived","Died tragically from complications of a broken leg suffered during a game in 1937 at age 34","From Mitchell Ontario — his funeral was held at centre ice of the Montreal Forum"] },
+  { player:"Howie Morenz Legends", sport:"🏒 NHL", answer:"HOWIE MORENZ LEGENDS HARD", era:"legends", stats:{HART:"3",GOALS:"270",GREATEST:"His era",ERA:"1920s-30s"}, ctx:"Career Totals — Three Hart Trophies and the greatest player of his era", clues:["Won 3 Hart Trophies and was considered the greatest player in hockey in the 1920s and early 1930s","Played with such intensity that Conn Smythe said he was the greatest player who ever lived","Died tragically from complications of a broken leg suffered during a game in 1937 at age 34","From Mitchell Ontario — his funeral was held at centre ice of the Montreal Forum"] },
   { player:"Bill Durnan Legends", sport:"🏒 NHL", answer:"BILL DURNAN LEGENDS HARD", era:"legends", stats:{VEZINA:"6",GAA:"2.36",AMBIDEXTROUS:"Both hands",CUPS:"2"}, ctx:"Career Totals — Won Vezina Trophy in 6 of his 7 NHL seasons", clues:["Won the Vezina Trophy in 6 of his 7 NHL seasons — an astonishing ratio","Was completely ambidextrous and could catch the puck with either hand — unprecedented","Won 2 Stanley Cups with the Montreal Canadiens","From Toronto Ontario — retired at 34 citing the intense pressure of playing goal"] },
   { player:"Newsy Lalonde Legends", sport:"🏒 NHL", answer:"NEWSY LALONDE LEGENDS HARD", era:"legends", stats:{GOALS:"124",LACROSSE:"Also pro",SCORING:"Multiple titles",NICK:"Newsy"}, ctx:"Career Totals — Was a professional in both hockey and lacrosse simultaneously", clues:["Was one of the last players to compete professionally in both hockey and lacrosse at the same time","Led the NHL in scoring multiple times","Was nicknamed Newsy because he worked at a newsprint factory as a young man","From Cornwall Ontario — played for multiple teams including the Montreal Canadiens"] },
   { player:"Sprague Cleghorn Legends", sport:"🏒 NHL", answer:"SPRAGUE CLEGHORN HARD", era:"legends", stats:{CUPS:"3",BRUTAL:"Most feared",ERA:"1910s-1920s",SUSPENDED:"Multiple times"}, ctx:"Career Totals — The most feared and brutal player of the early NHL", clues:["Was considered the most brutal and feared player in the early years of professional hockey","Was suspended multiple times for deliberate violent acts on opponents","Won 3 Stanley Cups despite his reputation for dirty play","From Montreal Quebec — his brother Odie Cleghorn also played in the early NHL"] },
@@ -1731,6 +1731,84 @@ const DIFF_CONFIG: Record<Difficulty, { label: string; guesses: number; color: s
 const POOLS: Record<Difficulty, Puzzle[]> = { easy: EASY, medium: MEDIUM, hard: HARD };
 const SPORTS = ["🏀","🏈","⚾","⚽","🎾","⛳","🏒"];
 const SPORT_LABELS: Record<string, string> = { "🏀":"Basketball","🏈":"Football","⚾":"Baseball","⚽":"Soccer","🎾":"Tennis (ATP/WTA)","⛳":"Golf","🏒":"Hockey" };
+
+// ── Supabase ─────────────────────────────────────────────────────────────────
+const SB_URL = "https://cfzdmfwoihphwzyllwxx.supabase.co";
+const SB_KEY = "sb_publishable_LwlTUxLRHtY4aR3afAhJJw_iWdg6kw8";
+
+const sbFetch = async (path: string, opts: RequestInit = {}) => {
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SB_KEY,
+      "Authorization": `Bearer ${SB_KEY}`,
+      "Prefer": "return=minimal",
+      ...(opts.headers || {}),
+    },
+  });
+  if (!res.ok) return null;
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+};
+
+// Upsert a play to Supabase
+const sbLogPlay = async (username: string, date: string, difficulty: string, sport: string, era: string, score: number, guesses: number, won: boolean) => {
+  try {
+    await sbFetch("plays", {
+      method: "POST",
+      headers: { "Prefer": "resolution=ignore-duplicates" },
+      body: JSON.stringify({ username: username || "anonymous", date, difficulty, sport, era, score, guesses, won }),
+    });
+  } catch {}
+};
+
+// Upsert player total score
+const sbUpsertPlayer = async (username: string, totalScore: number, bestStreak: number) => {
+  try {
+    await sbFetch("players?on_conflict=username", {
+      method: "POST",
+      headers: { "Prefer": "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ username: username || "anonymous", total_score: totalScore, best_streak: bestStreak, updated_at: new Date().toISOString() }),
+    });
+  } catch {}
+};
+
+// Save email to Supabase
+const sbSaveEmail = async (email: string, username: string) => {
+  try {
+    await sbFetch("emails?on_conflict=email", {
+      method: "POST",
+      headers: { "Prefer": "resolution=ignore-duplicates,return=minimal" },
+      body: JSON.stringify({ email, username: username || "" }),
+    });
+  } catch {}
+};
+
+// Fetch today's rarity stats
+const sbGetRarity = async (): Promise<Record<string, {win_pct: number, total_plays: number, avg_guesses: number}>> => {
+  try {
+    const data = await sbFetch("today_rarity?select=*");
+    if (!data) return {};
+    const result: Record<string, {win_pct: number, total_plays: number, avg_guesses: number}> = {};
+    for (const row of data) result[row.difficulty] = row;
+    return result;
+  } catch { return {}; }
+};
+
+// Fetch leaderboard
+const sbGetLeaderboard = async (type: "today" | "alltime"): Promise<Array<{username:string, score:number, streak?:number}>> => {
+  try {
+    const view = type === "today" ? "today_leaderboard?select=username,day_score" : "alltime_leaderboard?select=username,total_score,best_streak";
+    const data = await sbFetch(view);
+    if (!data) return [];
+    return data.map((r: Record<string,unknown>) => ({
+      username: r.username as string,
+      score: (r.day_score ?? r.total_score) as number,
+      streak: r.best_streak as number | undefined,
+    }));
+  } catch { return []; }
+};
 
 const SCORE_BADGES = [
   { min: 2500000, emoji: "🐐", label: "GOAT" },
@@ -2149,6 +2227,10 @@ export default function StatsIQ() {
   const [showHistory, setShowHistory] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showWeeklyRecap, setShowWeeklyRecap] = useState(false);
+  const [lbData, setLbData] = useState<Array<{username:string,score:number,streak?:number}>>([]);
+  const [lbType, setLbType] = useState<"today"|"alltime">("alltime");
+  const [lbLoading, setLbLoading] = useState(false);
+  const [rarity, setRarity] = useState<Record<string,{win_pct:number,total_plays:number,avg_guesses:number}>>({});
   const [showUsernameModal, setShowUsernameModal] = useState(false);
   const [showPractice, setShowPractice] = useState(false);
   const [practiceIdx, setPracticeIdx] = useState(0);
@@ -2396,10 +2478,17 @@ export default function StatsIQ() {
   useEffect(() => {
     const allDone = (["easy","medium","hard"] as Difficulty[]).every(d => completedToday.has(d));
     if (allDone && !emailSubmitted) {
-      const t = setTimeout(() => setShowEmailCapture(true), 12000); // 12 seconds — let them enjoy the win first
+      const t = setTimeout(() => setShowEmailCapture(true), 12000);
       return () => clearTimeout(t);
     }
   }, [completedToday, emailSubmitted]);
+
+  // Fetch rarity stats when any puzzle is completed
+  useEffect(() => {
+    if (completedToday.size > 0) {
+      sbGetRarity().then(data => { if (Object.keys(data).length > 0) setRarity(data); });
+    }
+  }, [completedToday.size]);
 
   const markDiffCompleted = (d: Difficulty) => {
     const next = new Set(completedToday);
@@ -2491,9 +2580,12 @@ export default function StatsIQ() {
     try {
       localStorage.setItem("statsiq_score", String(newTotal));
       localStorage.setItem(key, JSON.stringify({ score: final, guesses: guessNum, won: true, player, diff, date: today.toISOString() }));
-      // Clear mid-game progress now that it's complete
       localStorage.removeItem(`statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`);
     } catch {}
+    // Log to Supabase
+    const dateStr = today.toISOString().slice(0,10);
+    sbLogPlay(username, dateStr, diff, sport, puzzle.era, final, guessNum, true);
+    sbUpsertPlayer(username, newTotal, streakData.current);
     return final;
   };
 
@@ -2614,13 +2706,14 @@ export default function StatsIQ() {
       setTimeout(() => { setDone(true); setWon(true); }, 200);
       toast(["Legendary!", "Baller!", "Nice call!", "You know your stats!"][Math.min(next.length - 1, 3)], 2500);
     } else if (next.length >= cfg.guesses) {
-      // Save failed attempt
       const today = new Date();
       const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
       try { 
         localStorage.setItem(key, JSON.stringify({ score: 0, guesses: next.length, won: false, player, diff, date: today.toISOString() }));
         localStorage.removeItem(`statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`);
       } catch {}
+      // Log loss to Supabase
+      sbLogPlay(username, today.toISOString().slice(0,10), diff, sport, puzzle.era, 0, next.length, false);
       markDiffCompleted(diff);
       setTimeout(() => { setDone(true); setWon(false); }, 200);
       toast(`It was ${player}!`, 3500);
@@ -2871,14 +2964,12 @@ export default function StatsIQ() {
 
   const handleEmailSubmit = () => {
     if (!emailInput.includes("@")) return;
-    // Store email in localStorage and mark as submitted
     try {
       localStorage.setItem("statsiq_email", emailInput);
       localStorage.setItem("statsiq_email_submitted", "1");
     } catch {}
     setEmailSubmitted(true);
-    // In production you'd POST to a backend/Mailchimp/ConvertKit endpoint here
-    // For now we store locally and show confirmation
+    sbSaveEmail(emailInput, username);
     toast("You're in! 🎉 See you tomorrow.", 3000);
   };
 
@@ -3053,52 +3144,68 @@ export default function StatsIQ() {
       {showLeaderboard && (
         <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowLeaderboard(false)}>
           <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.8)", backdropFilter:"blur(4px)" }} />
-          <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"28px 24px", width:320, textAlign:"center" }} onClick={e => e.stopPropagation()}>
+          <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"24px 20px", width:320, maxHeight:"88vh", overflowY:"auto" }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setShowLeaderboard(false)} style={{ position:"absolute", top:14, right:14, background:"none", border:"none", color:"#6b7280", cursor:"pointer", fontSize:"1.3rem" }}>✕</button>
 
-            <div style={{ fontSize:"2.2rem", marginBottom:10 }}>🏆</div>
-            <h3 style={{ margin:"0 0 6px", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", letterSpacing:"0.15em" }}>LEADERBOARD</h3>
-            <p style={{ margin:"0 0 20px", color:"#4b5563", fontSize:"0.72rem", letterSpacing:"0.1em" }}>GLOBAL RANKINGS COMING SOON</p>
+            <div style={{ fontSize:"2rem", marginBottom:8 }}>🏆</div>
+            <h3 style={{ margin:"0 0 16px", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.5rem", letterSpacing:"0.15em" }}>LEADERBOARD</h3>
 
-            {/* Your current standing */}
-            <div style={{ background:"rgba(255,200,0,0.06)", border:"1px solid rgba(255,200,0,0.2)", borderRadius:12, padding:"16px 18px", marginBottom:16, textAlign:"left" }}>
-              <p style={{ margin:"0 0 12px", color:"#6b7280", fontSize:"0.58rem", letterSpacing:"0.18em", fontFamily:"'Bebas Neue',sans-serif" }}>YOUR STATS</p>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  {getScoreBadge(totalScore) && <span style={{ fontSize:"1.3rem" }}>{getScoreBadge(totalScore)!.emoji}</span>}
-                  <div>
-                    <p style={{ margin:0, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", letterSpacing:"0.08em" }}>{username || "Anonymous"}</p>
-                    {getScoreBadge(totalScore) && <p style={{ margin:0, color:"#ffd700", fontSize:"0.62rem", letterSpacing:"0.1em" }}>{getScoreBadge(totalScore)!.label.toUpperCase()}</p>}
-                  </div>
-                </div>
-                <p style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem" }}>{totalScore.toLocaleString()}</p>
-              </div>
-              <div style={{ display:"flex", gap:8 }}>
-                <div style={{ flex:1, background:"rgba(251,146,60,0.1)", borderRadius:8, padding:"8px", textAlign:"center" }}>
-                  <p style={{ margin:0, color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem" }}>{streakData.current}🔥</p>
-                  <p style={{ margin:0, color:"#4b5563", fontSize:"0.58rem", letterSpacing:"0.1em" }}>STREAK</p>
-                </div>
-                <div style={{ flex:1, background:"rgba(167,139,250,0.1)", borderRadius:8, padding:"8px", textAlign:"center" }}>
-                  <p style={{ margin:0, color:"#a78bfa", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem" }}>{streakData.best}</p>
-                  <p style={{ margin:0, color:"#4b5563", fontSize:"0.58rem", letterSpacing:"0.1em" }}>BEST STREAK</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Coming soon teaser */}
-            <div style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"14px 16px", marginBottom:16, textAlign:"left" }}>
-              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.58rem", letterSpacing:"0.18em", fontFamily:"'Bebas Neue',sans-serif" }}>COMING SOON</p>
-              {["🌍 Global all-time rankings","📅 Daily leaderboard resets","🏅 Weekly top performers","👥 Challenge friends directly"].map((t,i) => (
-                <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:i < 3 ? 8 : 0 }}>
-                  <span style={{ fontSize:"0.85rem" }}>{t.slice(0,2)}</span>
-                  <span style={{ color:"#374151", fontSize:"0.75rem" }}>{t.slice(3)}</span>
-                </div>
+            {/* Tabs */}
+            <div style={{ display:"flex", gap:6, marginBottom:14 }}>
+              {(["alltime","today"] as const).map(t => (
+                <button key={t} onClick={() => {
+                  setLbType(t);
+                  setLbLoading(true);
+                  sbGetLeaderboard(t).then(d => { setLbData(d); setLbLoading(false); });
+                }} style={{ flex:1, padding:"7px", borderRadius:8, border:`1px solid ${lbType===t?"rgba(255,215,0,0.5)":"rgba(255,255,255,0.08)"}`, background:lbType===t?"rgba(255,215,0,0.1)":"transparent", color:lbType===t?"#ffd700":"#4b5563", cursor:"pointer", fontSize:"0.72rem", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+                  {t === "alltime" ? "ALL TIME" : "TODAY"}
+                </button>
               ))}
             </div>
 
+            {/* Leaderboard list */}
+            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:10, overflow:"hidden", marginBottom:14, border:"1px solid rgba(255,255,255,0.07)", minHeight:180 }}>
+              {lbLoading ? (
+                <div style={{ padding:"40px 0", textAlign:"center", color:"#374151", fontSize:"0.75rem" }}>Loading...</div>
+              ) : lbData.length === 0 ? (
+                <div style={{ padding:"30px 16px", textAlign:"center" }}>
+                  <p style={{ margin:"0 0 6px", color:"#374151", fontSize:"0.75rem" }}>No scores yet today.</p>
+                  <p style={{ margin:0, color:"#2d3748", fontSize:"0.68rem" }}>Be the first on the board!</p>
+                </div>
+              ) : (
+                lbData.slice(0,10).map((row, i) => {
+                  const isYou = row.username === (username || "anonymous");
+                  return (
+                    <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 14px", borderBottom: i < lbData.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none", background: isYou ? "rgba(255,200,0,0.06)" : "transparent" }}>
+                      <span style={{ color: i===0?"#ffd700":i===1?"#9ca3af":i===2?"#cd7f32":"#374151", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.88rem", width:22, flexShrink:0 }}>#{i+1}</span>
+                      <span style={{ flex:1, color:isYou?"#ffd700":"#d1d5db", fontSize:"0.82rem", fontWeight:isYou?700:400, textAlign:"left", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                        {row.username}{isYou ? " (you)" : ""}
+                      </span>
+                      {lbType === "alltime" && row.streak && row.streak > 2 && <span style={{ fontSize:"0.65rem", color:"#fb923c" }}>{row.streak}🔥</span>}
+                      <span style={{ color:isYou?"#ffd700":"#6b7280", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", flexShrink:0 }}>{row.score.toLocaleString()}</span>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Your stats */}
+            <div style={{ background:"rgba(255,200,0,0.06)", border:"1px solid rgba(255,200,0,0.15)", borderRadius:10, padding:"12px 14px", marginBottom:14 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  {getScoreBadge(totalScore) && <span style={{ fontSize:"1.2rem" }}>{getScoreBadge(totalScore)!.emoji}</span>}
+                  <div>
+                    <p style={{ margin:0, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem" }}>{username || "Anonymous"}</p>
+                    <p style={{ margin:0, color:"#4b5563", fontSize:"0.6rem" }}>{streakData.current > 0 ? `${streakData.current} day streak 🔥` : "No active streak"}</p>
+                  </div>
+                </div>
+                <p style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.3rem" }}>{totalScore.toLocaleString()}</p>
+              </div>
+            </div>
+
             {!username && (
-              <button onClick={() => { setShowLeaderboard(false); setUsernameInput(""); setShowUsernameModal(true); }} style={{ width:"100%", padding:"11px", borderRadius:8, border:"none", background:"rgba(255,200,0,0.9)", color:"#0a0c10", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.9rem" }}>
-                SET USERNAME TO CLAIM YOUR SPOT →
+              <button onClick={() => { setShowLeaderboard(false); setUsernameInput(""); setShowUsernameModal(true); }} style={{ width:"100%", padding:"10px", borderRadius:8, border:"none", background:"rgba(255,200,0,0.9)", color:"#0a0c10", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.88rem" }}>
+                SET USERNAME TO APPEAR ON BOARD →
               </button>
             )}
           </div>
@@ -3276,7 +3383,7 @@ export default function StatsIQ() {
                 <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif" }}>{streakData.current}🔥</p>
               </button>
             )}
-            <button onClick={() => setShowLeaderboard(true)} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>🏅</button>
+            <button onClick={() => { setShowLeaderboard(true); setLbLoading(true); sbGetLeaderboard("alltime").then(d => { setLbData(d); setLbLoading(false); }); }} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>🏅</button>
           </div>
         </div>
         <div style={{ display:"flex", gap:8, marginTop:8, alignItems:"center", justifyContent:"center" }}>
@@ -3326,7 +3433,7 @@ export default function StatsIQ() {
           {Object.entries(stats).map(([key,val],i) => (
             <div key={key} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", background:"rgba(255,255,255,0.06)", border:`1px solid ${cfg.border}`, borderRadius:10, padding:"10px 6px", opacity:visible?1:0, transform:visible?"translateY(0)":"translateY(8px)", transition:`all 0.4s ease ${i*0.08}s` }}>
               <span style={{ fontSize:"1.5rem", fontWeight:900, color:cfg.color, fontFamily:"'Bebas Neue', sans-serif" }}>{val}</span>
-              <span style={{ fontSize:"0.58rem", fontWeight:700, letterSpacing:"0.18em", color:`${cfg.color}99`, marginTop:3, fontFamily:"'Barlow Condensed', sans-serif" }}>{key}</span>
+              <span style={{ fontSize:"0.58rem", fontWeight:700, letterSpacing:"0.18em", color:`${cfg.color}99`, marginTop:3, fontFamily:"'Barlow Condensed', sans-serif" }}>{key.replace(/_/g," ")}</span>
             </div>
           ))}
         </div>
@@ -3533,6 +3640,13 @@ export default function StatsIQ() {
                 </button>
               </div>
             )}
+            {/* Rarity from Supabase */}
+            {rarity[diff] && rarity[diff].total_plays >= 5 && (
+              <div style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:8, padding:"8px 14px", marginBottom:10, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <span style={{ color:"#4b5563", fontSize:"0.65rem", letterSpacing:"0.1em", fontFamily:"'Bebas Neue',sans-serif" }}>PLAYERS WHO GOT THIS</span>
+                <span style={{ color: rarity[diff].win_pct >= 70 ? "#22c55e" : rarity[diff].win_pct >= 40 ? "#f59e0b" : "#ef4444", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem" }}>{rarity[diff].win_pct}%</span>
+              </div>
+            )}
             <p style={{ margin:"10px 0 0", color:"#374151", fontSize:"0.62rem", letterSpacing:"0.15em" }}>NEW STAT LINE EVERY DAY AT MIDNIGHT</p>
           </div>
         )}
@@ -3627,7 +3741,7 @@ export default function StatsIQ() {
                 {Object.entries(pp.stats).map(([k,v]) => (
                   <div key={k} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(167,139,250,0.2)", borderRadius:8, padding:"8px 4px" }}>
                     <span style={{ fontSize:"1.2rem", fontWeight:900, color:"#a78bfa", fontFamily:"'Bebas Neue',sans-serif" }}>{v}</span>
-                    <span style={{ fontSize:"0.55rem", color:"rgba(167,139,250,0.6)", letterSpacing:"0.15em" }}>{k}</span>
+                    <span style={{ fontSize:"0.55rem", color:"rgba(167,139,250,0.6)", letterSpacing:"0.15em" }}>{k.replace(/_/g," ")}</span>
                   </div>
                 ))}
               </div>
