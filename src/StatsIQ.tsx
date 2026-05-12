@@ -1650,8 +1650,6 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
 }
 
 export default function StatsIQ() {
-  // Desktop detection via CSS media query - no JS needed for layout
-  const isDesktop = typeof window !== "undefined" && window.innerWidth >= 960;
   const [diff, setDiff] = useState<Difficulty>("easy");
   const [filter, setFilter] = useState<Set<string>>(() => {
     try { const s = localStorage.getItem("statsiq_filter"); return s ? new Set(JSON.parse(s)) : new Set<string>(); } catch { return new Set<string>(); }
@@ -2598,13 +2596,7 @@ export default function StatsIQ() {
 
       {/* GAME CONTENT — always visible, responsive width */}
       <div style={{ position:"relative", zIndex:10, width:"100%", maxWidth:500, padding:"0 16px", display:"flex", flexDirection:"column", gap:12, marginTop:6 }}>
-        {/* Desktop difficulty label */}
-        {isDesktop && (
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:2 }}>
-            <span style={{ color:cfg.color, fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.15em" }}>{cfg.label} PUZZLE</span>
-            <span style={{ color:"#4b5563", fontSize:"0.65rem" }}>{cfg.desc} · {cfg.guesses} guesses</span>
-          </div>
-        )}
+
         <div style={{ background:"rgba(255,200,0,0.04)", border:`1px solid ${cfg.border}`, borderRadius:10, padding:"10px 14px", transition:"border-color 0.3s" }}>
           <p style={{ margin:"0 0 2px", fontSize:"0.6rem", color:"rgba(255,215,0,0.4)", letterSpacing:"0.2em", fontFamily:"'Bebas Neue', sans-serif" }}>PERFORMANCE</p>
           <p style={{ margin:0, fontSize:"0.82rem", color:"#d1d5db", lineHeight:1.3 }}>{ctx}</p>
@@ -3011,6 +3003,18 @@ export default function StatsIQ() {
 
       {msg && <div style={{ position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", zIndex:500, background:"#fff", color:"#111", padding:"9px 22px", borderRadius:8, fontWeight:700, fontSize:"0.88rem", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", whiteSpace:"nowrap", fontFamily:"'Barlow Condensed', sans-serif" }}>{msg}</div>}
 
+
+      {/* ABOUT FOOTER */}
+      <div style={{ width:"100%", maxWidth:500, padding:"24px 18px 8px", marginTop:16, borderTop:"1px solid rgba(255,255,255,0.05)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <div>
+          <p style={{ margin:0, color:"#374151", fontSize:"0.62rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>BUILT BY BP</p>
+          <p style={{ margin:0, color:"#1f2937", fontSize:"0.58rem", marginTop:2 }}>statsiq.io · daily sports trivia</p>
+        </div>
+        <div style={{ display:"flex", gap:10, alignItems:"center" }}>
+          <a href="https://twitter.com" target="_blank" rel="noreferrer" style={{ color:"#374151", fontSize:"0.7rem", textDecoration:"none", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>𝕏</a>
+          <button onClick={() => setShowEmailCapture(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>📬 GET REMINDERS</button>
+        </div>
+      </div>
 
       <Analytics />
 
