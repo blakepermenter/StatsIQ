@@ -1813,6 +1813,7 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
             { icon:"🦅", label:"Guess 1 Win", earned: wins.some(e => e.guesses === 1) },
             { icon:"📊", label:"10 Wins", earned: wins.length >= 10 },
             { icon:"🏅", label:"50 Wins", earned: wins.length >= 50 },
+          ];
           const earned = badges.filter(b => b.earned);
           if (earned.length === 0) return null;
           return (
