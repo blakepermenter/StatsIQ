@@ -2148,6 +2148,7 @@ export default function StatsIQ() {
   });
   const [showHistory, setShowHistory] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showWeeklyRecap, setShowWeeklyRecap] = useState(false);
   const [showUsernameModal, setShowUsernameModal] = useState(false);
   const [showPractice, setShowPractice] = useState(false);
   const [practiceIdx, setPracticeIdx] = useState(0);
@@ -2220,6 +2221,29 @@ export default function StatsIQ() {
     } catch { return { current: 0, best: 0 }; }
   };
   const [streakData] = useState(computeStreak);
+
+  // Streak shield — earned at 7-day streak, usable once to skip a missed day
+  const [streakShield, setStreakShield] = useState<boolean>(() => {
+    try { return localStorage.getItem("statsiq_streak_shield") === "1"; } catch { return false; }
+  });
+  const [shieldUsed, setShieldUsed] = useState<boolean>(() => {
+    try { return localStorage.getItem("statsiq_shield_used") === "1"; } catch { return false; }
+  });
+
+  // Personal best per difficulty
+  const getPersonalBest = (d: Difficulty): number => {
+    try {
+      let best = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i) || "";
+        if (k.startsWith("statsiq_day_") && k.endsWith("_" + d)) {
+          const entry = JSON.parse(localStorage.getItem(k) || "{}");
+          if (entry.score > best) best = entry.score;
+        }
+      }
+      return best;
+    } catch { return 0; }
+  };
   const getInitialDayState = () => {
     try {
       const today = new Date();
@@ -2311,7 +2335,64 @@ export default function StatsIQ() {
     return () => clearInterval(t);
   }, []);
 
-  // Show email capture after first perfect day — long delay so it doesn't interrupt the moment
+  // Award streak shield at 7-day streak
+  useEffect(() => {
+    if (streakData.current >= 7 && !streakShield && !shieldUsed) {
+      setStreakShield(true);
+      try { localStorage.setItem("statsiq_streak_shield", "1"); } catch {}
+    }
+  }, [streakData.current, streakShield, shieldUsed]);
+
+  // Auto-apply shield if player missed yesterday (streak would break)
+  useEffect(() => {
+    if (!streakShield) return;
+    const today = new Date().toISOString().slice(0,10);
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+    const twoDaysAgo = new Date(Date.now() - 172800000).toISOString().slice(0,10);
+    // Check if they played two days ago but not yesterday
+    const playedTwoDaysAgo = (() => { try {
+      const keys = Object.keys(localStorage).filter(k => k.startsWith("statsiq_day_"));
+      return keys.some(k => { const p = k.split("_"); return `${p[2]}-${p[3].padStart(2,"0")}-${p[4].padStart(2,"0")}` === twoDaysAgo && JSON.parse(localStorage.getItem(k)||"{}").won; });
+    } catch { return false; } })();
+    const playedYesterday = (() => { try {
+      const keys = Object.keys(localStorage).filter(k => k.startsWith("statsiq_day_"));
+      return keys.some(k => { const p = k.split("_"); return `${p[2]}-${p[3].padStart(2,"0")}-${p[4].padStart(2,"0")}` === yesterday; });
+    } catch { return false; } })();
+    if (playedTwoDaysAgo && !playedYesterday) {
+      // Use the shield — create a phantom entry for yesterday so streak continues
+      try {
+        localStorage.setItem(`statsiq_shield_${yesterday}`, "1");
+        localStorage.setItem("statsiq_streak_shield", "0");
+        localStorage.setItem("statsiq_shield_used", "1");
+        setStreakShield(false);
+        setShieldUsed(true);
+        toast("🛡️ Streak Shield used — your streak is safe!", 3500);
+      } catch {}
+    }
+  }, []); // eslint-disable-line
+
+  // Show weekly recap on Monday if they played last week
+  useEffect(() => {
+    const today = new Date();
+    if (today.getDay() !== 1) return; // Only Monday
+    const recapKey = `statsiq_recap_shown_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
+    try {
+      if (localStorage.getItem(recapKey)) return; // Already shown today
+      // Check if they played any day last week
+      const keys = Object.keys(localStorage).filter(k => k.startsWith("statsiq_day_"));
+      const hasLastWeekData = keys.some(k => {
+        try {
+          const parts = k.split("_");
+          const d = new Date(`${parts[2]}-${parts[3].padStart(2,"0")}-${parts[4].padStart(2,"0")}`);
+          const daysAgo = (today.getTime() - d.getTime()) / 86400000;
+          return daysAgo >= 1 && daysAgo <= 7;
+        } catch { return false; }
+      });
+      if (hasLastWeekData) {
+        setTimeout(() => { setShowWeeklyRecap(true); localStorage.setItem(recapKey, "1"); }, 2000);
+      }
+    } catch {}
+  }, []);
   useEffect(() => {
     const allDone = (["easy","medium","hard"] as Difficulty[]).every(d => completedToday.has(d));
     if (allDone && !emailSubmitted) {
@@ -2974,42 +3055,130 @@ export default function StatsIQ() {
           <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.8)", backdropFilter:"blur(4px)" }} />
           <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"28px 24px", width:320, textAlign:"center" }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setShowLeaderboard(false)} style={{ position:"absolute", top:14, right:14, background:"none", border:"none", color:"#6b7280", cursor:"pointer", fontSize:"1.3rem" }}>✕</button>
-            <div style={{ fontSize:"2.5rem", marginBottom:12 }}>🏆</div>
-            <h3 style={{ margin:"0 0 8px", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", letterSpacing:"0.15em" }}>LEADERBOARD</h3>
-            <p style={{ margin:"0 0 20px", color:"#6b7280", fontSize:"0.78rem", lineHeight:1.5 }}>Global rankings are coming soon.<br/>Set your username now so you're ready.</p>
 
-            {/* Fake preview leaderboard */}
-            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:10, overflow:"hidden", marginBottom:16, border:"1px solid rgba(255,255,255,0.07)" }}>
-              {[
-                { rank:1, name:"SportsBrain99", score:"47,250", diff:"🔴" },
-                { rank:2, name:"GridironGuru", score:"41,800", diff:"🔴" },
-                { rank:3, name:"CourtVision", score:"38,400", diff:"🟡" },
-                { rank:4, name:username || "YOU", score:totalScore.toLocaleString(), diff:"🟢", isYou:true },
-                { rank:5, name:"StatKing", score:"29,100", diff:"🟡" },
-              ].map((row, i) => (
-                <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderBottom: i < 4 ? "1px solid rgba(255,255,255,0.05)" : "none", background: row.isYou ? "rgba(255,200,0,0.06)" : "transparent" }}>
-                  <span style={{ color: i === 0 ? "#ffd700" : i === 1 ? "#9ca3af" : i === 2 ? "#cd7f32" : "#4b5563", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", width:20, flexShrink:0 }}>#{row.rank}</span>
-                  <span style={{ flex:1, color: row.isYou ? "#ffd700" : "#d1d5db", fontSize:"0.82rem", fontWeight: row.isYou ? 700 : 400, textAlign:"left" }}>{row.name}</span>
-                  <span style={{ fontSize:"0.7rem" }}>{row.diff}</span>
-                  <span style={{ color: row.isYou ? "#ffd700" : "#9ca3af", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem" }}>{row.score}</span>
+            <div style={{ fontSize:"2.2rem", marginBottom:10 }}>🏆</div>
+            <h3 style={{ margin:"0 0 6px", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", letterSpacing:"0.15em" }}>LEADERBOARD</h3>
+            <p style={{ margin:"0 0 20px", color:"#4b5563", fontSize:"0.72rem", letterSpacing:"0.1em" }}>GLOBAL RANKINGS COMING SOON</p>
+
+            {/* Your current standing */}
+            <div style={{ background:"rgba(255,200,0,0.06)", border:"1px solid rgba(255,200,0,0.2)", borderRadius:12, padding:"16px 18px", marginBottom:16, textAlign:"left" }}>
+              <p style={{ margin:"0 0 12px", color:"#6b7280", fontSize:"0.58rem", letterSpacing:"0.18em", fontFamily:"'Bebas Neue',sans-serif" }}>YOUR STATS</p>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  {getScoreBadge(totalScore) && <span style={{ fontSize:"1.3rem" }}>{getScoreBadge(totalScore)!.emoji}</span>}
+                  <div>
+                    <p style={{ margin:0, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", letterSpacing:"0.08em" }}>{username || "Anonymous"}</p>
+                    {getScoreBadge(totalScore) && <p style={{ margin:0, color:"#ffd700", fontSize:"0.62rem", letterSpacing:"0.1em" }}>{getScoreBadge(totalScore)!.label.toUpperCase()}</p>}
+                  </div>
+                </div>
+                <p style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem" }}>{totalScore.toLocaleString()}</p>
+              </div>
+              <div style={{ display:"flex", gap:8 }}>
+                <div style={{ flex:1, background:"rgba(251,146,60,0.1)", borderRadius:8, padding:"8px", textAlign:"center" }}>
+                  <p style={{ margin:0, color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem" }}>{streakData.current}🔥</p>
+                  <p style={{ margin:0, color:"#4b5563", fontSize:"0.58rem", letterSpacing:"0.1em" }}>STREAK</p>
+                </div>
+                <div style={{ flex:1, background:"rgba(167,139,250,0.1)", borderRadius:8, padding:"8px", textAlign:"center" }}>
+                  <p style={{ margin:0, color:"#a78bfa", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem" }}>{streakData.best}</p>
+                  <p style={{ margin:0, color:"#4b5563", fontSize:"0.58rem", letterSpacing:"0.1em" }}>BEST STREAK</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Coming soon teaser */}
+            <div style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"14px 16px", marginBottom:16, textAlign:"left" }}>
+              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.58rem", letterSpacing:"0.18em", fontFamily:"'Bebas Neue',sans-serif" }}>COMING SOON</p>
+              {["🌍 Global all-time rankings","📅 Daily leaderboard resets","🏅 Weekly top performers","👥 Challenge friends directly"].map((t,i) => (
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:i < 3 ? 8 : 0 }}>
+                  <span style={{ fontSize:"0.85rem" }}>{t.slice(0,2)}</span>
+                  <span style={{ color:"#374151", fontSize:"0.75rem" }}>{t.slice(3)}</span>
                 </div>
               ))}
             </div>
 
-            <div style={{ background:"rgba(255,200,0,0.07)", border:"1px solid rgba(255,200,0,0.2)", borderRadius:8, padding:"10px 14px", marginBottom:16 }}>
-              <p style={{ margin:0, color:"#fcd34d", fontSize:"0.72rem", lineHeight:1.4 }}>
-                🚀 <strong>Coming soon</strong> — global leaderboard with daily, weekly, and all-time rankings. Keep stacking your score!
-              </p>
-            </div>
-
             {!username && (
               <button onClick={() => { setShowLeaderboard(false); setUsernameInput(""); setShowUsernameModal(true); }} style={{ width:"100%", padding:"11px", borderRadius:8, border:"none", background:"rgba(255,200,0,0.9)", color:"#0a0c10", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.9rem" }}>
-                SET YOUR USERNAME NOW →
+                SET USERNAME TO CLAIM YOUR SPOT →
               </button>
             )}
           </div>
         </div>
       )}
+
+      {/* WEEKLY RECAP MODAL */}
+      {showWeeklyRecap && (() => {
+        const today = new Date();
+        const diffs: Difficulty[] = ["easy","medium","hard"];
+        let totalPts = 0, wins = 0, played = 0, bestScore = 0, bestDay = "";
+        const dayMap: Record<string, {pts:number, wins:number}> = {};
+        try {
+          Object.keys(localStorage).filter(k => k.startsWith("statsiq_day_")).forEach(k => {
+            const parts = k.split("_");
+            const d = new Date(`${parts[2]}-${parts[3].padStart(2,"0")}-${parts[4].padStart(2,"0")}`);
+            const daysAgo = (today.getTime() - d.getTime()) / 86400000;
+            if (daysAgo < 1 || daysAgo > 7) return;
+            const entry = JSON.parse(localStorage.getItem(k)||"{}");
+            played++;
+            if (entry.won) wins++;
+            if (entry.score) {
+              totalPts += entry.score;
+              const ds = d.toISOString().slice(0,10);
+              if (!dayMap[ds]) dayMap[ds] = {pts:0,wins:0};
+              dayMap[ds].pts += entry.score;
+              dayMap[ds].wins += entry.won ? 1 : 0;
+              if (dayMap[ds].pts > bestScore) { bestScore = dayMap[ds].pts; bestDay = ds; }
+            }
+          });
+        } catch {}
+        const daysPlayed = Object.keys(dayMap).length;
+        const winPct = played > 0 ? Math.round((wins/played)*100) : 0;
+        const bestDayStr = bestDay ? new Date(bestDay).toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"}) : "";
+        return (
+          <div style={{ position:"fixed", inset:0, zIndex:300, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowWeeklyRecap(false)}>
+            <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(4px)" }} />
+            <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,215,0,0.2)", borderRadius:16, padding:"26px 22px", width:310, textAlign:"center" }} onClick={e => e.stopPropagation()}>
+              <button onClick={() => setShowWeeklyRecap(false)} style={{ position:"absolute", top:14, right:14, background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
+
+              <div style={{ fontSize:"2rem", marginBottom:8 }}>📊</div>
+              <h3 style={{ margin:"0 0 2px", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.5rem", letterSpacing:"0.12em" }}>WEEKLY RECAP</h3>
+              <p style={{ margin:"0 0 20px", color:"#4b5563", fontSize:"0.65rem", letterSpacing:"0.2em" }}>LAST 7 DAYS</p>
+
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:16 }}>
+                {[
+                  { label:"DAYS PLAYED", val:daysPlayed.toString(), color:"#ffd700" },
+                  { label:"WIN RATE", val:`${winPct}%`, color:"#22c55e" },
+                  { label:"POINTS EARNED", val:totalPts.toLocaleString(), color:"#60a5fa" },
+                  { label:"PUZZLES WON", val:`${wins}/${played}`, color:"#a78bfa" },
+                ].map(({label,val,color}) => (
+                  <div key={label} style={{ background:"rgba(255,255,255,0.04)", borderRadius:10, padding:"12px 8px" }}>
+                    <p style={{ margin:0, color, fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.3rem" }}>{val}</p>
+                    <p style={{ margin:"2px 0 0", color:"#4b5563", fontSize:"0.56rem", letterSpacing:"0.12em" }}>{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {bestDayStr && bestScore > 0 && (
+                <div style={{ background:"rgba(255,215,0,0.06)", border:"1px solid rgba(255,215,0,0.15)", borderRadius:10, padding:"10px 14px", marginBottom:16, textAlign:"left" }}>
+                  <p style={{ margin:"0 0 2px", color:"#6b7280", fontSize:"0.58rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>BEST DAY</p>
+                  <p style={{ margin:0, color:"#ffd700", fontSize:"0.85rem", fontWeight:700 }}>{bestDayStr}</p>
+                  <p style={{ margin:"2px 0 0", color:"#9ca3af", fontSize:"0.72rem" }}>{bestScore.toLocaleString()} points earned</p>
+                </div>
+              )}
+
+              {streakData.current > 0 && (
+                <div style={{ display:"inline-flex", alignItems:"center", gap:8, background:"rgba(251,146,60,0.1)", border:"1px solid rgba(251,146,60,0.25)", borderRadius:8, padding:"6px 14px", marginBottom:16 }}>
+                  <span>🔥</span>
+                  <span style={{ color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem" }}>{streakData.current} DAY STREAK — KEEP IT GOING!</span>
+                </div>
+              )}
+
+              <button onClick={() => setShowWeeklyRecap(false)} style={{ width:"100%", padding:"11px", borderRadius:8, border:"none", background:"rgba(255,200,0,0.9)", color:"#0a0c10", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.9rem" }}>
+                LET'S PLAY →
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {showHow && (
         <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowHow(false)}>
@@ -3269,8 +3438,27 @@ export default function StatsIQ() {
               <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(251,146,60,0.12)", border:"1px solid rgba(251,146,60,0.3)", borderRadius:8, padding:"5px 12px", marginBottom:12 }}>
                 <span style={{ fontSize:"1rem" }}>🔥</span>
                 <span style={{ color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.1em" }}>{streakData.current} DAY STREAK</span>
+                {streakShield && <span style={{ fontSize:"0.75rem" }}>🛡️</span>}
               </div>
             )}
+
+            {/* Streak shield earned notification */}
+            {won && streakData.current === 7 && streakShield && (
+              <div style={{ background:"rgba(99,102,241,0.1)", border:"1px solid rgba(99,102,241,0.35)", borderRadius:8, padding:"7px 12px", marginBottom:12 }}>
+                <p style={{ margin:0, color:"#a5b4fc", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.82rem", letterSpacing:"0.08em" }}>🛡️ STREAK SHIELD EARNED — one free miss protected</p>
+              </div>
+            )}
+
+            {/* Personal best notification */}
+            {won && todayScore != null && (() => {
+              const prev = getPersonalBest(diff);
+              if (todayScore > prev && prev > 0) return (
+                <div style={{ background:"rgba(34,197,94,0.08)", border:"1px solid rgba(34,197,94,0.3)", borderRadius:8, padding:"7px 12px", marginBottom:12 }}>
+                  <p style={{ margin:0, color:"#86efac", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.82rem", letterSpacing:"0.08em" }}>⭐ NEW PERSONAL BEST ON {diff.toUpperCase()}!</p>
+                </div>
+              );
+              return null;
+            })()}
 
             {/* Score breakdown */}
             {won && scoreBreakdown && (
