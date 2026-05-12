@@ -1936,7 +1936,6 @@ export default function StatsIQ() {
     setGuesses([]); setInput(""); setDone(false); setWon(false); setMsg("");
     setTodayScore(null); setScoreBreakdown(null);
     setVisible(false); setTimeout(() => setVisible(true), 300);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [diff, filterKey]);
   useEffect(() => { setTimeout(() => setVisible(true), 300); }, []);
 
