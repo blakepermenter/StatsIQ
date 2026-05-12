@@ -1774,6 +1774,34 @@ const sbUpsertPlayer = async (username: string, totalScore: number, bestStreak: 
   } catch {}
 };
 
+// When a player sets their username for the first time, backfill their anonymous plays
+const sbBackfillUsername = async (newUsername: string) => {
+  try {
+    const localDates: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i) || "";
+      if (k.startsWith("statsiq_day_")) {
+        const parts = k.split("_");
+        if (parts.length >= 5) {
+          const dateStr = `${parts[2]}-${parts[3].padStart(2,"0")}-${parts[4].padStart(2,"0")}`;
+          if (!localDates.includes(dateStr)) localDates.push(dateStr);
+        }
+      }
+    }
+    if (localDates.length === 0) return;
+    await sbFetch(`plays?username=eq.anonymous&date=in.(${localDates.join(",")})`, {
+      method: "PATCH",
+      headers: { "Prefer": "return=minimal" },
+      body: JSON.stringify({ username: newUsername }),
+    });
+    await sbFetch(`players?username=eq.anonymous`, {
+      method: "PATCH",
+      headers: { "Prefer": "return=minimal" },
+      body: JSON.stringify({ username: newUsername }),
+    });
+  } catch {}
+};
+
 // Save email to Supabase
 const sbSaveEmail = async (email: string, username: string) => {
   try {
@@ -3119,7 +3147,7 @@ export default function StatsIQ() {
             <input
               value={usernameInput}
               onChange={e => setUsernameInput(e.target.value.slice(0, 20))}
-              onKeyDown={e => { if (e.key === "Enter" && usernameInput.trim().length >= 2) { const u = usernameInput.trim(); setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); } }}
+              onKeyDown={e => { if (e.key === "Enter" && usernameInput.trim().length >= 2) { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) sbBackfillUsername(u); else sbUpsertPlayer(u, totalScore, streakData.current); } }}
               placeholder="Enter username..."
               maxLength={20}
               autoFocus
@@ -3130,7 +3158,7 @@ export default function StatsIQ() {
               <button onClick={() => setShowUsernameModal(false)} style={{ flex:1, padding:"10px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#9ca3af", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif" }}>Cancel</button>
               <button
                 disabled={usernameInput.trim().length < 2}
-                onClick={() => { const u = usernameInput.trim(); setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); }}
+                onClick={() => { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) sbBackfillUsername(u); else sbUpsertPlayer(u, totalScore, streakData.current); }}
                 style={{ flex:2, padding:"10px", borderRadius:8, border:"none", background: usernameInput.trim().length >= 2 ? "rgba(255,200,0,0.9)" : "rgba(100,100,100,0.3)", color: usernameInput.trim().length >= 2 ? "#0a0c10" : "#555", cursor: usernameInput.trim().length >= 2 ? "pointer" : "not-allowed", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
                 SAVE
               </button>
