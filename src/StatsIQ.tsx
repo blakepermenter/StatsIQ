@@ -2622,7 +2622,7 @@ export default function StatsIQ() {
         toast("🛡️ Streak Shield used — your streak is safe!", 3500);
       } catch {}
     }
-  }, []); // eslint-disable-line
+  }, []);
 
   // Show weekly recap on Monday if they played last week
   useEffect(() => {
@@ -2845,7 +2845,6 @@ export default function StatsIQ() {
         setVisible(true);
       }
     } catch {}
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Filters lock for the entire day once any guess is made on any difficulty
