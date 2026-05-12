@@ -1623,61 +1623,7 @@ const HARD = [
   { player:"Richie Guerin", sport:"🏀 NBA", answer:"RICHIE GUERIN HC", era:"legends", stats:{PTS:"22.0",ALLSTAR:"6x",TEAM:"Knicks/Hawks",COACH:"Player-coach"}, ctx:"Career Totals — Six-time All-Star who served as player-coach of the Hawks", clues:["Was the New York Knicks best player in the late 1950s and early 1960s","Made six All-Star teams during his playing career","Became a player-coach for the St. Louis Hawks in 1964 while still active","From the Bronx New York — played at Iona College"] },
 
 
-const sbSaveEmail = async (email: string, username: string) => {
-  try {
-    await sbFetch("emails?on_conflict=email", {
-      method: "POST",
-      headers: { "Prefer": "resolution=ignore-duplicates,return=minimal" },
-      body: JSON.stringify({ email, username: username || "" }),
-    });
-  } catch {}
-};
 
-// Fetch today's rarity stats
-const sbGetRarity = async (): Promise<Record<string, {win_pct: number, total_plays: number, avg_guesses: number}>> => {
-  try {
-    const data = await sbFetch("today_rarity?select=*");
-    if (!data) return {};
-    const result: Record<string, {win_pct: number, total_plays: number, avg_guesses: number}> = {};
-    for (const row of data) result[row.difficulty] = row;
-    return result;
-  } catch { return {}; }
-};
-
-// Fetch leaderboard
-const sbGetLeaderboard = async (type: "today" | "alltime"): Promise<Array<{username:string, score:number, streak?:number}>> => {
-  try {
-    const view = type === "today" ? "today_leaderboard?select=username,day_score" : "alltime_leaderboard?select=username,total_score,best_streak";
-    const data = await sbFetch(view);
-    if (!data) return [];
-    return data
-      .map((r: Record<string,unknown>) => ({
-        username: r.username as string,
-        score: (r.day_score ?? r.total_score) as number,
-        streak: r.best_streak != null ? Number(r.best_streak) : undefined,
-      }))
-      .filter((r: {score:number}) => r.score > 0);
-  } catch { return []; }
-};
-
-// Fetch a player's all-time rank (returns null if not in top 25 or not found)
-const sbGetPlayerRank = async (username: string): Promise<number|null> => {
-  try {
-    const data = await sbFetch("alltime_leaderboard?select=username&limit=25");
-    if (!data) return null;
-    const idx = data.findIndex((r: {username:string}) => r.username === username);
-    return idx >= 0 ? idx + 1 : null;
-  } catch { return null; }
-};
-
-const SCORE_BADGES = [
-  { min: 2500000, emoji: "🐐", label: "GOAT" },
-  { min: 1000000, emoji: "💎", label: "Diamond" },
-  { min: 500000,  emoji: "🏆", label: "Platinum" },
-  { min: 200000,  emoji: "🥇", label: "Gold" },
-  { min: 75000,   emoji: "🥈", label: "Silver" },
-  { min: 25000,   emoji: "🥉", label: "Bronze" },
-  { min: 5000,    emoji: "🎯", label: "Hooked" },
   { player:"Bailey Howell", sport:"🏀 NBA", answer:"BAILEY HOWELL HC", era:"classic", stats:{PTS:"18.7",REB:"9.9",RINGS:"2",ALLSTAR:"6x"}, ctx:"Career Totals — Won two titles with Boston after starring for Detroit", clues:["Won two NBA championships with the Boston Celtics in 1968 and 1969","Scored 18.7 points per game across his 12-year NBA career","Made six All-Star appearances with Detroit Baltimore and Boston","From Middleton Tennessee — played at Mississippi State before being drafted in 1959"] },
   { player:"Don Ohl", sport:"🏀 NBA", answer:"DON OHL HC", era:"classic", stats:{PTS:"17.0",ALLSTAR:"1x",TEAM:"Pistons/Hawks/Bullets",ERA:"1960s"}, ctx:"Career Totals — Reliable shooting guard across four NBA franchises in the 1960s", clues:["Scored 17.0 points per game as a reliable shooting guard in the 1960s NBA","Made one All-Star appearance during his peak years with the Detroit Pistons","Played for the Pistons Hawks Bullets and Cardinals across his career","From Murphysboro Illinois — played at Illinois before being drafted by the Pistons in 1958"] },
   { player:"Eddie Price", sport:"🏈 NFL", answer:"EDDIE PRICE HC", era:"legends", stats:{RUSH:"3292 yards",TEAM:"New York Giants",ERA:"Early 1950s",ALLPRO:"1951"}, ctx:"Career Totals — Leading rusher for the Giants in the early 1950s", clues:["Was the New York Giants leading ball carrier in the early 1950s","Was named to the All-Pro team in 1951 as one of the best backs in the league","Led the NFL in rushing yards in 1951 which was his best professional season","From Baton Rouge Louisiana — played at Tulane before joining the Giants in 1950"] },
@@ -1880,8 +1826,6 @@ const SCORE_BADGES = [
   { player:"Cooney Weiland", sport:"🏒 NHL", answer:"COONEY WEILAND", era:"legends", stats:{SCORING:"Led NHL 1930",RINGS:"2",TEAM:"Bruins",LINE:"Dynamite Line"}, ctx:"Career Totals — Led the NHL in scoring in 1929-30 and won two Stanley Cups with Boston", clues:["Led the NHL in scoring in the 1929-30 season with the Boston Bruins","Won two Stanley Cup championships with the Bruins","Was the centripeice of the Dynamite Line in Boston alongside Dutch Gainor and Dit Clapper","From Egmondville Ontario — played for the Bruins Ottawa Senators and Detroit Red Wings across his career"] },
 
 ];
-
-
 const sbUpdateUsername = async (newUsername: string) => {
   try {
     await sbFetch(`players?username=eq.${encodeURIComponent(newUsername)}`, {
@@ -1897,7 +1841,63 @@ const sbUpdateUsername = async (newUsername: string) => {
   } catch {}
 };
 
-// Save email to Supabase
+const sbSaveEmail = async (email: string, username: string) => {
+  try {
+    await sbFetch("emails?on_conflict=email", {
+      method: "POST",
+      headers: { "Prefer": "resolution=ignore-duplicates,return=minimal" },
+      body: JSON.stringify({ email, username: username || "" }),
+    });
+  } catch {}
+};
+
+// Fetch today's rarity stats
+const sbGetRarity = async (): Promise<Record<string, {win_pct: number, total_plays: number, avg_guesses: number}>> => {
+  try {
+    const data = await sbFetch("today_rarity?select=*");
+    if (!data) return {};
+    const result: Record<string, {win_pct: number, total_plays: number, avg_guesses: number}> = {};
+    for (const row of data) result[row.difficulty] = row;
+    return result;
+  } catch { return {}; }
+};
+
+// Fetch leaderboard
+const sbGetLeaderboard = async (type: "today" | "alltime"): Promise<Array<{username:string, score:number, streak?:number}>> => {
+  try {
+    const view = type === "today" ? "today_leaderboard?select=username,day_score" : "alltime_leaderboard?select=username,total_score,best_streak";
+    const data = await sbFetch(view);
+    if (!data) return [];
+    return data
+      .map((r: Record<string,unknown>) => ({
+        username: r.username as string,
+        score: (r.day_score ?? r.total_score) as number,
+        streak: r.best_streak != null ? Number(r.best_streak) : undefined,
+      }))
+      .filter((r: {score:number}) => r.score > 0);
+  } catch { return []; }
+};
+
+// Fetch a player's all-time rank (returns null if not in top 25 or not found)
+const sbGetPlayerRank = async (username: string): Promise<number|null> => {
+  try {
+    const data = await sbFetch("alltime_leaderboard?select=username&limit=25");
+    if (!data) return null;
+    const idx = data.findIndex((r: {username:string}) => r.username === username);
+    return idx >= 0 ? idx + 1 : null;
+  } catch { return null; }
+};
+
+const SCORE_BADGES = [
+  { min: 2500000, emoji: "🐐", label: "GOAT" },
+  { min: 1000000, emoji: "💎", label: "Diamond" },
+  { min: 500000,  emoji: "🏆", label: "Platinum" },
+  { min: 200000,  emoji: "🥇", label: "Gold" },
+  { min: 75000,   emoji: "🥈", label: "Silver" },
+  { min: 25000,   emoji: "🥉", label: "Bronze" },
+  { min: 5000,    emoji: "🎯", label: "Hooked" },
+];
+const getScoreBadge = (score: number) =>
   SCORE_BADGES.find(b => score >= b.min) ?? null;
 
 
