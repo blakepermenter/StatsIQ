@@ -2223,13 +2223,22 @@ export default function StatsIQ() {
   const getInitialDayState = () => {
     try {
       const today = new Date();
-      const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_easy`;
+      const dateStr = `${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
+      // Check completed first
+      const key = `statsiq_day_${dateStr}_easy`;
       const entry = localStorage.getItem(key);
       if (entry) {
         const data = JSON.parse(entry);
         return { done: true, won: data.won, guesses: Array(data.guesses).fill(null).map((_: null, i: number) =>
           i === data.guesses - 1 && data.won ? { text: data.player, ok: true } : { text: "• • •", ok: false }
         ), todayScore: data.score };
+      }
+      // Check mid-game progress
+      const progressKey = `statsiq_progress_${dateStr}_easy`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        const savedGuesses = JSON.parse(saved);
+        return { done: false, won: false, guesses: savedGuesses as { text: string; ok: boolean }[], todayScore: null };
       }
     } catch {}
     return { done: false, won: false, guesses: [] as { text: string; ok: boolean }[], todayScore: null };
@@ -2401,6 +2410,8 @@ export default function StatsIQ() {
     try {
       localStorage.setItem("statsiq_score", String(newTotal));
       localStorage.setItem(key, JSON.stringify({ score: final, guesses: guessNum, won: true, player, diff, date: today.toISOString() }));
+      // Clear mid-game progress now that it's complete
+      localStorage.removeItem(`statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`);
     } catch {}
     return final;
   };
@@ -2445,6 +2456,20 @@ export default function StatsIQ() {
 
     setGuesses([]); setInput(""); setDone(false); setWon(false); setMsg("");
     setTodayScore(null); setScoreBreakdown(null);
+
+    // Restore mid-game progress if any
+    const today2 = new Date();
+    const progressKey = `statsiq_progress_${today2.getFullYear()}_${today2.getMonth()+1}_${today2.getDate()}_${diff}`;
+    try {
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        const savedGuesses = JSON.parse(saved);
+        setGuesses(savedGuesses);
+        setVisible(true);
+        return;
+      }
+    } catch {}
+
     setVisible(false); setTimeout(() => setVisible(true), 300);
   }, [diff, filterKey]);
   useEffect(() => { setTimeout(() => setVisible(true), 300); }, []);
@@ -2511,11 +2536,18 @@ export default function StatsIQ() {
       // Save failed attempt
       const today = new Date();
       const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
-      try { localStorage.setItem(key, JSON.stringify({ score: 0, guesses: next.length, won: false, player, diff, date: today.toISOString() })); } catch {}
+      try { 
+        localStorage.setItem(key, JSON.stringify({ score: 0, guesses: next.length, won: false, player, diff, date: today.toISOString() }));
+        localStorage.removeItem(`statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`);
+      } catch {}
       markDiffCompleted(diff);
       setTimeout(() => { setDone(true); setWon(false); }, 200);
       toast(`It was ${player}!`, 3500);
     } else {
+      // Save mid-game progress so switching tabs doesn't lose guesses
+      const today = new Date();
+      const progressKey = `statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
+      try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
       toast(wrongCount < clues.length ? "New clue unlocked! 👀" : "Wrong — keep guessing!");
     }
   }, [input, guesses, answer, player, clues.length, wrongCount, cfg.guesses, awardScore]);
