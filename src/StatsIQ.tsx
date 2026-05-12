@@ -2635,10 +2635,70 @@ export default function StatsIQ() {
             </button>
           </div>
 
-          {/* CENTER — Game */}
+          {/* CENTER — Game (desktop placeholder - actual game rendered below) */}
           <div style={{ display:"flex", flexDirection:"column", alignItems:"center", width:"100%" }}>
+          </div>
+          {/* RIGHT PANEL */}
+          <div style={{ display:"flex", flexDirection:"column", gap:14, paddingLeft:20, position:"sticky", top:24 }}>
 
-      <div style={{ position:"relative", zIndex:10, width:"100%", maxWidth: isDesktop ? "100%" : 500, padding:"0 16px", display:"flex", flexDirection:"column", gap:12, marginTop:6 }}>
+            {/* Filter status */}
+            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:12, padding:"14px", border:"1px solid rgba(255,255,255,0.07)" }}>
+              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>CURRENT FILTERS</p>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:8 }}>
+                {filter.size === 0
+                  ? <span style={{ color:"#4b5563", fontSize:"0.72rem" }}>All sports</span>
+                  : [...filter].map(s => <span key={s} style={{ fontSize:"1rem" }}>{s}</span>)
+                }
+              </div>
+              <div style={{ display:"flex", gap:5, marginBottom:10 }}>
+                {eraFilter.size === 0
+                  ? <span style={{ color:"#4b5563", fontSize:"0.72rem" }}>All eras</span>
+                  : [...eraFilter].map(e => <span key={e} style={{ color:ERA_CONFIG[e as Era].activeBorder, fontSize:"0.7rem", padding:"2px 8px", borderRadius:4, background:ERA_CONFIG[e as Era].activeBg, border:`1px solid ${ERA_CONFIG[e as Era].activeBorder}` }}>{ERA_CONFIG[e as Era].label}</span>)
+                }
+              </div>
+              <button onClick={() => { if (hasStarted) { toast("Filters lock once you start guessing", 2000); return; } setShowFilter(true); }} style={{ width:"100%", padding:"7px", borderRadius:8, border:`1px solid ${hasStarted ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.1)"}`, background:"transparent", color: hasStarted ? "#374151" : "#9ca3af", cursor: hasStarted ? "not-allowed" : "pointer", fontSize:"0.65rem", fontFamily:"'Barlow Condensed',sans-serif", letterSpacing:"0.1em" }}>
+                {hasStarted ? "🔒 LOCKED FOR TODAY" : "⚙️ CHANGE FILTERS"}
+              </button>
+            </div>
+
+            {/* Difficulty description */}
+            <div style={{ background:cfg.bg, borderRadius:12, padding:"14px", border:`1px solid ${cfg.border}` }}>
+              <p style={{ margin:"0 0 6px", color:cfg.color, fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>{cfg.label} DIFFICULTY</p>
+              <p style={{ margin:"0 0 8px", color:"#9ca3af", fontSize:"0.78rem", lineHeight:1.5 }}>{cfg.desc}</p>
+              <p style={{ margin:0, color:"#4b5563", fontSize:"0.68rem" }}>{cfg.clueStyle} · {cfg.guesses} guesses</p>
+            </div>
+
+            {/* Score multipliers reminder */}
+            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:12, padding:"14px", border:"1px solid rgba(255,255,255,0.07)" }}>
+              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>SCORE MULTIPLIERS</p>
+              {[
+                { label:"Hard", val:"×5", color:"#ef4444" },
+                { label:"Medium", val:"×2", color:"#f59e0b" },
+                { label:"Easy", val:"×1", color:"#22c55e" },
+                { label:"Guess 1", val:"1000pts", color:"#ffd700" },
+                { label:"Guess 2", val:"750pts", color:"#ffd700" },
+                { label:"Guess 3", val:"500pts", color:"#ffd700" },
+              ].map(item => (
+                <div key={item.label} style={{ display:"flex", justifyContent:"space-between", padding:"4px 0", borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                  <span style={{ color:"#6b7280", fontSize:"0.72rem" }}>{item.label}</span>
+                  <span style={{ color:item.color, fontWeight:700, fontSize:"0.72rem", fontFamily:"'Bebas Neue',sans-serif" }}>{item.val}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Email/reminders */}
+            {!emailSubmitted && (
+              <button onClick={() => setShowEmailCapture(true)} style={{ padding:"12px", borderRadius:10, border:"1px solid rgba(255,215,0,0.2)", background:"rgba(255,215,0,0.05)", color:"#ffd700", cursor:"pointer", fontSize:"0.72rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>
+                📬 GET DAILY REMINDERS
+              </button>
+            )}
+
+          </div>
+
+        </div> {/* Close desktop grid */}
+
+      {/* GAME CONTENT — always visible, responsive width */}
+      <div style={{ position:"relative", zIndex:10, width:"100%", maxWidth: isDesktop ? 600 : 500, padding:"0 16px", display:"flex", flexDirection:"column", gap:12, marginTop:6 }}>
         <div style={{ background:"rgba(255,200,0,0.04)", border:`1px solid ${cfg.border}`, borderRadius:10, padding:"10px 14px", transition:"border-color 0.3s" }}>
           <p style={{ margin:"0 0 2px", fontSize:"0.6rem", color:"rgba(255,215,0,0.4)", letterSpacing:"0.2em", fontFamily:"'Bebas Neue', sans-serif" }}>PERFORMANCE</p>
           <p style={{ margin:0, fontSize:"0.82rem", color:"#d1d5db", lineHeight:1.3 }}>{ctx}</p>
@@ -2813,67 +2873,8 @@ export default function StatsIQ() {
         )}
       </div>
 
-          {/* Close center column div */}
-          </div>
+      </div>
 
-          {/* RIGHT PANEL */}
-          <div style={{ display:"flex", flexDirection:"column", gap:14, paddingLeft:20, position:"sticky", top:24 }}>
-
-            {/* Filter status */}
-            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:12, padding:"14px", border:"1px solid rgba(255,255,255,0.07)" }}>
-              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>CURRENT FILTERS</p>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:8 }}>
-                {filter.size === 0
-                  ? <span style={{ color:"#4b5563", fontSize:"0.72rem" }}>All sports</span>
-                  : [...filter].map(s => <span key={s} style={{ fontSize:"1rem" }}>{s}</span>)
-                }
-              </div>
-              <div style={{ display:"flex", gap:5, marginBottom:10 }}>
-                {eraFilter.size === 0
-                  ? <span style={{ color:"#4b5563", fontSize:"0.72rem" }}>All eras</span>
-                  : [...eraFilter].map(e => <span key={e} style={{ color:ERA_CONFIG[e as Era].activeBorder, fontSize:"0.7rem", padding:"2px 8px", borderRadius:4, background:ERA_CONFIG[e as Era].activeBg, border:`1px solid ${ERA_CONFIG[e as Era].activeBorder}` }}>{ERA_CONFIG[e as Era].label}</span>)
-                }
-              </div>
-              <button onClick={() => { if (hasStarted) { toast("Filters lock once you start guessing", 2000); return; } setShowFilter(true); }} style={{ width:"100%", padding:"7px", borderRadius:8, border:`1px solid ${hasStarted ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.1)"}`, background:"transparent", color: hasStarted ? "#374151" : "#9ca3af", cursor: hasStarted ? "not-allowed" : "pointer", fontSize:"0.65rem", fontFamily:"'Barlow Condensed',sans-serif", letterSpacing:"0.1em" }}>
-                {hasStarted ? "🔒 LOCKED FOR TODAY" : "⚙️ CHANGE FILTERS"}
-              </button>
-            </div>
-
-            {/* Difficulty description */}
-            <div style={{ background:cfg.bg, borderRadius:12, padding:"14px", border:`1px solid ${cfg.border}` }}>
-              <p style={{ margin:"0 0 6px", color:cfg.color, fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>{cfg.label} DIFFICULTY</p>
-              <p style={{ margin:"0 0 8px", color:"#9ca3af", fontSize:"0.78rem", lineHeight:1.5 }}>{cfg.desc}</p>
-              <p style={{ margin:0, color:"#4b5563", fontSize:"0.68rem" }}>{cfg.clueStyle} · {cfg.guesses} guesses</p>
-            </div>
-
-            {/* Score multipliers reminder */}
-            <div style={{ background:"rgba(255,255,255,0.03)", borderRadius:12, padding:"14px", border:"1px solid rgba(255,255,255,0.07)" }}>
-              <p style={{ margin:"0 0 10px", color:"#6b7280", fontSize:"0.6rem", letterSpacing:"0.2em", fontFamily:"'Bebas Neue',sans-serif" }}>SCORE MULTIPLIERS</p>
-              {[
-                { label:"Hard", val:"×5", color:"#ef4444" },
-                { label:"Medium", val:"×2", color:"#f59e0b" },
-                { label:"Easy", val:"×1", color:"#22c55e" },
-                { label:"Guess 1", val:"1000pts", color:"#ffd700" },
-                { label:"Guess 2", val:"750pts", color:"#ffd700" },
-                { label:"Guess 3", val:"500pts", color:"#ffd700" },
-              ].map(item => (
-                <div key={item.label} style={{ display:"flex", justifyContent:"space-between", padding:"4px 0", borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
-                  <span style={{ color:"#6b7280", fontSize:"0.72rem" }}>{item.label}</span>
-                  <span style={{ color:item.color, fontWeight:700, fontSize:"0.72rem", fontFamily:"'Bebas Neue',sans-serif" }}>{item.val}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Email/reminders */}
-            {!emailSubmitted && (
-              <button onClick={() => setShowEmailCapture(true)} style={{ padding:"12px", borderRadius:10, border:"1px solid rgba(255,215,0,0.2)", background:"rgba(255,215,0,0.05)", color:"#ffd700", cursor:"pointer", fontSize:"0.72rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>
-                📬 GET DAILY REMINDERS
-              </button>
-            )}
-
-          </div>
-
-        </div> {/* Close desktop grid */}
 
       {/* Mobile game content — hidden on desktop, always rendered */}
       <header style={{ display: isDesktop ? "none" : "block", position:"relative", zIndex:10, width:"100%", maxWidth:500, padding:"14px 18px 0" }}>
