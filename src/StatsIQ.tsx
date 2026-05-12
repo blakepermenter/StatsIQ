@@ -1460,6 +1460,14 @@ const HARD = [
   { player:"Roberto Luongo Hard", sport:"🏒 NHL", answer:"ROBERTO LUONGO HARD", era:"modern", stats:{WINS:"489",SHUTOUTS:"77",OLYMPIC:"Gold 2010",NATION:"Canada"}, ctx:"Career Totals — 489 wins and Olympic gold on home ice", clues:["Won 489 games — third most in NHL history","Won Olympic gold with Canada at the 2010 Vancouver Winter Games on home ice","Played for both the Florida Panthers and Vancouver Canucks as the franchise goalie","From Montreal Quebec — was one of the most technically gifted goaltenders of his era"] },
   { player:"Devan Dubnyk Hard", sport:"🏒 NHL", answer:"DEVAN DUBNYK HARD", era:"modern", stats:{WINS:"263",COMEBACK:"Career saving",MINNESOTA:"Star",NATION:"Canada"}, ctx:"Career Totals — Career saving season with Minnesota after being released", clues:["Had a remarkable career turnaround after being released by the Arizona Coyotes and traded mid-season to Minnesota","Went on a historic save percentage run that saved both his career and the Wild's season","Won 263 career games mostly with the Minnesota Wild","From Regina Saskatchewan — was one of the larger goaltenders in the league at 6ft 6in"] },
 
+  { player:"Don Budge Legends", sport:"🎾 ATP", answer:"DON BUDGE LEGENDS HARD", era:"legends", stats:{GRAND_SLAM:"First Calendar",DAVIS_CUP:"Hero",PRO:"Dominated",NATION:"USA"}, ctx:"Career Totals — First player to win the Calendar Grand Slam in 1938", clues:["Was the first player in history to win all four Grand Slam titles in a single year","Was so dominant in the Davis Cup that he won the critical match virtually single-handedly for years","Had one of the most powerful backhands anyone had ever seen — described as a howitzer","From Oakland California — is credited with saving American tennis in the late 1930s"] },
+  { player:"Jack Kramer Legends Hard", sport:"🎾 ATP", answer:"JACK KRAMER LEGENDS HARD", era:"legends", stats:{PRO:"Dominated",GRAND_SLAMS:"3",ADMINISTRATOR:"Most powerful",NATION:"USA"}, ctx:"Career Totals — Won Wimbledon then dominated professional tennis for years", clues:["Dominated professional tennis for years after turning pro in 1947","Won 3 Grand Slam titles including Wimbledon in 1947","Later became the most powerful administrator in professional tennis — shaping the Open Era","From Las Vegas Nevada — is credited with helping create the ATP and the professional circuit"] },
+  { player:"Bobby Jones Legends Hard", sport:"⛳ Golf", answer:"BOBBY JONES LEGENDS HARD", era:"legends", stats:{GRAND_SLAM:"1930",MAJORS:"13",AMATEUR:"Always",AUGUSTA:"Founded"}, ctx:"Career Totals — Won the Grand Slam in 1930 then retired at 28 as an amateur", clues:["Won all four major championships in 1930 — the only person to achieve the Grand Slam","Never turned professional despite being the best player in the world","Co-founded Augusta National Golf Club and created The Masters tournament","Retired at age 28 — considered the greatest golfer of his era"] },
+  { player:"Walter Hagen Legends Hard", sport:"⛳ Golf", answer:"WALTER HAGEN LEGENDS HARD", era:"legends", stats:{MAJORS:"11",PGA:"5",SHOWMAN:"Famous",MILLION:"First pro millionaire"}, ctx:"Career Totals — 11 majors and the first golf millionaire", clues:["Won 11 major championships including 5 PGA Championships — the most ever","Was the first professional golfer to earn a million dollars from the sport","Was famous for his extravagant lifestyle and showmanship — arrived at tournaments in limousines","From Rochester New York — refused to use the clubhouse at clubs that didn't allow professionals to enter"] },
+  { player:"Sam Snead Legends Hard", sport:"⛳ Golf", answer:"SAM SNEAD LEGENDS HARD", era:"legends", stats:{WINS:"82",MAJORS:"7",US_OPEN:"Never won",AGE:"Won at 52"}, ctx:"Career Totals — 82 wins the most ever but famously never won the US Open", clues:["Won 82 PGA Tour events — still the all-time record that will likely never be broken","Won the last of his 82 victories at age 52 — winning on the same tour 32 years after his first win","Won 7 major championships but never the US Open — his greatest frustration","From Hot Springs Virginia — had one of the most naturally beautiful golf swings ever seen"] },
+  { player:"Ben Hogan Legends Hard", sport:"⛳ Golf", answer:"BEN HOGAN LEGENDS HARD", era:"legends", stats:{MAJORS:"9",CRASH:"Survived 1949",YEAR:"1953",SECRET:"Famous"}, ctx:"Career Totals — Won 9 majors including a 3-major year after surviving a near fatal crash", clues:["Survived a near-fatal head-on collision with a Greyhound bus in 1949 and came back to win","Won the Masters US Open and British Open all in the same year of 1953","Was famous for The Secret — a mysterious wrist move he claimed eliminated his hook forever","From Dublin Texas — is considered one of the three greatest golfers who ever lived"] },
+  { player:"Ryan Miller Hockey", sport:"🏒 NHL", answer:"RYAN MILLER HARD", era:"modern", stats:{OLYMPIC:"Silver 2010",VEZINA:"Finalist",WINS:"391",NATION:"USA"}, ctx:"Career Totals — Led USA to Olympic silver and was the best American goalie of his era", clues:["Led the United States to the Olympic silver medal at the 2010 Vancouver Games","Was the best American-born goaltender of his generation","Won 391 career NHL games","From East Lansing Michigan — played college hockey at Michigan State"] },
+  { player:"Corey Crawford Hockey", sport:"🏒 NHL", answer:"COREY CRAWFORD HARD", era:"modern", stats:{CUPS:"2",GAA:"2.42",CONCUSSION:"Missed year",TEAM:"Chicago"}, ctx:"Career Totals — Two Cups with Chicago and overcame a serious concussion", clues:["Won 2 Stanley Cups with the Chicago Blackhawks in 2013 and 2015","Missed nearly an entire season due to a serious concussion suffered in 2017","Was one of the most underappreciated goaltenders of his era","From Montreal Quebec — was undrafted and had to work his way up through the minors"] },
 ];
 
 
@@ -1527,27 +1535,15 @@ const SPORTS = ["🏀","🏈","⚾","⚽","🎾","⛳","🏒"];
 const SPORT_LABELS: Record<string, string> = { "🏀":"Basketball","🏈":"Football","⚾":"Baseball","⚽":"Soccer","🎾":"Tennis (ATP/WTA)","⛳":"Golf","🏒":"Hockey" };
 
 const SCORE_BADGES = [
-  { min: 365000, emoji: "🐐", label: "GOAT" },
-  { min: 182500, emoji: "💎", label: "Diamond" },
-  { min: 91000,  emoji: "🏆", label: "Champion" },
-  { min: 45000,  emoji: "🥇", label: "Gold" },
-  { min: 15000,  emoji: "🥈", label: "Silver" },
-  { min: 3500,   emoji: "🥉", label: "Bronze" },
-  // HARD Tennis Legends (need 2 more)
-  { player:"Don Budge Legends", sport:"🎾 ATP", answer:"DON BUDGE LEGENDS HARD", era:"legends", stats:{GRAND_SLAM:"First Calendar",DAVIS_CUP:"Hero",PRO:"Dominated",NATION:"USA"}, ctx:"Career Totals — First player to win the Calendar Grand Slam in 1938", clues:["Was the first player in history to win all four Grand Slam titles in a single year","Was so dominant in the Davis Cup that he won the critical match virtually single-handedly for years","Had one of the most powerful backhands anyone had ever seen — described as a howitzer","From Oakland California — is credited with saving American tennis in the late 1930s"] },
-  { player:"Jack Kramer Legends Hard", sport:"🎾 ATP", answer:"JACK KRAMER LEGENDS HARD", era:"legends", stats:{PRO:"Dominated",GRAND_SLAMS:"3",ADMINISTRATOR:"Most powerful",NATION:"USA"}, ctx:"Career Totals — Won Wimbledon then dominated professional tennis for years", clues:["Dominated professional tennis for years after turning pro in 1947","Won 3 Grand Slam titles including Wimbledon in 1947","Later became the most powerful administrator in professional tennis — shaping the Open Era","From Las Vegas Nevada — is credited with helping create the ATP and the professional circuit"] },
-
-  // HARD Golf Legends (need 4 more)
-  { player:"Bobby Jones Legends Hard", sport:"⛳ Golf", answer:"BOBBY JONES LEGENDS HARD", era:"legends", stats:{GRAND_SLAM:"1930",MAJORS:"13",AMATEUR:"Always",AUGUSTA:"Founded"}, ctx:"Career Totals — Won the Grand Slam in 1930 then retired at 28 as an amateur", clues:["Won all four major championships in 1930 — the only person to achieve the Grand Slam","Never turned professional despite being the best player in the world","Co-founded Augusta National Golf Club and created The Masters tournament","Retired at age 28 — considered the greatest golfer of his era"] },
-  { player:"Walter Hagen Legends Hard", sport:"⛳ Golf", answer:"WALTER HAGEN LEGENDS HARD", era:"legends", stats:{MAJORS:"11",PGA:"5",SHOWMAN:"Famous",MILLION:"First pro millionaire"}, ctx:"Career Totals — 11 majors and the first golf millionaire", clues:["Won 11 major championships including 5 PGA Championships — the most ever","Was the first professional golfer to earn a million dollars from the sport","Was famous for his extravagant lifestyle and showmanship — arrived at tournaments in limousines","From Rochester New York — refused to use the clubhouse at clubs that didn't allow professionals to enter"] },
-  { player:"Sam Snead Legends Hard", sport:"⛳ Golf", answer:"SAM SNEAD LEGENDS HARD", era:"legends", stats:{WINS:"82",MAJORS:"7",US_OPEN:"Never won",AGE:"Won at 52"}, ctx:"Career Totals — 82 wins the most ever but famously never won the US Open", clues:["Won 82 PGA Tour events — still the all-time record that will likely never be broken","Won the last of his 82 victories at age 52 — winning on the same tour 32 years after his first win","Won 7 major championships but never the US Open — his greatest frustration","From Hot Springs Virginia — had one of the most naturally beautiful golf swings ever seen"] },
-  { player:"Ben Hogan Legends Hard", sport:"⛳ Golf", answer:"BEN HOGAN LEGENDS HARD", era:"legends", stats:{MAJORS:"9",CRASH:"Survived 1949",YEAR:"1953",SECRET:"Famous"}, ctx:"Career Totals — Won 9 majors including a 3-major year after surviving a near fatal crash", clues:["Survived a near-fatal head-on collision with a Greyhound bus in 1949 and came back to win","Won the Masters US Open and British Open all in the same year of 1953","Was famous for The Secret — a mysterious wrist move he claimed eliminated his hook forever","From Dublin Texas — is considered one of the three greatest golfers who ever lived"] },
-
-  // HARD Hockey Modern (need 2 more)
-  { player:"Ryan Miller Hockey", sport:"🏒 NHL", answer:"RYAN MILLER HARD", era:"modern", stats:{OLYMPIC:"Silver 2010",VEZINA:"Finalist",WINS:"391",NATION:"USA"}, ctx:"Career Totals — Led USA to Olympic silver and was the best American goalie of his era", clues:["Led the United States to the Olympic silver medal at the 2010 Vancouver Games","Was the best American-born goaltender of his generation","Won 391 career NHL games","From East Lansing Michigan — played college hockey at Michigan State"] },
-  { player:"Corey Crawford Hockey", sport:"🏒 NHL", answer:"COREY CRAWFORD HARD", era:"modern", stats:{CUPS:"2",GAA:"2.42",CONCUSSION:"Missed year",TEAM:"Chicago"}, ctx:"Career Totals — Two Cups with Chicago and overcame a serious concussion", clues:["Won 2 Stanley Cups with the Chicago Blackhawks in 2013 and 2015","Missed nearly an entire season due to a serious concussion suffered in 2017","Was one of the most underappreciated goaltenders of his era","From Montreal Quebec — was undrafted and had to work his way up through the minors"] },
-
+  { min: 2500000, emoji: "🐐", label: "GOAT" },
+  { min: 1000000, emoji: "💎", label: "Diamond" },
+  { min: 500000,  emoji: "🏆", label: "Platinum" },
+  { min: 200000,  emoji: "🥇", label: "Gold" },
+  { min: 75000,   emoji: "🥈", label: "Silver" },
+  { min: 25000,   emoji: "🥉", label: "Bronze" },
+  { min: 5000,    emoji: "🎯", label: "Hooked" },
 ];
+
 
 const getScoreBadge = (score: number) =>
   SCORE_BADGES.find(b => score >= b.min) ?? null;
@@ -2168,8 +2164,8 @@ export default function StatsIQ() {
 
   // ── SCORING ──────────────────────────────────────────────────────────────────
   // Max possible: Hard(5x) + All eras(2x) + 1st guess(1000) = 10,000
-  const GUESS_POINTS: Record<number, number> = { 1: 25, 2: 19, 3: 12, 4: 8, 5: 4, 6: 1 };
-  const DIFF_MULT: Record<Difficulty, number> = { easy: 2, medium: 3, hard: 5 };
+  const GUESS_POINTS: Record<number, number> = { 1: 1000, 2: 750, 3: 500, 4: 300, 5: 150, 6: 50 };
+  const DIFF_MULT: Record<Difficulty, number> = { easy: 1, medium: 2, hard: 5 };
 
   const calcScore = (guessNum: number): number => {
     const base = GUESS_POINTS[guessNum] || 0;
@@ -2442,16 +2438,30 @@ export default function StatsIQ() {
       ctx2.lineWidth = 1.5;
       roundRect(ctx2, bx, by, boxW, 130, 12);
       ctx2.stroke();
-      // Value
-      ctx2.font = `900 ${val.length > 6 ? 40 : 52}px 'Arial Black', Arial, sans-serif`;
+      // Value — scale font down for long values
+      const valFontSize = val.length > 10 ? 28 : val.length > 6 ? 38 : 52;
+      ctx2.font = `900 ${valFontSize}px 'Arial Black', Arial, sans-serif`;
       ctx2.fillStyle = accentColor;
       ctx2.textAlign = "center";
-      ctx2.fillText(val, bx + boxW/2, by + 76);
-      // Key
-      ctx2.font = "700 20px Arial, sans-serif";
+      // Clip value to box width
+      let displayVal = val;
+      while (ctx2.measureText(displayVal).width > boxW - 16 && displayVal.length > 3) {
+        displayVal = displayVal.slice(0, -1);
+      }
+      if (displayVal !== val) displayVal = displayVal.slice(0,-1) + "…";
+      ctx2.fillText(displayVal, bx + boxW/2, by + 76);
+      // Key — replace underscores, truncate if needed
+      const displayKey = key.replace(/_/g, " ");
+      let keyFontSize = 20;
+      ctx2.font = `700 ${keyFontSize}px Arial, sans-serif`;
       ctx2.fillStyle = accentColor + "99";
-      ctx2.letterSpacing = "3px";
-      ctx2.fillText(key, bx + boxW/2, by + 108);
+      ctx2.letterSpacing = "2px";
+      // Scale key font down if too wide
+      while (ctx2.measureText(displayKey).width > boxW - 12 && keyFontSize > 13) {
+        keyFontSize -= 1;
+        ctx2.font = `700 ${keyFontSize}px Arial, sans-serif`;
+      }
+      ctx2.fillText(displayKey, bx + boxW/2, by + 112);
       ctx2.textAlign = "left";
       ctx2.letterSpacing = "0px";
     });
