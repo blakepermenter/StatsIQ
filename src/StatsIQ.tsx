@@ -2578,8 +2578,8 @@ export default function StatsIQ() {
       )}
 
       {/* Desktop 3-column layout */}
-      {isDesktop ? (
-        <div style={{ display:"grid", gridTemplateColumns:"280px 1fr 280px", gap:0, width:"100%", maxWidth:1400, padding:"0 24px", marginTop:24, alignItems:"start" }}>
+      {/* Desktop 3-column grid — hidden on mobile */}
+      <div style={{ display: isDesktop ? "grid" : "none", gridTemplateColumns:"280px 1fr 280px", gap:0, width:"100%", maxWidth:1400, padding:"0 24px", marginTop:24, alignItems:"start" }}>
 
           {/* LEFT PANEL — Stats & Badges */}
           <div style={{ display:"flex", flexDirection:"column", gap:14, paddingRight:20, position:"sticky", top:24 }}>
@@ -2636,62 +2636,7 @@ export default function StatsIQ() {
           </div>
 
           {/* CENTER — Game */}
-          <div style={{ display:"flex", flexDirection:"column", alignItems:"center" }}>
-        <div style={{ display: isDesktop ? "none" : "flex", alignItems:"center", justifyContent:"space-between", borderBottom:"1px solid rgba(255,255,255,0.07)", paddingBottom:10, width:"100%", maxWidth:500, padding:"14px 18px 10px" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <span style={{ fontSize:"1.5rem" }}>📊</span>
-            <div>
-              <h1 style={{ margin:0, fontFamily:"'Bebas Neue', sans-serif", fontSize:"1.8rem", color:"#ffd700", letterSpacing:"0.15em", lineHeight:1 }}>STATSIQ</h1>
-              <p style={{ margin:0, fontSize:"0.55rem", color:"#4b5563", letterSpacing:"0.3em" }}>DAILY SPORTS TRIVIA</p>
-            </div>
-          </div>
-          {/* Right side: Player + Score + Leaderboard */}
-          <div style={{ display:"flex", gap:7, alignItems:"center" }}>
-            <button onClick={() => { setUsernameInput(username); setShowUsernameModal(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:60, maxWidth:90 }}>
-              <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>PLAYER</p>
-              <p style={{ margin:0, fontSize:"0.78rem", fontWeight:900, color: username ? "#fff" : "#4b5563", fontFamily:"'Bebas Neue',sans-serif", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{username || "SET NAME"}</p>
-            </button>
-            <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:48 }}>
-              <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>SCORE</p>
-              <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif" }}>{totalScore.toLocaleString()}</p>
-            </button>
-            {streakData.current > 0 && (
-              <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:44 }}>
-                <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>STREAK</p>
-                <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif" }}>{streakData.current}🔥</p>
-              </button>
-            )}
-            <button onClick={() => setShowLeaderboard(true)} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }} title="Leaderboard">🏅</button>
-          </div>
-        </div>
-        {/* Second row: filter + help — full width, centered on mobile */}
-        <div style={{ display:"flex", gap:8, marginTop:8, alignItems:"center", justifyContent:"center" }}>
-          <button onClick={() => { if (hasStarted) { toast("Filters lock once you start guessing", 2000); return; } setShowFilter(true); }} style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 12px", borderRadius:8, border:`1px solid ${hasStarted ? "rgba(255,255,255,0.06)" : hasFilter ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.12)"}`, background:hasStarted ? "rgba(255,255,255,0.02)" : hasFilter ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)", color:hasStarted ? "#374151" : hasFilter ? "#86efac" : "#9ca3af", cursor: hasStarted ? "not-allowed" : "pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.1em", fontFamily:"'Barlow Condensed', sans-serif" }}>
-            ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
-          </button>
-          <button onClick={() => setShowHow(true)} style={{ width:30, height:30, borderRadius:"50%", border:"1px solid rgba(255,200,0,0.2)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.82rem", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
-          <button onClick={() => { const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setShowPractice(true); }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
-            🎮 PRACTICE
-          </button>
-        </div>
-        <div style={{ display:"flex", gap:8, marginTop:12, marginBottom:4 }}>
-          {(["easy","medium","hard"] as Difficulty[]).map(d => {
-            const c = DIFF_CONFIG[d]; const active = diff === d;
-            const isCompleted = completedToday.has(d);
-            return (
-              <button key={d} onClick={() => setDiff(d)} style={{ flex:1, padding:"8px 0", borderRadius:10, border:`2px solid ${active ? c.color : isCompleted ? c.color+"66" : "rgba(255,255,255,0.08)"}`, background:active ? c.bg : isCompleted ? c.bg+"88" : "rgba(255,255,255,0.02)", cursor:"pointer", fontFamily:"'Bebas Neue', sans-serif", transition:"all 0.2s", position:"relative" }}>
-                <div style={{ color:active ? c.color : isCompleted ? c.color+"aa" : "#4b5563", fontWeight:900, fontSize:"0.9rem", letterSpacing:"0.1em" }}>
-                  {isCompleted ? "✓ " : ""}{c.label}
-                </div>
-                <div style={{ color:active ? c.color : isCompleted ? c.color+"88" : "#374151", fontSize:"0.55rem", letterSpacing:"0.08em", marginTop:1, opacity:0.8 }}>
-                  {isCompleted ? "DONE" : `${c.guesses} GUESSES`}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-        <p style={{ margin:"4px 0 8px", fontSize:"0.65rem", color:"#4b5563", letterSpacing:"0.1em", textAlign:"center", display: isDesktop ? "none" : "block" }}>{cfg.desc} · {cfg.clueStyle}</p>
-      </header>
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", width:"100%" }}>
 
       <div style={{ position:"relative", zIndex:10, width:"100%", maxWidth: isDesktop ? "100%" : 500, padding:"0 16px", display:"flex", flexDirection:"column", gap:12, marginTop:6 }}>
         <div style={{ background:"rgba(255,200,0,0.04)", border:`1px solid ${cfg.border}`, borderRadius:10, padding:"10px 14px", transition:"border-color 0.3s" }}>
@@ -2871,7 +2816,7 @@ export default function StatsIQ() {
           {/* Close center column div */}
           </div>
 
-          {/* RIGHT PANEL — How to play + Recent activity */}
+          {/* RIGHT PANEL */}
           <div style={{ display:"flex", flexDirection:"column", gap:14, paddingLeft:20, position:"sticky", top:24 }}>
 
             {/* Filter status */}
@@ -2929,7 +2874,58 @@ export default function StatsIQ() {
           </div>
 
         </div> {/* Close desktop grid */}
-        ) : null }
+
+      {/* Mobile game content — hidden on desktop, always rendered */}
+      <header style={{ display: isDesktop ? "none" : "block", position:"relative", zIndex:10, width:"100%", maxWidth:500, padding:"14px 18px 0" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", borderBottom:"1px solid rgba(255,255,255,0.07)", paddingBottom:10 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{ fontSize:"1.5rem" }}>📊</span>
+            <div>
+              <h1 style={{ margin:0, fontFamily:"'Bebas Neue', sans-serif", fontSize:"1.8rem", color:"#ffd700", letterSpacing:"0.15em", lineHeight:1 }}>STATSIQ</h1>
+              <p style={{ margin:0, fontSize:"0.55rem", color:"#4b5563", letterSpacing:"0.3em" }}>DAILY SPORTS TRIVIA</p>
+            </div>
+          </div>
+          <div style={{ display:"flex", gap:7, alignItems:"center" }}>
+            <button onClick={() => { setUsernameInput(username); setShowUsernameModal(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:60, maxWidth:90 }}>
+              <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>PLAYER</p>
+              <p style={{ margin:0, fontSize:"0.78rem", fontWeight:900, color: username ? "#fff" : "#4b5563", fontFamily:"'Bebas Neue',sans-serif", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{username || "SET NAME"}</p>
+            </button>
+            <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:48 }}>
+              <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>SCORE</p>
+              <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif" }}>{totalScore.toLocaleString()}</p>
+            </button>
+            {streakData.current > 0 && (
+              <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:44 }}>
+                <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>STREAK</p>
+                <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif" }}>{streakData.current}🔥</p>
+              </button>
+            )}
+            <button onClick={() => setShowLeaderboard(true)} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>🏅</button>
+          </div>
+        </div>
+        <div style={{ display:"flex", gap:8, marginTop:8, alignItems:"center", justifyContent:"center" }}>
+          <button onClick={() => { if (hasStarted) { toast("Filters lock once you start guessing", 2000); return; } setShowFilter(true); }} style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 12px", borderRadius:8, border:`1px solid ${hasStarted ? "rgba(255,255,255,0.06)" : hasFilter ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.12)"}`, background:hasStarted ? "rgba(255,255,255,0.02)" : hasFilter ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)", color:hasStarted ? "#374151" : hasFilter ? "#86efac" : "#9ca3af", cursor: hasStarted ? "not-allowed" : "pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.1em", fontFamily:"'Barlow Condensed', sans-serif" }}>
+            ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
+          </button>
+          <button onClick={() => setShowHow(true)} style={{ width:30, height:30, borderRadius:"50%", border:"1px solid rgba(255,200,0,0.2)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.82rem", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
+          <button onClick={() => { const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setShowPractice(true); }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
+            🎮 PRACTICE
+          </button>
+        </div>
+        <div style={{ display:"flex", gap:8, marginTop:12, marginBottom:4 }}>
+          {(["easy","medium","hard"] as Difficulty[]).map(d => {
+            const c = DIFF_CONFIG[d]; const active = diff === d;
+            const isCompleted = completedToday.has(d);
+            return (
+              <button key={d} onClick={() => setDiff(d)} style={{ flex:1, padding:"8px 0", borderRadius:10, border:`2px solid ${active ? c.color : isCompleted ? c.color+"66" : "rgba(255,255,255,0.08)"}`, background:active ? c.bg : isCompleted ? c.bg+"88" : "rgba(255,255,255,0.02)", cursor:"pointer", fontFamily:"'Bebas Neue', sans-serif", transition:"all 0.2s" }}>
+                <div style={{ color:active ? c.color : isCompleted ? c.color+"aa" : "#4b5563", fontWeight:900, fontSize:"0.9rem", letterSpacing:"0.1em" }}>{isCompleted ? "✓ " : ""}{c.label}</div>
+                <div style={{ color:active ? c.color : isCompleted ? c.color+"88" : "#374151", fontSize:"0.55rem", letterSpacing:"0.08em", marginTop:1, opacity:0.8 }}>{isCompleted ? "DONE" : `${c.guesses} GUESSES`}</div>
+              </button>
+            );
+          })}
+        </div>
+        <p style={{ margin:"4px 0 8px", fontSize:"0.65rem", color:"#4b5563", letterSpacing:"0.1em", textAlign:"center" }}>{cfg.desc} · {cfg.clueStyle}</p>
+      </header>
 
       {msg && <div style={{ position:"fixed", top:70, left:"50%", transform:"translateX(-50%)", zIndex:100, background:"#fff", color:"#111", padding:"9px 22px", borderRadius:8, fontWeight:700, fontSize:"0.88rem", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", whiteSpace:"nowrap", fontFamily:"'Barlow Condensed', sans-serif" }}>{msg}</div>}
 
