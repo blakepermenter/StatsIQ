@@ -1764,14 +1764,33 @@ const sbLogPlay = async (username: string, date: string, difficulty: string, spo
 };
 
 // Upsert player total score
-const sbUpsertPlayer = async (username: string, totalScore: number, bestStreak: number) => {
+const sbUpsertPlayer = async (username: string, totalScore: number, bestStreak: number, recoveryCode?: string) => {
   try {
+    const body: Record<string,unknown> = { username: username || "anonymous", total_score: totalScore, best_streak: bestStreak, updated_at: new Date().toISOString() };
+    if (recoveryCode) body.recovery_code = recoveryCode;
     await sbFetch("players?on_conflict=username", {
       method: "POST",
       headers: { "Prefer": "resolution=merge-duplicates,return=minimal" },
-      body: JSON.stringify({ username: username || "anonymous", total_score: totalScore, best_streak: bestStreak, updated_at: new Date().toISOString() }),
+      body: JSON.stringify(body),
     });
   } catch {}
+};
+
+// Generate a memorable 8-char recovery code like STAT-4829
+const generateRecoveryCode = (): string => {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no confusable chars
+  let code = "STAT-";
+  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+};
+
+// Fetch player data by recovery code
+const sbRecoverAccount = async (code: string): Promise<{username:string, total_score:number, best_streak:number} | null> => {
+  try {
+    const data = await sbFetch(`players?recovery_code=eq.${code.toUpperCase().trim()}&select=username,total_score,best_streak&limit=1`);
+    if (data && data.length > 0) return data[0];
+    return null;
+  } catch { return null; }
 };
 
 // When a player sets their username for the first time, backfill their anonymous plays
@@ -2289,6 +2308,12 @@ export default function StatsIQ() {
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(() => { try { return localStorage.getItem("statsiq_email_submitted") === "1"; } catch { return false; } });
+  const [recoveryCode, setRecoveryCode] = useState<string>(() => { try { return localStorage.getItem("statsiq_recovery_code") || ""; } catch { return ""; } });
+  const [showRecoveryCode, setShowRecoveryCode] = useState(false);
+  const [showRecoverModal, setShowRecoverModal] = useState(false);
+  const [recoverInput, setRecoverInput] = useState("");
+  const [recoverError, setRecoverError] = useState("");
+  const [recoverLoading, setRecoverLoading] = useState(false);
   const [countdown, setCountdown] = useState("");
   const [onboardingStep, setOnboardingStep] = useState<number>(() => {
     try { return localStorage.getItem("statsiq_visited") ? -1 : 0; } catch { return 0; }
@@ -3110,6 +3135,9 @@ export default function StatsIQ() {
               <button onClick={() => setOnboardingStep(1)} style={{ width:"100%", padding:"14px", borderRadius:12, border:"none", background:"linear-gradient(135deg, #ffd700, #f59e0b)", color:"#0a0c10", fontWeight:900, fontSize:"1.1rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.15em", boxShadow:"0 4px 30px rgba(255,200,0,0.4)" }}>
                 GET STARTED →
               </button>
+              <button onClick={() => { setShowSplash(false); setOnboardingStep(-1); try { localStorage.setItem("statsiq_visited","1"); } catch {} setShowRecoverModal(true); }} style={{ marginTop:12, background:"none", border:"none", color:"#374151", cursor:"pointer", fontSize:"0.7rem", fontFamily:"'Barlow Condensed',sans-serif", letterSpacing:"0.1em", textDecoration:"underline" }}>
+                Already have an account? Recover it →
+              </button>
             </div>
           )}
 
@@ -3204,7 +3232,7 @@ export default function StatsIQ() {
             <input
               value={usernameInput}
               onChange={e => setUsernameInput(e.target.value.slice(0, 20))}
-              onKeyDown={e => { if (e.key === "Enter" && usernameInput.trim().length >= 2) { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) sbBackfillUsername(u); else sbUpsertPlayer(u, totalScore, streakData.current); } }}
+              onKeyDown={e => { if (e.key === "Enter" && usernameInput.trim().length >= 2) { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) { let code = recoveryCode; if (!code) { code = generateRecoveryCode(); setRecoveryCode(code); try { localStorage.setItem("statsiq_recovery_code", code); } catch {} } sbBackfillUsername(u); sbUpsertPlayer(u, totalScore, streakData.current, code); setShowRecoveryCode(true); } else { sbUpsertPlayer(u, totalScore, streakData.current, recoveryCode || undefined); } } }}
               placeholder="Enter username..."
               maxLength={20}
               autoFocus
@@ -3215,11 +3243,84 @@ export default function StatsIQ() {
               <button onClick={() => setShowUsernameModal(false)} style={{ flex:1, padding:"10px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#9ca3af", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif" }}>Cancel</button>
               <button
                 disabled={usernameInput.trim().length < 2}
-                onClick={() => { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) sbBackfillUsername(u); else sbUpsertPlayer(u, totalScore, streakData.current); }}
+                onClick={() => { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) { let code = recoveryCode; if (!code) { code = generateRecoveryCode(); setRecoveryCode(code); try { localStorage.setItem("statsiq_recovery_code", code); } catch {} } sbBackfillUsername(u); sbUpsertPlayer(u, totalScore, streakData.current, code); setShowRecoveryCode(true); } else { sbUpsertPlayer(u, totalScore, streakData.current, recoveryCode || undefined); } }}
                 style={{ flex:2, padding:"10px", borderRadius:8, border:"none", background: usernameInput.trim().length >= 2 ? "rgba(255,200,0,0.9)" : "rgba(100,100,100,0.3)", color: usernameInput.trim().length >= 2 ? "#0a0c10" : "#555", cursor: usernameInput.trim().length >= 2 ? "pointer" : "not-allowed", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
                 SAVE
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* RECOVERY CODE DISPLAY — shown once after first username set */}
+      {showRecoveryCode && recoveryCode && (
+        <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowRecoveryCode(false)}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(4px)" }} />
+          <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,215,0,0.3)", borderRadius:16, padding:"28px 24px", width:"min(320px,90vw)", textAlign:"center" }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize:"2rem", marginBottom:10 }}>🔑</div>
+            <h3 style={{ margin:"0 0 6px", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", letterSpacing:"0.1em" }}>YOUR RECOVERY CODE</h3>
+            <p style={{ margin:"0 0 18px", color:"#6b7280", fontSize:"0.72rem", lineHeight:1.5 }}>Save this somewhere. If you ever lose your progress, enter this code to restore your score and streak.</p>
+
+            <div style={{ background:"rgba(255,215,0,0.08)", border:"2px solid rgba(255,215,0,0.4)", borderRadius:12, padding:"16px", marginBottom:18 }}>
+              <p style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"2rem", letterSpacing:"0.3em" }}>{recoveryCode}</p>
+            </div>
+
+            <button onClick={() => { navigator.clipboard?.writeText(recoveryCode); toast("Code copied! 📋", 2000); }} style={{ width:"100%", padding:"11px", borderRadius:8, border:"none", background:"rgba(255,200,0,0.9)", color:"#0a0c10", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.9rem", marginBottom:8 }}>
+              📋 COPY CODE
+            </button>
+            <button onClick={() => setShowRecoveryCode(false)} style={{ width:"100%", padding:"10px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#6b7280", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem" }}>
+              I've saved it — close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* RECOVER ACCOUNT MODAL */}
+      {showRecoverModal && (
+        <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => { setShowRecoverModal(false); setRecoverError(""); }}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(4px)" }} />
+          <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"28px 24px", width:"min(320px,90vw)", textAlign:"center" }} onClick={e => e.stopPropagation()}>
+            <button onClick={() => { setShowRecoverModal(false); setRecoverError(""); }} style={{ position:"absolute", top:14, right:14, background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
+            <div style={{ fontSize:"2rem", marginBottom:10 }}>🔑</div>
+            <h3 style={{ margin:"0 0 6px", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.3rem", letterSpacing:"0.1em" }}>RECOVER YOUR ACCOUNT</h3>
+            <p style={{ margin:"0 0 18px", color:"#6b7280", fontSize:"0.72rem" }}>Enter your recovery code to restore your score and streak</p>
+
+            <input
+              value={recoverInput}
+              onChange={e => { setRecoverInput(e.target.value.toUpperCase()); setRecoverError(""); }}
+              placeholder="STAT-XXXX"
+              maxLength={9}
+              style={{ width:"100%", padding:"13px", borderRadius:10, border:`1px solid ${recoverError ? "rgba(239,68,68,0.5)" : "rgba(255,255,255,0.15)"}`, background:"rgba(255,255,255,0.05)", color:"#ffd700", fontSize:"1.2rem", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.3em", textAlign:"center", marginBottom:8, boxSizing:"border-box" as const, outline:"none" }}
+              autoFocus
+            />
+            {recoverError && <p style={{ margin:"0 0 8px", color:"#ef4444", fontSize:"0.7rem" }}>{recoverError}</p>}
+
+            <button
+              disabled={recoverLoading || recoverInput.length < 8}
+              onClick={async () => {
+                setRecoverLoading(true);
+                const data = await sbRecoverAccount(recoverInput);
+                setRecoverLoading(false);
+                if (!data) {
+                  setRecoverError("Code not found. Check for typos and try again.");
+                  return;
+                }
+                // Restore score, username, streak to localStorage and state
+                try {
+                  localStorage.setItem("statsiq_score", String(data.total_score));
+                  localStorage.setItem("statsiq_username", data.username);
+                  localStorage.setItem("statsiq_recovery_code", recoverInput);
+                } catch {}
+                setTotalScore(data.total_score);
+                setUsername(data.username);
+                setRecoveryCode(recoverInput);
+                setShowRecoverModal(false);
+                setRecoverInput("");
+                toast(`Welcome back ${data.username}! Score restored 🎉`, 3500);
+              }}
+              style={{ width:"100%", padding:"12px", borderRadius:10, border:"none", background: recoverInput.length >= 8 ? "linear-gradient(135deg,#ffd700,#f59e0b)" : "rgba(100,100,100,0.3)", color: recoverInput.length >= 8 ? "#0a0c10" : "#555", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor: recoverInput.length >= 8 ? "pointer" : "not-allowed", fontSize:"0.9rem" }}>
+              {recoverLoading ? "LOOKING UP..." : "RESTORE MY ACCOUNT"}
+            </button>
           </div>
         </div>
       )}
@@ -3984,9 +4085,13 @@ export default function StatsIQ() {
           <p style={{ margin:0, color:"#374151", fontSize:"0.62rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>BUILT BY BP</p>
           <p style={{ margin:0, color:"#1f2937", fontSize:"0.58rem", marginTop:2 }}>statsiq.io · daily sports trivia</p>
         </div>
-        <div style={{ display:"flex", gap:10, alignItems:"center" }}>
+        <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", justifyContent:"flex-end" }}>
           <a href="https://twitter.com" target="_blank" rel="noreferrer" style={{ color:"#374151", fontSize:"0.7rem", textDecoration:"none", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>𝕏</a>
           <button onClick={() => setShowEmailCapture(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>📬 GET REMINDERS</button>
+          {recoveryCode
+            ? <button onClick={() => setShowRecoveryCode(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>🔑 MY CODE</button>
+            : <button onClick={() => setShowRecoverModal(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>🔑 RECOVER</button>
+          }
         </div>
       </div>
 
