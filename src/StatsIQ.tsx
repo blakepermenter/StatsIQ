@@ -1838,7 +1838,7 @@ export default function StatsIQ() {
   // Build a stable filter key so the seen list is scoped to the current filter combo
   const filterKey = [...filter].sort().join(",") + "|" + [...eraFilter].sort().join(",");
   const puzzle = pickTodaysPuzzle(pool, diff, filterKey);
-  const { player, sport, answer, stats, ctx, clues } = puzzle;
+  const { player, sport, answer, stats, ctx, clues } = puzzle ?? EASY[0];
   const wrongCount = guesses.filter(g => !g.ok).length;
 
   const toggleSport = (e: string) => setFilter(prev => { const n = new Set(prev); n.has(e) ? n.delete(e) : n.add(e); try { localStorage.setItem("statsiq_filter", JSON.stringify([...n])); } catch {} return n; });
@@ -1927,7 +1927,7 @@ export default function StatsIQ() {
     setGuesses([]); setInput(""); setDone(false); setWon(false); setMsg("");
     setTodayScore(null); setScoreBreakdown(null);
     setVisible(false); setTimeout(() => setVisible(true), 300);
-  }, [diff, completedToday, puzzle]);
+  }, [diff, completedToday]);
   useEffect(() => { setTimeout(() => setVisible(true), 300); }, []);
   useEffect(() => { reset(); }, [diff, filter, eraFilter]);
 
