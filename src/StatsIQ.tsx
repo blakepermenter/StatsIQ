@@ -2237,11 +2237,18 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
           </button>
         ) : (
           <div style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.3)", borderRadius:10, padding:"12px 14px" }}>
-            <p style={{ margin:"0 0 10px", color:"#fca5a5", fontSize:"0.78rem", textAlign:"center" }}>This will permanently delete your score and all history. Are you sure?</p>
-            <div style={{ display:"flex", gap:8 }}>
-              <button onClick={() => setConfirmReset(false)} style={{ flex:1, padding:"8px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#9ca3af", cursor:"pointer", fontSize:"0.78rem", fontFamily:"'Barlow Condensed',sans-serif" }}>CANCEL</button>
-              <button onClick={onReset} style={{ flex:1, padding:"8px", borderRadius:8, border:"none", background:"rgba(239,68,68,0.8)", color:"#fff", cursor:"pointer", fontSize:"0.78rem", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>YES, RESET</button>
-            </div>
+            <p style={{ margin:"0 0 6px", color:"#fca5a5", fontSize:"0.75rem", textAlign:"center" }}>This permanently deletes your score and all history.</p>
+            <p style={{ margin:"0 0 8px", color:"#6b7280", fontSize:"0.68rem", textAlign:"center" }}>Type <strong style={{color:"#fca5a5"}}>RESET</strong> to confirm</p>
+            <input
+              placeholder="Type RESET"
+              onChange={e => {
+                if (e.target.value.toUpperCase() === "RESET") {
+                  onReset();
+                }
+              }}
+              style={{ width:"100%", padding:"8px 10px", borderRadius:8, border:"1px solid rgba(239,68,68,0.3)", background:"rgba(0,0,0,0.3)", color:"#fff", fontSize:"0.85rem", fontFamily:"'Barlow Condensed',sans-serif", marginBottom:8, boxSizing:"border-box" as const, textAlign:"center", letterSpacing:"0.2em" }}
+            />
+            <button onClick={() => setConfirmReset(false)} style={{ width:"100%", padding:"7px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#6b7280", cursor:"pointer", fontSize:"0.72rem", fontFamily:"'Barlow Condensed',sans-serif" }}>CANCEL</button>
           </div>
         )}
 
@@ -2514,11 +2521,15 @@ export default function StatsIQ() {
   }, []);
   useEffect(() => {
     const allDone = (["easy","medium","hard"] as Difficulty[]).every(d => completedToday.has(d));
-    if (allDone && !emailSubmitted) {
-      const t = setTimeout(() => setShowEmailCapture(true), 12000);
-      return () => clearTimeout(t);
-    }
-  }, [completedToday, emailSubmitted]);
+    if (!allDone || emailSubmitted) return;
+    // Only show once ever — check a persistent flag
+    try { if (localStorage.getItem("statsiq_email_prompt_shown")) return; } catch {}
+    const t = setTimeout(() => {
+      try { localStorage.setItem("statsiq_email_prompt_shown", "1"); } catch {}
+      setShowEmailCapture(true);
+    }, 12000);
+    return () => clearTimeout(t);
+  }, [completedToday.size, emailSubmitted]);
 
   // Fetch rarity stats when any puzzle is completed
   useEffect(() => {
@@ -2690,6 +2701,25 @@ export default function StatsIQ() {
     setVisible(false); setTimeout(() => setVisible(true), 300);
   }, [diff, filterKey]);
   useEffect(() => { setTimeout(() => setVisible(true), 300); }, []);
+
+  // On mount, ensure done state is correct for the initial diff
+  useEffect(() => {
+    const today = new Date();
+    const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
+    try {
+      const entry = localStorage.getItem(key);
+      if (entry) {
+        const data = JSON.parse(entry);
+        setDone(true); setWon(data.won);
+        setGuesses(Array(data.guesses).fill(null).map((_: null, i: number) =>
+          i === data.guesses - 1 && data.won ? { text: data.player, ok: true } : { text: "• • •", ok: false }
+        ));
+        setTodayScore(data.score);
+        setVisible(true);
+      }
+    } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Filters lock for the entire day once any guess is made on any difficulty
   const anyDiffStarted = (): boolean => {
