@@ -1838,6 +1838,16 @@ const sbGetLeaderboard = async (type: "today" | "alltime"): Promise<Array<{usern
   } catch { return []; }
 };
 
+// Fetch a player's all-time rank (returns null if not in top 25 or not found)
+const sbGetPlayerRank = async (username: string): Promise<number|null> => {
+  try {
+    const data = await sbFetch("alltime_leaderboard?select=username&limit=25");
+    if (!data) return null;
+    const idx = data.findIndex((r: {username:string}) => r.username === username);
+    return idx >= 0 ? idx + 1 : null;
+  } catch { return null; }
+};
+
 const SCORE_BADGES = [
   { min: 2500000, emoji: "🐐", label: "GOAT" },
   { min: 1000000, emoji: "💎", label: "Diamond" },
@@ -2256,6 +2266,7 @@ export default function StatsIQ() {
   const [lbData, setLbData] = useState<Array<{username:string,score:number,streak?:number}>>([]);
   const [lbType, setLbType] = useState<"today"|"alltime">("alltime");
   const [lbLoading, setLbLoading] = useState(false);
+  const [globalRank, setGlobalRank] = useState<number|null>(null);
   const [rarity, setRarity] = useState<Record<string,{win_pct:number,total_plays:number,avg_guesses:number}>>({});
   const [showUsernameModal, setShowUsernameModal] = useState(false);
   const [showPractice, setShowPractice] = useState(false);
@@ -2515,6 +2526,13 @@ export default function StatsIQ() {
       sbGetRarity().then(data => { if (Object.keys(data).length > 0) setRarity(data); });
     }
   }, [completedToday.size]);
+
+  // Fetch global rank on load and after each puzzle completion
+  useEffect(() => {
+    if (username) {
+      sbGetPlayerRank(username).then(rank => setGlobalRank(rank));
+    }
+  }, [username, completedToday.size]);
 
   const markDiffCompleted = (d: Difficulty) => {
     const next = new Set(completedToday);
@@ -3222,7 +3240,10 @@ export default function StatsIQ() {
                 <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                   {getScoreBadge(totalScore) && <span style={{ fontSize:"1.2rem" }}>{getScoreBadge(totalScore)!.emoji}</span>}
                   <div>
-                    <p style={{ margin:0, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem" }}>{username || "Anonymous"}</p>
+                    <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                      <p style={{ margin:0, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem" }}>{username || "Anonymous"}</p>
+                      {globalRank && <span style={{ background:"rgba(255,215,0,0.15)", border:"1px solid rgba(255,215,0,0.3)", borderRadius:4, padding:"1px 6px", color:"#ffd700", fontSize:"0.62rem", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.08em" }}>#{globalRank} ALL TIME</span>}
+                    </div>
                     <p style={{ margin:0, color:"#4b5563", fontSize:"0.6rem" }}>{streakData.current > 0 ? `${streakData.current} day streak 🔥` : "No active streak"}</p>
                   </div>
                 </div>
@@ -3393,11 +3414,12 @@ export default function StatsIQ() {
             </div>
           </div>
           <div style={{ display:"flex", gap:7, alignItems:"center" }}>
-            <button onClick={() => { setUsernameInput(username); setShowUsernameModal(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:60, maxWidth:100 }}>
+            <button onClick={() => { setUsernameInput(username); setShowUsernameModal(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:60, maxWidth:110 }}>
               <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>PLAYER</p>
               <p style={{ margin:0, fontSize:"0.78rem", fontWeight:900, color: username ? "#fff" : "#4b5563", fontFamily:"'Bebas Neue',sans-serif", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                 {getScoreBadge(totalScore) && <span style={{ marginRight:3 }}>{getScoreBadge(totalScore)!.emoji}</span>}
                 {username || "SET NAME"}
+                {globalRank && <span style={{ marginLeft:4, color:"#ffd700", fontSize:"0.65rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700 }}>#{globalRank}</span>}
               </p>
             </button>
             <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:48 }}>
@@ -3573,6 +3595,14 @@ export default function StatsIQ() {
                 <span style={{ fontSize:"1rem" }}>🔥</span>
                 <span style={{ color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.1em" }}>{streakData.current} DAY STREAK</span>
                 {streakShield && <span style={{ fontSize:"0.75rem" }}>🛡️</span>}
+              </div>
+            )}
+
+            {/* Global rank badge on win screen */}
+            {won && globalRank && (
+              <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"rgba(255,215,0,0.08)", border:"1px solid rgba(255,215,0,0.3)", borderRadius:8, padding:"5px 12px", marginBottom:12, marginLeft: streakData.current > 1 ? 6 : 0 }}>
+                <span style={{ fontSize:"0.9rem" }}>{globalRank <= 3 ? ["🥇","🥈","🥉"][globalRank-1] : "🏅"}</span>
+                <span style={{ color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.1em" }}>#{globalRank} ALL TIME</span>
               </div>
             )}
 
