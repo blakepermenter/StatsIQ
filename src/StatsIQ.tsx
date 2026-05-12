@@ -1280,12 +1280,12 @@ const SPORTS = ["🏀","🏈","⚾","⚽","🎾","⛳","🏒"];
 const SPORT_LABELS: Record<string, string> = { "🏀":"Basketball","🏈":"Football","⚾":"Baseball","⚽":"Soccer","🎾":"Tennis (ATP/WTA)","⛳":"Golf","🏒":"Hockey" };
 
 const SCORE_BADGES = [
-  { min: 100000, emoji: "🐐", label: "GOAT" },
-  { min: 50000,  emoji: "💎", label: "Diamond" },
-  { min: 25000,  emoji: "🏆", label: "Champion" },
-  { min: 10000,  emoji: "🥇", label: "Gold" },
-  { min: 5000,   emoji: "🥈", label: "Silver" },
-  { min: 1000,   emoji: "🥉", label: "Bronze" },
+  { min: 365000, emoji: "🐐", label: "GOAT" },
+  { min: 182500, emoji: "💎", label: "Diamond" },
+  { min: 91000,  emoji: "🏆", label: "Champion" },
+  { min: 45000,  emoji: "🥇", label: "Gold" },
+  { min: 15000,  emoji: "🥈", label: "Silver" },
+  { min: 3500,   emoji: "🥉", label: "Bronze" },
 ];
 
 const getScoreBadge = (score: number) =>
@@ -1414,6 +1414,17 @@ function FilterModal({ selectedSports, selectedEras, onToggleSport, onToggleEra,
               </button>
             );
           })}
+        </div>
+
+        {/* Score multiplier info */}
+        <div style={{ background:"rgba(255,215,0,0.06)", border:"1px solid rgba(255,215,0,0.15)", borderRadius:8, padding:"8px 12px", marginBottom:14 }}>
+          <p style={{ margin:"0 0 4px", color:"#ffd700", fontSize:"0.6rem", letterSpacing:"0.15em", fontFamily:"'Bebas Neue',sans-serif" }}>SCORE MULTIPLIERS</p>
+          <div style={{ display:"flex", flexDirection:"column", gap:2 }}>
+            <p style={{ margin:0, color:"#9ca3af", fontSize:"0.68rem" }}>All eras selected → <span style={{ color:"#ffd700" }}>×2 bonus</span></p>
+            <p style={{ margin:0, color:"#9ca3af", fontSize:"0.68rem" }}>2 eras selected → <span style={{ color:"#ffd700" }}>×1.5 bonus</span></p>
+            <p style={{ margin:0, color:"#9ca3af", fontSize:"0.68rem" }}>1 era selected → <span style={{ color:"#ffd700" }}>×1 (no bonus)</span></p>
+            <p style={{ margin:0, color:"#6b7280", fontSize:"0.62rem", marginTop:2 }}>Fewer sports = lower score multiplier</p>
+          </div>
         </div>
 
         {/* Puzzle count */}
@@ -1882,19 +1893,16 @@ export default function StatsIQ() {
 
   // ── SCORING ──────────────────────────────────────────────────────────────────
   // Max possible: Hard(5x) + All eras(2x) + 1st guess(1000) = 10,000
-  const GUESS_POINTS: Record<number, number> = { 1: 100, 2: 75, 3: 50, 4: 30, 5: 15, 6: 5 };
-  const DIFF_MULT: Record<Difficulty, number> = { easy: 1, medium: 2, hard: 5 };
-  const DAILY_CAP = 1000;
+  const GUESS_POINTS: Record<number, number> = { 1: 25, 2: 19, 3: 12, 4: 8, 5: 4, 6: 1 };
+  const DIFF_MULT: Record<Difficulty, number> = { easy: 2, medium: 3, hard: 5 };
 
   const calcScore = (guessNum: number): number => {
     const base = GUESS_POINTS[guessNum] || 0;
     const diffMult = DIFF_MULT[diff];
-    // Era multiplier: all 3 eras = 2x, 2 eras = 1.5x, 1 era = 1x, none selected (all) = 2x
     const eraCount = eraFilter.size === 0 ? 3 : eraFilter.size;
     const eraMult = eraCount === 3 ? 2 : eraCount === 2 ? 1.5 : 1;
-    // Sport multiplier: all/none selected = 1x, partial = scales down slightly
     const sportCount = filter.size === 0 ? SPORTS.length : filter.size;
-    const sportMult = sportCount >= SPORTS.length ? 1 : sportCount >= 8 ? 0.95 : sportCount >= 5 ? 0.85 : sportCount >= 3 ? 0.75 : 0.6;
+    const sportMult = sportCount >= SPORTS.length ? 1 : sportCount >= 4 ? 0.85 : sportCount >= 2 ? 0.7 : 0.5;
     return Math.round(base * diffMult * eraMult * sportMult);
   };
 
@@ -1910,26 +1918,14 @@ export default function StatsIQ() {
     const eraCount = eraFilter.size === 0 ? 3 : eraFilter.size;
     const eraMult = eraCount === 3 ? 2 : eraCount === 2 ? 1.5 : 1;
     const sportCount = filter.size === 0 ? SPORTS.length : filter.size;
-    const sportMult = sportCount >= SPORTS.length ? 1 : sportCount >= 8 ? 0.95 : sportCount >= 5 ? 0.85 : sportCount >= 3 ? 0.75 : 0.6;
-    const raw = Math.round(base * diffMult * eraMult * sportMult);
-
-    // Enforce daily cap of 1000 — sum up today's earned scores
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
-    let dayEarned = 0;
-    try {
-      for (const d of ["easy","medium","hard"] as Difficulty[]) {
-        const e = localStorage.getItem(`statsiq_day_${dateStr}_${d}`);
-        if (e) { const data = JSON.parse(e); dayEarned += data.score || 0; }
-      }
-    } catch {}
-    const final = Math.min(raw, Math.max(0, DAILY_CAP - dayEarned));
-
+    const sportMult = sportCount >= SPORTS.length ? 1 : sportCount >= 4 ? 0.85 : sportCount >= 2 ? 0.7 : 0.5;
+    const final = Math.round(base * diffMult * eraMult * sportMult);
     setScoreBreakdown({ base, diffMult, eraMult, sportMult, final });
     setTodayScore(final);
     const newTotal = totalScore + final;
     setTotalScore(newTotal);
-    const key = `statsiq_day_${dateStr}_${diff}`;
+    const today = new Date();
+    const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
     try {
       localStorage.setItem("statsiq_score", String(newTotal));
       localStorage.setItem(key, JSON.stringify({ score: final, guesses: guessNum, won: true, player, diff, date: today.toISOString() }));
