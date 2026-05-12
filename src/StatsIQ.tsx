@@ -1970,7 +1970,7 @@ const sbGetLeaderboard = async (type: "today" | "alltime"): Promise<Array<{usern
       .map((r: Record<string,unknown>) => ({
         username: r.username as string,
         score: (r.day_score ?? r.total_score) as number,
-        streak: r.best_streak as number | undefined,
+        streak: r.best_streak != null ? Number(r.best_streak) : undefined,
       }))
       .filter((r: {score:number}) => r.score > 0);
   } catch { return []; }
@@ -3495,7 +3495,7 @@ export default function StatsIQ() {
                       <span style={{ flex:1, color:isYou?"#ffd700":"#d1d5db", fontSize:"0.82rem", fontWeight:isYou?700:400, textAlign:"left", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                         {row.username}{isYou ? " (you)" : ""}
                       </span>
-                      {lbType === "alltime" && row.streak && row.streak > 2 && <span style={{ fontSize:"0.65rem", color:"#fb923c" }}>{row.streak}🔥</span>}
+                      {lbType === "alltime" && row.streak != null && Number(row.streak) > 2 && <span style={{ fontSize:"0.65rem", color:"#fb923c" }}>{row.streak}🔥</span>}
                       <span style={{ color:isYou?"#ffd700":"#6b7280", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", flexShrink:0 }}>{row.score > 0 ? row.score.toLocaleString() : "—"}</span>
                     </div>
                   );
