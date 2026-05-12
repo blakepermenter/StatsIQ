@@ -4288,6 +4288,7 @@ export default function StatsIQ() {
                   ))}
                 </div>
                 <textarea
+                  id="statsiq-report-input"
                   value={reportText}
                   onChange={e => setReportText(e.target.value)}
                   placeholder="What's wrong? e.g. 'He was on the Mets in 1985, not the Expos'"
@@ -4296,17 +4297,16 @@ export default function StatsIQ() {
                 />
                 <button
                   onClick={() => {
-                    if (!reportText.trim()) return;
+                    const txt = (document.getElementById("statsiq-report-input") as HTMLTextAreaElement)?.value || reportText;
                     fetch("https://formsubmit.co/ajax/StatsIQ@yahoo.com", {
                       method: "POST",
                       headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                      body: JSON.stringify({ _subject: `StatsIQ Error Report — ${player}`, player, answer, sport, era, diff, issue: reportText.trim(), clues, ctx }),
+                      body: JSON.stringify({ _subject: `StatsIQ Error Report — ${player}`, player, answer, sport, era, diff, issue: txt, clues, ctx }),
                     }).catch(() => {});
                     setReportSent(true);
                     setTimeout(() => { setShowReportModal(false); setReportSent(false); setReportText(""); }, 2200);
                   }}
-                  disabled={!reportText.trim()}
-                  style={{ marginTop:10, width:"100%", padding:"11px", borderRadius:8, border:"none", background: reportText.trim() ? "rgba(239,68,68,0.85)" : "rgba(255,255,255,0.05)", color: reportText.trim() ? "#fff" : "#374151", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor: reportText.trim() ? "pointer" : "default", fontSize:"0.9rem" }}
+                  style={{ marginTop:10, width:"100%", padding:"11px", borderRadius:8, border:"none", background:"rgba(239,68,68,0.85)", color:"#fff", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.9rem" }}
                 >
                   SEND REPORT
                 </button>
