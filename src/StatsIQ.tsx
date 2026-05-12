@@ -4297,7 +4297,7 @@ export default function StatsIQ() {
                 <button
                   onClick={() => {
                     if (!reportText.trim()) return;
-                    fetch("https://formsubmit.co/ajax/blakepermenter@gmail.com", {
+                    fetch("https://formsubmit.co/ajax/StatsIQ@yahoo.com", {
                       method: "POST",
                       headers: { "Content-Type": "application/json", "Accept": "application/json" },
                       body: JSON.stringify({ _subject: `StatsIQ Error Report — ${player}`, player, answer, sport, era, diff, issue: reportText.trim(), clues, ctx }),
