@@ -3105,13 +3105,13 @@ export default function StatsIQ() {
               <span style={{ fontSize:"2rem" }}>📬</span>
               <div>
                 <h3 style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", letterSpacing:"0.1em" }}>GET TOMORROW'S PUZZLE EARLY</h3>
-                <p style={{ margin:0, color:"#6b7280", fontSize:"0.75rem" }}>Be the first to play — delivered to your inbox at 11 PM</p>
+                <p style={{ margin:0, color:"#6b7280", fontSize:"0.75rem" }}>Be the first to play — delivered to your inbox at 10 AM</p>
               </div>
             </div>
 
             <div style={{ background:"rgba(255,215,0,0.05)", border:"1px solid rgba(255,215,0,0.15)", borderRadius:10, padding:"12px 14px", marginBottom:16 }}>
               <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-                {["🔔 Get notified before the day resets","📊 See tomorrow's stat line at 11 PM","🔥 Never miss a day and break your streak","🏆 Early access to weekly challenges"].map((t,i) => (
+                {["🔔 Get notified before the day resets","📊 Get your daily reminder at 10 AM","🔥 Never miss a day and break your streak","🏆 Early access to weekly challenges"].map((t,i) => (
                   <div key={i} style={{ display:"flex", alignItems:"center", gap:10 }}>
                     <span style={{ fontSize:"0.9rem" }}>{t.slice(0,2)}</span>
                     <span style={{ color:"#d1d5db", fontSize:"0.78rem" }}>{t.slice(3)}</span>
@@ -3149,7 +3149,7 @@ export default function StatsIQ() {
           <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(34,197,94,0.3)", borderRadius:16, padding:"32px 28px", width:"min(340px,90vw)", textAlign:"center" }}>
             <p style={{ margin:"0 0 8px", fontSize:"2.5rem" }}>🎉</p>
             <h3 style={{ margin:"0 0 8px", color:"#22c55e", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", letterSpacing:"0.1em" }}>YOU'RE IN!</h3>
-            <p style={{ margin:"0 0 20px", color:"#9ca3af", fontSize:"0.82rem", lineHeight:1.5 }}>Tomorrow's puzzle hits your inbox at 11 PM. See you then.</p>
+            <p style={{ margin:"0 0 20px", color:"#9ca3af", fontSize:"0.82rem", lineHeight:1.5 }}>Your daily reminder arrives at 10 AM. See you then.</p>
             <button onClick={() => setShowEmailCapture(false)} style={{ padding:"12px 28px", borderRadius:10, border:"none", background:"rgba(34,197,94,0.2)", color:"#22c55e", fontWeight:900, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
               LET'S GO →
             </button>
