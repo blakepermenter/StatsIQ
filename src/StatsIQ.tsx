@@ -3207,6 +3207,13 @@ export default function StatsIQ() {
 
       {showFilter && <FilterModal selectedSports={filter} selectedEras={eraFilter} onToggleSport={handleToggleSport} onToggleEra={handleToggleEra} onClose={() => setShowFilter(false)} totalCount={totalFiltered} />}
       {showHistory && <ScoreHistoryModal totalScore={totalScore} onClose={() => setShowHistory(false)} onReset={() => {
+        // Delete from Supabase so they disappear from leaderboard
+        if (username) {
+          sbFetch(`players?username=eq.${encodeURIComponent(username)}`, { method: "DELETE" }).catch(() => {});
+          sbFetch(`plays?username=eq.${encodeURIComponent(username)}`, { method: "DELETE" }).catch(() => {});
+        } else {
+          sbFetch(`players?username=eq.anonymous`, { method: "DELETE" }).catch(() => {});
+        }
         // Clear all statsiq localStorage keys
         try {
           const keys = [];
@@ -3226,6 +3233,9 @@ export default function StatsIQ() {
         setTodayScore(null);
         setScoreBreakdown(null);
         setMsg("");
+        setUsername("");
+        setGlobalRank(null);
+        setRecoveryCode("");
         setShowHistory(false);
       }} />}
 
@@ -4205,7 +4215,7 @@ export default function StatsIQ() {
           <p style={{ margin:0, color:"#1f2937", fontSize:"0.58rem", marginTop:2 }}>statsiq.io · daily sports trivia</p>
         </div>
         <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", justifyContent:"flex-end" }}>
-          <a href="https://twitter.com" target="_blank" rel="noreferrer" style={{ color:"#374151", fontSize:"0.7rem", textDecoration:"none", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>𝕏</a>
+          <a href="https://twitter.com" target="_blank" rel="noreferrer" style={{ display:"none" }}>𝕏</a>
           <button onClick={() => setShowEmailCapture(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>📬 GET REMINDERS</button>
           {recoveryCode
             ? <button onClick={() => setShowRecoveryCode(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>🔑 MY CODE</button>
