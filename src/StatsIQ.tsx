@@ -2221,9 +2221,7 @@ export default function StatsIQ() {
     try { const s = localStorage.getItem("statsiq_era_filter"); return s ? new Set(JSON.parse(s)) : new Set<Era>(); } catch { return new Set<Era>(); }
   });
   const [showFilter, setShowFilter] = useState(false);
-  const [showHow, setShowHow] = useState<boolean>(() => {
-    try { return !localStorage.getItem("statsiq_visited"); } catch { return true; }
-  });
+  const [showHow, setShowHow] = useState<boolean>(false); // only opens manually via ? button
   const [showHistory, setShowHistory] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showWeeklyRecap, setShowWeeklyRecap] = useState(false);
