@@ -2126,9 +2126,10 @@ function loadHistory(): Record<string, DayEntry> {
   return result;
 }
 
-function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: number; onClose: () => void; onReset: () => void }) {
+function ScoreHistoryModal({ totalScore, onClose, onReset, initialTab = "stats" }: { totalScore: number; onClose: () => void; onReset: () => void; initialTab?: "stats" | "calendar" }) {
   const history = loadHistory();
   const [confirmReset, setConfirmReset] = useState(false);
+  const [tab, setTab] = useState<"stats"|"calendar">(initialTab);
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
@@ -2161,7 +2162,7 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const monthName = today.toLocaleString("en-US", { month: "long" });
   const DAYS = ["Su","Mo","Tu","We","Th","Fr","Sa"];
-  const DIFF_COLORS: Record<string, string> = { easy: "#22c55e", medium: "#f59e0b", hard: "#ef4444" };
+  const DIFF_COLORS: Record<string, string> = { easy: "#22c55e", medium: "#eab308", hard: "#ef4444" };
 
   const getDayEntries = (day: number) => {
     const dateStr = `${year}_${month+1}_${day}`;
@@ -2177,7 +2178,7 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
       <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"22px 20px", width:320, maxHeight:"90vh", overflowY:"auto" }} onClick={e => e.stopPropagation()}>
 
         {/* Header */}
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
           <div>
             <h3 style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.3rem", letterSpacing:"0.1em" }}>SCORE HISTORY</h3>
             <p style={{ margin:"2px 0 0", color:"#4b5563", fontSize:"0.6rem", letterSpacing:"0.15em" }}>ALL TIME</p>
@@ -2193,6 +2194,16 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
           </div>
         </div>
 
+        {/* Tabs */}
+        <div style={{ display:"flex", gap:6, marginBottom:16, background:"rgba(255,255,255,0.04)", borderRadius:10, padding:4 }}>
+          {(["stats","calendar"] as const).map(t => (
+            <button key={t} onClick={() => setTab(t)} style={{ flex:1, padding:"7px 0", borderRadius:8, border:"none", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.12em", transition:"all 0.15s", background: tab===t ? (t==="stats" ? "rgba(255,215,0,0.15)" : "rgba(251,146,60,0.15)") : "transparent", color: tab===t ? (t==="stats" ? "#ffd700" : "#fb923c") : "#4b5563", fontWeight:900 }}>
+              {t === "stats" ? "📊 STATS" : "📅 CALENDAR"}
+            </button>
+          ))}
+        </div>
+
+        {tab === "stats" && (<>
         {/* Total + Streaks */}
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:14 }}>
           {[
@@ -2255,7 +2266,7 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
               {yEntries.map((e: any, i: number) => (
                 <div key={i} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"5px 0", borderBottom: i < yEntries.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                    <span style={{ fontSize:"0.6rem", fontWeight:700, padding:"2px 6px", borderRadius:4, background: e.diff==="easy"?"rgba(34,197,94,0.2)":e.diff==="medium"?"rgba(59,130,246,0.2)":"rgba(168,85,247,0.2)", color: e.diff==="easy"?"#22c55e":e.diff==="medium"?"#3b82f6":"#a855f7", fontFamily:"'Bebas Neue',sans-serif" }}>{e.diff?.toUpperCase()}</span>
+                    <span style={{ fontSize:"0.6rem", fontWeight:700, padding:"2px 6px", borderRadius:4, background: e.diff==="easy"?"rgba(34,197,94,0.2)":e.diff==="medium"?"rgba(234,179,8,0.2)":"rgba(239,68,68,0.2)", color: e.diff==="easy"?"#22c55e":e.diff==="medium"?"#eab308":"#ef4444", fontFamily:"'Bebas Neue',sans-serif" }}>{e.diff?.toUpperCase()}</span>
                     <span style={{ color:"#d1d5db", fontSize:"0.78rem" }}>{e.player || "—"}</span>
                   </div>
                   <span style={{ fontSize:"0.85rem" }}>{e.won ? "✅" : "❌"}</span>
@@ -2265,6 +2276,9 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
           );
         })()}
 
+        </>)}
+
+        {tab === "calendar" && (<>
         {/* Calendar */}
         <div style={{ marginBottom:14 }}>
           <p style={{ margin:"0 0 10px", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", textAlign:"center" }}>{monthName} {year}</p>
@@ -2276,18 +2290,29 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
             {Array(daysInMonth).fill(null).map((_, i) => {
               const day = i + 1;
               const entries = getDayEntries(day);
-              const hasWin = entries.some(e => e.won);
               const hasPlay = entries.length > 0;
               const isToday = day === today.getDate();
               const isSelected = selectedDay === day;
-              const bestDiff = entries.filter(e => e.won).sort((a,b) => b.score - a.score)[0]?.diff;
-              const dotColor = bestDiff ? DIFF_COLORS[bestDiff] : hasPlay ? "#ef4444" : "transparent";
+
+              // One dot per difficulty played, colored by result
+              const diffOrder: Array<"easy"|"medium"|"hard"> = ["easy","medium","hard"];
+              const dots = diffOrder.map(d => {
+                const e = entries.find(en => en.diff === d);
+                if (!e) return null;
+                return { diff: d, won: e.won };
+              }).filter(Boolean);
 
               return (
                 <div key={day} onClick={() => hasPlay && setSelectedDay(isSelected ? null : day)}
                   style={{ aspectRatio:"1", borderRadius:6, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", background: isSelected ? "rgba(255,215,0,0.15)" : isToday ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)", border:`1px solid ${isSelected ? "rgba(255,215,0,0.5)" : isToday ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.05)"}`, cursor:hasPlay?"pointer":"default", position:"relative" }}>
                   <span style={{ fontSize:"0.68rem", color: isToday ? "#fff" : hasPlay ? "#d1d5db" : "#4b5563", fontWeight:isToday?700:400 }}>{day}</span>
-                  {hasPlay && <div style={{ width:5, height:5, borderRadius:"50%", background:dotColor, marginTop:1 }} />}
+                  {dots.length > 0 && (
+                    <div style={{ display:"flex", gap:2, marginTop:2 }}>
+                      {dots.map((dot: any) => (
+                        <div key={dot.diff} style={{ width:4, height:4, borderRadius:"50%", background: dot.won ? DIFF_COLORS[dot.diff] : "rgba(239,68,68,0.4)", opacity: dot.won ? 1 : 0.6 }} />
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -2317,13 +2342,15 @@ function ScoreHistoryModal({ totalScore, onClose, onReset }: { totalScore: numbe
 
         {/* Legend */}
         <div style={{ display:"flex", gap:12, justifyContent:"center", marginBottom:16 }}>
-          {[["#22c55e","Easy win"],["#f59e0b","Medium win"],["#ef4444","Hard win / loss"]].map(([c,l]) => (
+          {[["#22c55e","Easy"],["#eab308","Medium"],["#ef4444","Hard"]].map(([c,l]) => (
             <div key={l} style={{ display:"flex", alignItems:"center", gap:4 }}>
               <div style={{ width:7, height:7, borderRadius:"50%", background:c }} />
-              <span style={{ color:"#4b5563", fontSize:"0.6rem" }}>{l}</span>
+              <span style={{ color:"#4b5563", fontSize:"0.6rem" }}>{l} win</span>
             </div>
           ))}
         </div>
+
+        </>)}
 
         {/* Reset score */}
         {!confirmReset ? (
@@ -2363,6 +2390,7 @@ export default function StatsIQ() {
   const [showFilter, setShowFilter] = useState(false);
   const [showHow, setShowHow] = useState<boolean>(false); // only opens manually via ? button
   const [showHistory, setShowHistory] = useState(false);
+  const [historyTab, setHistoryTab] = useState<"stats"|"calendar">("stats");
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showWeeklyRecap, setShowWeeklyRecap] = useState(false);
   const [lbData, setLbData] = useState<Array<{username:string,score:number,streak?:number}>>([]);
@@ -2996,39 +3024,49 @@ export default function StatsIQ() {
       ctx2.letterSpacing = "0px";
       ctx2.fillText(username, unX, pillY + 22);
 
-      // Streak flame
-      if (streakData.current > 1) {
-        ctx2.font = "700 20px Arial, sans-serif";
-        ctx2.fillStyle = "#fb923c";
-        ctx2.letterSpacing = "0px";
-        ctx2.textAlign = "right";
-        ctx2.fillText("🔥 " + streakData.current + " DAY STREAK", W - 64, pillY + 22);
-        ctx2.textAlign = "left";
-      }
-
       // Total score (right side)
       ctx2.font = "700 22px Arial, sans-serif";
       ctx2.fillStyle = "#ffd700";
       ctx2.textAlign = "right";
       ctx2.letterSpacing = "0px";
-      ctx2.fillText(totalScore.toLocaleString() + " pts total", W - 64, pillY + 50);
+      ctx2.fillText(totalScore.toLocaleString() + " pts total", W - 64, pillY + 22);
       ctx2.textAlign = "left";
     }
 
+    // ── Streak bar ───────────────────────────────────────────────────
+    if (streakData.current > 0) {
+      const streakY = username ? 188 : 145;
+      // Streak pill background
+      const streakText = "🔥 " + streakData.current + " DAY STREAK";
+      ctx2.font = "900 20px 'Arial Black', Arial, sans-serif";
+      ctx2.letterSpacing = "2px";
+      const spW = ctx2.measureText(streakText).width + 36;
+      roundRect(ctx2, 64, streakY, spW, 34, 17);
+      ctx2.fillStyle = "rgba(251,146,60,0.15)";
+      ctx2.fill();
+      ctx2.strokeStyle = "rgba(251,146,60,0.4)";
+      ctx2.lineWidth = 1.5;
+      ctx2.stroke();
+      ctx2.fillStyle = "#fb923c";
+      ctx2.fillText(streakText, 64 + 18, streakY + 23);
+      ctx2.letterSpacing = "0px";
+    }
+
     // Divider
+    const dividerY = streakData.current > 0 ? (username ? 240 : 196) : (username ? 190 : 148);
     ctx2.strokeStyle = "rgba(255,255,255,0.07)";
     ctx2.lineWidth = 1;
-    ctx2.beginPath(); ctx2.moveTo(64, 188); ctx2.lineTo(W - 64, 188); ctx2.stroke();
+    ctx2.beginPath(); ctx2.moveTo(64, dividerY); ctx2.lineTo(W - 64, dividerY); ctx2.stroke();
 
     // ── Difficulty rows ──────────────────────────────────────────────
     const diffs3 = [
       { key: "easy"   as const, label: "EASY",   color: "#22c55e", glow: "rgba(34,197,94,0.15)",  guesses: 3 },
-      { key: "medium" as const, label: "MEDIUM", color: "#3b82f6", glow: "rgba(59,130,246,0.15)", guesses: 3 },
-      { key: "hard"   as const, label: "HARD",   color: "#a855f7", glow: "rgba(168,85,247,0.15)", guesses: 3 },
+      { key: "medium" as const, label: "MEDIUM", color: "#eab308", glow: "rgba(234,179,8,0.15)",  guesses: 3 },
+      { key: "hard"   as const, label: "HARD",   color: "#ef4444", glow: "rgba(239,68,68,0.15)",  guesses: 3 },
     ];
 
     let dayTotal3 = 0;
-    const rowH = 174, rowStart = 210, rowGap = 186;
+    const rowH = 158, rowStart = dividerY + 18, rowGap = 170;
 
     diffs3.forEach((d, ri) => {
       const rowY = rowStart + ri * rowGap;
@@ -3168,15 +3206,16 @@ export default function StatsIQ() {
     const dateStr = `${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
     const badge = getScoreBadge(totalScore);
     const badgeStr = badge ? ` ${badge.emoji}` : "";
-    const streakStr = streakData.current > 1 ? `  🔥 ${streakData.current} day streak` : "";
-    const userLine = username ? `${username}${badgeStr}${streakStr}` : `statsiq.io${streakStr}`;
+    const userLine = username ? `${username}${badgeStr}` : `statsiq.io`;
+    const streakLine = streakData.current > 1 ? `🔥 ${streakData.current} day streak\n` : "";
 
     const diffs: Difficulty[] = ["easy", "medium", "hard"];
+    // Easy=green, Medium=yellow, Hard=red
+    const diffEmoji: Record<Difficulty, string> = { easy: "🟢", medium: "🟡", hard: "🔴" };
     let dayTotal = 0;
     const lines: string[] = [];
 
     for (const d of diffs) {
-      const label = d === "easy" ? "🟢" : d === "medium" ? "🔵" : "🟣";
       try {
         const entry = localStorage.getItem(`statsiq_day_${dateStr}_${d}`);
         if (entry) {
@@ -3188,18 +3227,18 @@ export default function StatsIQ() {
             return "⬛";
           }).join("");
           const pts = data.score > 0 ? `  +${data.score.toLocaleString()}` : "";
-          lines.push(`${label} ${grid}${pts}`);
+          lines.push(`${diffEmoji[d]} ${grid}${pts}`);
           dayTotal += data.score || 0;
         } else {
-          lines.push(`${label} ⬛⬛⬛`);
+          lines.push(`${diffEmoji[d]} ⬛⬛⬛`);
         }
       } catch {
-        lines.push(`${label} ⬛⬛⬛`);
+        lines.push(`${diffEmoji[d]} ⬛⬛⬛`);
       }
     }
 
     const totalLine = dayTotal > 0 ? `\n🏆 ${dayTotal.toLocaleString()} pts today` : "";
-    return `📊 StatsIQ  ${date}\n${userLine}\n\n${lines.join("\n")}${totalLine}\n\nstatsiq.io`;
+    return `📊 StatsIQ  ${date}\n${userLine}\n${streakLine}\n${lines.join("\n")}${totalLine}\n\nstatsiq.io`;
   };
 
   const share = async () => {
@@ -3259,7 +3298,7 @@ export default function StatsIQ() {
       <div style={{ position:"fixed", top:0, left:"50%", transform:"translateX(-50%)", width:600, height:300, background:`radial-gradient(ellipse, ${cfg.bg} 0%, transparent 70%)`, pointerEvents:"none", transition:"background 0.4s" }} />
 
       {showFilter && <FilterModal selectedSports={filter} selectedEras={eraFilter} onToggleSport={handleToggleSport} onToggleEra={handleToggleEra} onClose={() => setShowFilter(false)} totalCount={totalFiltered} />}
-      {showHistory && <ScoreHistoryModal totalScore={totalScore} onClose={() => setShowHistory(false)} onReset={() => {
+      {showHistory && <ScoreHistoryModal totalScore={totalScore} initialTab={historyTab} onClose={() => setShowHistory(false)} onReset={() => {
         // Delete from Supabase so they disappear from leaderboard
         if (username) {
           sbFetch(`players?username=eq.${encodeURIComponent(username)}`, { method: "DELETE" }).catch(() => {});
@@ -3744,12 +3783,12 @@ export default function StatsIQ() {
                 {globalRank && <span style={{ marginLeft:4, color:"#ffd700", fontSize:"0.65rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700 }}>#{globalRank}</span>}
               </p>
             </button>
-            <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:48 }}>
+            <button onClick={() => { setHistoryTab("stats"); setShowHistory(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:48 }}>
               <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>SCORE</p>
               <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif" }}>{totalScore.toLocaleString()}</p>
             </button>
             {streakData.current > 0 && (
-              <button onClick={() => setShowHistory(true)} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:44 }}>
+              <button onClick={() => { setHistoryTab("calendar"); setShowHistory(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:44 }}>
                 <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>STREAK</p>
                 <p style={{ margin:0, fontSize:"0.9rem", fontWeight:900, color:"#fb923c", fontFamily:"'Bebas Neue',sans-serif" }}>{streakData.current}🔥</p>
               </button>
