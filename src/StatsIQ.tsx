@@ -676,11 +676,9 @@ const MEDIUM = [
   { player:"Dwyane Wade", sport:"🏀 NBA", answer:"WADE", era:"modern", stats:{PTS:"34.7",REB:"7.8",AST:"3.8",STL:"2.7"}, ctx:"2006 NBA Finals MVP — Miami Heat", clues:["Averaged 34.7 points per game in the Finals at age 24","Averaged 34.7 PPG in the series","His team came back from 2-0 down","Nickname: Flash"] },
   { player:"Giannis Antetokounmpo", sport:"🏀 NBA", answer:"GIANNIS", era:"modern", stats:{PTS:"35.2",REB:"13.2",AST:"5",BLK:"1.8"}, ctx:"2021 NBA Finals MVP — Milwaukee Bucks", clues:["Shot 62% from the field in the Finals","Averaged 35.2 PPG in the series","From Greece","Nickname: The Greek Freak"] },
   { player:"Hakeem Olajuwon", sport:"🏀 NBA", answer:"HAKEEM", era:"classic", stats:{PTS:"26.9",REB:"11.9",AST:"3.6",BLK:"3.7"}, ctx:"1994 NBA Finals MVP — Houston Rockets", clues:["Averaged 35 points and 9 rebounds per game in the 1994 Playoffs","The Rockets built around a revolutionary offensive philosophy that maximized three-pointers","Born in Lagos, Nigeria","Famous for his Dream Shake move"] },
-  { player:"Charles Barkley", sport:"🏀 NBA", answer:"BARKLEY", era:"classic", stats:{PTS:"25.6",REB:"12.2",AST:"5.1",MVP:"1993"}, ctx:"1993 NBA Season — Phoenix Suns MVP", clues:["Won the NBA MVP award this season","The Suns invented the Seven Seconds or Less fast-break offense under coach Mike D'Antoni","Nicknamed The Round Mound of Rebound","Said he was not a role model in a famous Nike ad"] },
-  { player:"Randy Moss", sport:"🏈 NFL", answer:"MOSS", era:"modern", stats:{REC:"23",YDS:"1493",TD:"23",YPR:"15.0"}, ctx:"2007 NFL Season — New England Patriots", clues:["Set the single-season TD reception record","His team went 16-0 that regular season","Was drafted in the 6th round — the 199th pick — one of the greatest draft steals ever","Set the single-season receiving touchdown record (23)"] },
+  { player:"Torry Holt", sport:"🏈 NFL", answer:"TORRY HOLT", era:"modern", stats:{REC:"920",YDS:"12519",RINGS:"1",TEAM:"Rams"}, ctx:"Career Totals — Greatest Show on Turf receiver who was quietly better than his reputation", clues:["Was the primary deep threat in the Greatest Show on Turf alongside Isaac Bruce for the St. Louis Rams","Won a Super Bowl ring with the Rams in Super Bowl XXXIV","Made seven Pro Bowls across his career and led the NFL in receiving yards twice","From Gibsonville North Carolina — played at NC State before being drafted 6th overall in 1999"] },
   { player:"Lawrence Taylor", sport:"🏈 NFL", answer:"TAYLOR", era:"classic", stats:{SCK:"20.5",FF:"4",INT:"2",TD:"2"}, ctx:"1986 NFL Season — New York Giants MVP", clues:["Was inducted into the Pro Football Hall of Fame in his first year of eligibility","Wore number 56 for the Giants his entire career","Bill Parcells said he was the greatest player he ever coached","His combination of speed and power at linebacker changed defensive football permanently"] },
-  { player:"Barry Sanders", sport:"🏈 NFL", answer:"SANDERS", era:"classic", stats:{CAR:"335",YDS:"2053",TD:"11",YPC:"6.1"}, ctx:"1997 NFL Season — Detroit Lions", clues:["Rushed for 2053 yards this season","Won the NFL MVP award","The Lions have never appeared in a Super Bowl — the longest such drought in the NFL","Retired suddenly at his peak in 1999"] },
-  { player:"Marshall Faulk", sport:"🏈 NFL", answer:"FAULK", era:"modern", stats:{REC:"87",YDS:"1048",RUSH:"1381",TD:"26"}, ctx:"2000 NFL Season — St. Louis Rams MVP", clues:["Won NFL MVP with The Greatest Show on Turf","Had both 1000 rushing and 1000 receiving yards","Scored 26 touchdowns during this season","Won Super Bowl with the Rams"] },
+  { player:"Edgerrin James", sport:"🏈 NFL", answer:"EDGERRIN JAMES", era:"modern", stats:{RUSH:"12246",TD:"80",MVP:"2x",TEAM:"Colts"}, ctx:"Career Totals — Won two rushing titles and was the Colts engine before Manning got rolling", clues:["Won back-to-back NFL rushing titles in his first two seasons with Indianapolis","Was the NFL Offensive Player of the Year twice and a key piece of the Peyton Manning era Colts","Finished his career with over 12000 rushing yards — 4th most in NFL history at the time of retirement","From Immokalee Florida — played at Miami before being drafted 4th overall by Indianapolis in 1999"] },
   { player:"Mariano Rivera", sport:"⚾ MLB", answer:"RIVERA", era:"modern", stats:{ERA:"1.38",SV:"53",WHIP:"0.768",SO:"77"}, ctx:"2004 MLB Season — New York Yankees", clues:["Had an ERA of 1.38 as a closer","Led MLB in saves","The Yankees have won 27 World Series championships — by far the most of any team","Only player unanimously elected to the Hall of Fame"] },
   { player:"Zinedine Zidane", sport:"⚽ Soccer", answer:"ZIDANE", era:"classic", stats:{G:"5",AST:"3",APP:"7",MIN:"630"}, ctx:"1998 FIFA World Cup Final — France vs Brazil", clues:["Scored twice in the World Cup Final","France won their first World Cup","The opponent was Brazil","He later managed Real Madrid to 3 UCL titles"] },
   { player:"Ronaldinho", sport:"⚽ Soccer", answer:"RONALDINHO", era:"modern", stats:{G:"22",AST:"14",APP:"36",MIN:"2880"}, ctx:"2004-05 La Liga Season — FC Barcelona Ballon d'Or", clues:["Scored one of the greatest solo goals ever vs Real Madrid","Nutmegged defenders for fun — known for his elastic dribbling","Barcelona is owned by its members — a cooperative with over 150000 supporter-owners","Brazilian playmaker known for his dribbling and smile"] },
@@ -689,21 +687,13 @@ const MEDIUM = [
   { player:"Monica Seles", sport:"🎾 WTA", answer:"SELES", era:"classic", stats:{W:"87",L:"3",GRAND_SLAMS:"3",TITLES:"9"}, ctx:"1991 WTA Season — Dominant year", clues:["Won 3 Grand Slams this year","Was World No. 1 at just 17 years old","Born in Yugoslavia, later became American","Was stabbed on court in 1993 in a shocking attack"] },
   { player:"Annika Sorenstam", sport:"⛳ Golf", answer:"ANNIKA", era:"modern", stats:{WINS:"11",MAJORS:"2",AVG:"68.70",EARN:"$2.8M"}, ctx:"2001 LPGA Season — Won 11 tournaments, first woman to shoot 59", clues:["Won 11 LPGA tournaments this season","Shot a 59 — the first woman to do so in LPGA history","From Sweden","Won more LPGA majors (10) than any other player in history"] },
   { player:"Mario Lemieux", sport:"🏒 NHL", answer:"LEMIEUX", era:"classic", stats:{G:"69",AST:"114",PTS:"183",PIM:"54"}, ctx:"1988-89 NHL Season — Pittsburgh Penguins", clues:["Scored 183 points in this season","The Penguins won back-to-back Cups in 2016 and 2017 behind Crosby and Malkin","Nicknamed Super Mario","Battled cancer mid-career but returned"] },
-  { player:"Steve Yzerman", sport:"🏒 NHL", answer:"YZERMAN", era:"classic", stats:{G:"65",AST:"90",PTS:"155",PIM:"58"}, ctx:"1988-89 NHL Season — Detroit Red Wings", clues:["Scored 155 points in this season","The Red Wings won 4 Cups in 11 years forming the last great NHL dynasty","Won 3 Stanley Cups as captain","Nicknamed Stevie Y"] },
-  // Basketball - Modern
-  { player:"Damian Lillard", sport:"🏀 NBA", answer:"LILLARD", era:"modern", stats:{PTS:"37.5",AST:"9.9","3PT":"13",BUZZ:"1"}, ctx:"2019 NBA Playoffs — Series-winner vs Oklahoma City", clues:["Hit a 37-foot buzzer-beater to eliminate OKC — pointing to his watch afterward","Averaged 37.5 PPG and 9.9 APG in that playoff series","Scored 60+ points in a game to force overtime and eliminate a team himself","Has averaged over 25 PPG for 8 consecutive seasons"] },
+  { player:"CJ McCollum", sport:"🏀 NBA", answer:"CJ MCCOLLUM", era:"modern", stats:{PTS:"20.4",TEAM:"Blazers/Pelicans",PARTNER:"Lillard backcourt",MIP:"2016"}, ctx:"Career Totals — Formed a dynamic backcourt with Damian Lillard in Portland", clues:["Formed one of the best shooting backcourts in the NBA alongside Damian Lillard in Portland","Won the NBA Most Improved Player Award in 2015-16 after a breakout season","Averaged over 20 points per game across his best seasons in Portland","From Canton Ohio — played at Lehigh University before being drafted 10th overall in 2013"] },
   { player:"Paul George", sport:"🏀 NBA", answer:"GEORGE", era:"modern", stats:{PTS:"20.7",REB:"5.9",AST:"3.9",DPOY:"1"}, ctx:"Career highlights — Perennial All-Star", clues:["Missed nearly an entire season due to a serious leg injury but returned stronger than ever","Came back the following season better than ever — finished top 3 in MVP voting","Won Defensive Player of the Year in 2019","Has averaged over 20 PPG in 10 different NBA seasons"] },
   { player:"Jimmy Butler", sport:"🏀 NBA", answer:"BUTLER", era:"modern", stats:{PTS:"26.2",REB:"9.8",AST:"8.8",STL:"2.1"}, ctx:"2020 NBA Finals — Miami Heat", clues:["Led the Heat to the NBA Finals as an underdog","Averaged 26.2 PPG in the Finals","Played in South Beach for a franchise that attracted the biggest superstar names","Was homeless as a teenager and bounced between families"] },
-  { player:"Devin Booker", sport:"🏀 NBA", answer:"BOOKER", era:"modern", stats:{PTS:"70",FG:"21",FT:"24",MIN:"44"}, ctx:"March 24, 2017 — Phoenix Suns vs Boston Celtics", clues:["Scored 70 points — the 5th highest single game score ever","Was only 20 years old at the time","The Suns invented the Seven Seconds or Less fast-break offense under coach Mike D'Antoni","His father also played professional basketball — making them an NBA family"] },
-  { player:"Trae Young", sport:"🏀 NBA", answer:"TRAE", era:"modern", stats:{PTS:"28.8",AST:"9.4",REB:"3.9","3PM":"3.3"}, ctx:"2021 NBA Playoffs — Atlanta Hawks Eastern Conference Finals", clues:["Led Atlanta Hawks to the Eastern Conference Finals as an underdog","Silenced New York Knicks crowd with his performances","Averaged 28.8 points per game during this season","From Norman, Oklahoma — was traded on draft night for Luka Doncic"] },
-  { player:"Ja Morant", sport:"🏀 NBA", answer:"MORANT", era:"modern", stats:{PTS:"27.4",AST:"8.1",REB:"5.9",STL:"1.1"}, ctx:"2021-22 NBA Season — Memphis Grizzlies Most Improved", clues:["Won the Most Improved Player award","Led Memphis Grizzlies to 2nd seed in the West","From Dalzell, South Carolina","Known for his explosive athleticism and highlight dunks"] },
-  { player:"Fat Lever", sport:"🏀 NBA", answer:"FAT LEVER", era:"classic", stats:{AST:"7.5",REB:"7.5",ALLSTAR:"2x",TEAM:"Nuggets"}, ctx:"Career Totals — One of the first true point-forward triple-double threats in NBA history", clues:["Was one of the few guards in NBA history to average 7+ assists AND 7+ rebounds per game","Had his career ended prematurely by a serious knee injury in 1990","Made two All-Star teams with the Denver Nuggets in the mid-1980s","Born Lafayette Lever in Pine Bluff Arkansas — his nickname Fat came from childhood"] },
-  { player:"Tim Duncan", sport:"🏀 NBA", answer:"DUNCAN", era:"modern", stats:{PTS:"25.5",REB:"12.9",BLK:"2.4",AST:"3.7"}, ctx:"2002-03 NBA Season — San Antonio Spurs MVP", clues:["His team went 60-22 this season","Won 3 of his 5 championships this decade","The Spurs won 5 championships under Gregg Popovich — the greatest coaching run in NBA history","Nicknamed The Big Fundamental"] },
-  { player:"Chris Paul", sport:"🏀 NBA", answer:"PAUL", era:"modern", stats:{PTS:"22.8",AST:"11.6",STL:"2.7",REB:"4.8"}, ctx:"2007-08 NBA Season — New Orleans Hornets", clues:["Led the NBA in assists and steals this season","Finished 3rd in MVP voting","The Hornets temporarily relocated to Oklahoma City after Hurricane Katrina devastated New Orleans","Nicknamed CP3 — considered one of the greatest point guards ever"] },
-  // Football - Modern
-  { player:"Rob Gronkowski", sport:"🏈 NFL", answer:"GRONK", era:"modern", stats:{REC:"621",YDS:"9286",TD:"92",SB:"4"}, ctx:"Career — New England Patriots and Tampa Bay Buccaneers", clues:["Retired twice and came back both times to win more Super Bowls","Won 4 Super Bowls with the most receiving TDs ever by a tight end","Caught 90+ touchdowns in his career — the most ever by a tight end","Had 5 seasons with 10+ receiving touchdowns — more than any TE in history"] },
-  { player:"Odell Beckham Jr.", sport:"🏈 NFL", answer:"OBJ", era:"modern", stats:{YDS:"1305",TD:"12",CATCH:"1-hand",YEAR:"2014"}, ctx:"November 23, 2014 — New York Giants vs Dallas Cowboys", clues:["Made a one-handed catch while falling backwards — voted play of the decade","Was reaching back behind his body while being held by the cornerback","Had been in the NFL for less than 2 months at the time of the catch","Set the NFL record for fastest player to reach 200 career receptions"] },
-  { player:"Adrian Peterson", sport:"🏈 NFL", answer:"PETERSON", era:"modern", stats:{CAR:"348",YDS:"2097",TD:"12",YPC:"6.0"}, ctx:"2012 NFL Season — Minnesota Vikings MVP", clues:["Rushed for 2097 yards — second most in NFL history","Won the NFL MVP award","The Vikings reached the Super Bowl 4 times but came away without a win each time","Came back from a torn ACL in just 9 months to have this season"] },
+  { player:"Mike Conley", sport:"🏀 NBA", answer:"MIKE CONLEY", era:"modern", stats:{AST:"6.5",PTS:"15.4",TEAM:"Grizzlies/Jazz",ALLSTAR:"1x"}, ctx:"Career Totals — Loyally served Memphis for over a decade without making an All-Star team", clues:["Spent 11 seasons as the starting point guard for the Memphis Grizzlies without ever making an All-Star team","Was often called the best player never to make an All-Star team before finally being selected in 2021","Won a gold medal with Team USA at the 2021 Tokyo Olympics","From Columbus Ohio — played at Ohio State before being drafted 4th overall by Memphis in 2007"] },
+  { player:"Tony Parker", sport:"🏀 NBA", answer:"TONY PARKER", era:"modern", stats:{FINALS_MVP:"2007",RINGS:"4",PTS:"15.5",TEAM:"Spurs"}, ctx:"Career Totals — French point guard who won four rings and a Finals MVP with San Antonio", clues:["Won four NBA championships with the San Antonio Spurs as Tim Duncan backcourt partner","Won the NBA Finals MVP award in 2007 — a rare honor for a point guard","Was known for his pull-up floater and ability to finish in traffic","From Bruges Belgium — was discovered playing in France and drafted 28th overall by San Antonio in 2001"] },
+  { player:"Owen Daniels", sport:"🏈 NFL", answer:"OWEN DANIELS", era:"modern", stats:{REC:"469",YDS:"5510",TD:"51",TEAM:"Texans/Broncos"}, ctx:"Career Totals — Reliable tight end who won a Super Bowl late in his career", clues:["Was one of the most reliable tight ends of his era for the Houston Texans across 8 seasons","Won Super Bowl 50 with the Denver Broncos as Peyton Manning backup weapon","Made two Pro Bowl trips during his tenure in Houston","From Naperville Illinois — played at Wisconsin before being drafted in the 4th round in 2006"] },
+  { player:"Fred Taylor", sport:"🏈 NFL", answer:"FRED TAYLOR", era:"modern", stats:{RUSH:"11695",TD:"66",TEAM:"Jaguars",NICK:"Fragile Fred"}, ctx:"Career Totals — Ridiculously talented runner whose injuries prevented all-time greatness", clues:["Was nicknamed Fragile Fred because his career was constantly interrupted by injuries","Finished with nearly 12000 career rushing yards despite missing significant time","Was considered one of the most talented pure runners of his era when healthy","From Belle Glade Florida — played at Florida before being drafted 9th overall by Jacksonville in 1998"] },
   { player:"Von Miller", sport:"🏈 NFL", answer:"VON", era:"modern", stats:{SCK:"2.5",FF:"2",TFL:"5",QB_HIT:"6"}, ctx:"Super Bowl 50 MVP — Denver Broncos vs Carolina Panthers", clues:["Won Super Bowl MVP with 2.5 sacks","Playing in Mile High altitude in Denver gives the home team a real physiological edge","Won 2 Super Bowls in his career","His 2.5 sacks forced 2 fumbles in this game"] },
   { player:"Khalil Mack", sport:"🏈 NFL", answer:"MACK", era:"modern", stats:{SCK:"18.5",FF:"5",INT:"1",TD:"4"}, ctx:"2015 NFL Season — Oakland Raiders Defensive MVP", clues:["Won the NFL Defensive Player of the Year award","Had 18.5 sacks this season","The Raiders won 3 Super Bowls with an outlaw rebellious team culture","Was traded to Chicago Bears in a blockbuster deal"] },
   // Baseball - Modern
@@ -750,8 +740,7 @@ const MEDIUM = [
   { player:"Jamesen", sport:"🏀 NBA", answer:"HARDEN", era:"modern", stats:{PTS:"36.1",AST:"7.5",REB:"6.6",FT:"87.9"}, ctx:"2018-19 NBA Season — Houston Rockets scoring title", clues:["Led Houston Rockets to a 53-win season","The Rockets built around a revolutionary offensive philosophy that maximized three-pointers","Known for his step-back three pointer","Nicknamed The Beard"] },
   { player:"Luca Modric", sport:"⚽ Soccer", answer:"MODRIC_2", era:"modern", stats:{G:"2",AST:"5",APP:"7",MIN:"609"}, ctx:"2018 FIFA World Cup — Croatia", clues:["Won the Golden Ball as best player of the tournament","Led Croatia to the World Cup Final for the first time","Real Madrid have won the most UEFA Champions League titles of any club in history","From Croatia, won the Ballon d'Or in 2018"] },
   { player:"Ron Artest", sport:"🏀 NBA", answer:"ARTEST", era:"modern", stats:{PTS:"16.5",REB:"5.2",STL:"2.0",BLK:"0.8"}, ctx:"2010 NBA Finals Game 7 — Los Angeles Lakers", clues:["Hit the go-ahead three with 1 minute left in Game 7","The Lakers have won more NBA championships than almost any other team","Later changed his name to Metta World Peace","Thanked his psychiatrist in his championship speech"] },
-  { player:"Malcolm Butler", sport:"🏈 NFL", answer:"MALCOLM", era:"modern", stats:{INT:"1",YDS:"0",PLAYS:"1",QTR:"4th"}, ctx:"Super Bowl XLIX — New England Patriots vs Seattle Seahawks", clues:["Made the goal-line interception that won the Super Bowl","Was an undrafted free agent","Was drafted in the 6th round — the 199th pick — one of the greatest draft steals ever","Intercepted Russell Wilson with 26 seconds left"] },
-  { player:"Draymond Green", sport:"🏀 NBA", answer:"DRAYMOND", era:"modern", stats:{PTS:"8.2",REB:"8.9",AST:"7.4",STL:"1.9"}, ctx:"2017 NBA Finals — Golden State Warriors", clues:["Won Finals despite averaging under 10 PPG","Was so focused on defense that he once had a game with 0 points but 12 assists and 10 rebounds","Known for his defense and playmaking","Was a 2nd round draft pick who became an All-Star"] },
+  { player:"Klay Thompson", sport:"🏀 NBA", answer:"KLAY THOMPSON", era:"modern", stats:{THREE_PT:"Splash Brother",RINGS:"4",RECORD:"37 pts one quarter",TEAM:"Warriors"}, ctx:"Career Totals — One half of the Splash Brothers and four-time champion with Golden State", clues:["Was known as one of the Splash Brothers alongside Stephen Curry in Golden State","Scored 37 points in a single quarter against the Sacramento Kings — an NBA record","Won four NBA championships with the Golden State Warriors","From Los Angeles California — played at Washington State before being drafted 11th overall in 2011"] },
   { player:"Eli Manning", sport:"🏈 NFL", answer:"ELI", era:"modern", stats:{YDS:"255",TD:"2",INT:"0",RTG:"98.2"}, ctx:"Super Bowl XLVI MVP — New York Giants vs New England Patriots", clues:["Won his second Super Bowl MVP against the Patriots","Upset the Patriots again as heavy underdogs","His older brother also won multiple Super Bowls and was considered one of the greatest QBs ever","Played his entire career for the New York Giants"] },
   { player:"Paolo Maldini", sport:"⚽ Soccer", answer:"MALDINI", era:"classic", stats:{APP:"647",TITLES:"7",UCL:"5",YEARS:"25"}, ctx:"Career — AC Milan, 1985-2009", clues:["Played 647 games for AC Milan over 25 years","Won 5 UEFA Champions League titles","Considered the greatest defender of all time by many","His father Cesare also played and managed AC Milan"] },
   { player:"Lev Yashin", sport:"⚽ Soccer", answer:"YASHIN", era:"legends", stats:{CS:"270",GAMES:"812",SAVES:"150+",YEAR:"1963"}, ctx:"1963 Ballon d'Or — Soviet Union", clues:["Wore all black kit — earned the nickname The Black Spider","Saved over 150 penalties in his career","Dynamo Moscow were the most famous club in the Soviet Union during the communist era","Wore all black and was nicknamed The Black Spider"] },
@@ -1026,8 +1015,7 @@ const MEDIUM = [
   { player:"Brendan Shanahan", sport:"🏒 NHL", answer:"BRENDAN SHANAHAN", era:"modern", stats:{G:"656",STANLEY_CUPS:"3",TOUGH:"And scorer",YEAR:"2002"}, ctx:"Career Totals — 656 goals while also fighting regularly", clues:["Scored 656 goals — 11th most in NHL history","Won 3 Stanley Cups with the Detroit Red Wings","Was unusual in combining prolific goal scoring with physical play","From Mimico Ontario"] },
   { player:"Scott Stevens", sport:"🏒 NHL", answer:"SCOTT STEVENS", era:"modern", stats:{STANLEY_CUPS:"3",CF:"Conn Smythe 2000",HITS:"Most feared",YEAR:"2000"}, ctx:"Career Totals — 3 Cups and the most feared open-ice hitter ever", clues:["Won 3 Stanley Cups with the New Jersey Devils","Won the Conn Smythe Trophy as playoff MVP in 2000","Was the most feared open-ice hitter in NHL history","From Kitchener Ontario"] },
   { player:"Mats Sundin", sport:"🏒 NHL", answer:"MATS SUNDIN", era:"modern", stats:{G:"564",FIRST:"Euro 1st overall",TORONTO:"Captain",GOLD:"Olympic x2"}, ctx:"Career Totals — First European drafted 1st overall with 564 goals", clues:["Won 2 Olympic gold medals with Sweden and was one of the most skilled centers ever","Scored 564 career goals as captain of the Toronto Maple Leafs","Won 2 Olympic gold medals with Sweden","From Bromma Sweden"] },
-  { player:"Mike Modano", sport:"🏒 NHL", answer:"MIKE MODANO", era:"modern", stats:{G:"561",AMERICAN:"Most goals US born",DALLAS:"Stars",CUP:"1999"}, ctx:"Career Totals — Most goals ever by an American-born NHL player", clues:["Scored 561 goals — the most ever by an American-born player","Won the Stanley Cup with the Dallas Stars in 1999","From Livonia Michigan","Played his entire career with the Minnesota and Dallas Stars"] },
-  { player:"Marc-Andre Fleury", sport:"🏒 NHL", answer:"MARC-ANDRE FLEURY", era:"modern", stats:{W:"551",STANLEY_CUPS:"3",FIRST:"2003 overall",YEAR:"2003"}, ctx:"Career Totals — 1st overall pick who won 551 games and 3 Cups", clues:["Was the 1st overall pick in the 2003 NHL Draft","Won 3 Stanley Cups with the Pittsburgh Penguins","Won 551 career games — fourth most in NHL history","From Sorel-Tracy Quebec"] },
+
   { player:"Roberto Luongo", sport:"🏒 NHL", answer:"ROBERTO LUONGO", era:"modern", stats:{W:"489",SO:"77",GAA:"2.52",GOLD:"2010 Olympic"}, ctx:"Career Totals — 489 wins and Olympic gold on home ice", clues:["Won 489 games — third most in NHL history","Won Olympic gold with Canada in 2010 in Vancouver on home ice","Was one of the most accomplished players of their generation","From Montreal Quebec"] },
   { player:"Nicklas Backstrom", sport:"🏒 NHL", answer:"NICKLAS BACKSTROM", era:"modern", stats:{PTS:"1025+",CUP:"2018",PARTNER:"Ovechkin",SWEDEN:"Vasteras"}, ctx:"Career Totals — Set up Ovechkin for a decade then won the Cup", clues:["Was the primary center alongside Alexander Ovechkin","Won the Stanley Cup with the Washington Capitals in 2018","Accumulated over 1000 career points","From Vasteras Sweden"] },
   { player:"Jeremy Roenick", sport:"🏒 NHL", answer:"JEREMY ROENICK", era:"modern", stats:{G:"513",FIRST:"American 500 goals",OUTSPOKEN:"Yes",COUNTRY:"USA"}, ctx:"Career Totals — One of first Americans to score 500 NHL goals", clues:["Was known for his outspoken media personality and willingness to criticize the NHL","Scored 513 career goals","From Boston Massachusetts","Was known for his outspoken personality and willingness to speak his mind"] },
@@ -1046,9 +1034,7 @@ const MEDIUM = [
   { player:"Daunte Culpepper", sport:"🏈 NFL", answer:"DAUNTE CULPEPPER", era:"modern", stats:{YDS:"4717",TD:"39",INT:"11",RTG:"110.9"}, ctx:"Best Season — One of the best statistical QB seasons ever in 2004", clues:["Had one of the best statistical seasons ever by a quarterback","The Vikings reached the Super Bowl 4 times but came away without a win each time","Was a massive mobile quarterback at 6ft 4in and 260 pounds","Had his career effectively ended by a devastating knee injury in 2005"] },
   { player:"Clayton Kershaw", sport:"⚾ MLB", answer:"CLAYTON KERSHAW", era:"modern", stats:{ERA:"2.48",CY:"3",MVP:"2014",W:"19"}, ctx:"Career Totals — Three Cy Youngs and an MVP for the Dodgers", clues:["Won the NL MVP Award as a pitcher — extremely rare","Won 3 Cy Young Awards all with the Los Angeles Dodgers","Had a career ERA under 2.50 — the lowest of any active pitcher","From Dallas Texas — played college baseball at Texas A&M"] },
 
-  { player:"Madison Bumgarner", sport:"⚾ MLB", answer:"MADISON BUMGARNER", era:"modern", stats:{ERA:"2.11",IP:"52.2",WS_MVP:"2014",GS:"5"}, ctx:"2014 World Series — Greatest pitching performance in Fall Classic history", clues:["Had the greatest World Series pitching performance in history — 52.2 innings at a 2.11 ERA","Pitched 5 innings of shutout relief in Game 7 on two days rest to save the Series","Was the World Series MVP in 2014 with the San Francisco Giants","From Hudson North Carolina — also competes in rodeo under a pseudonym"] },
 
-  { player:"Roy Halladay", sport:"⚾ MLB", answer:"ROY HALLADAY", era:"modern", stats:{ERA:"3.38",CY:"2",NHIT:"NLCS",PERFECT:"1"}, ctx:"Career Totals — Threw a perfect game and a playoff no-hitter", clues:["Threw a perfect game and a no-hitter in the NLCS — the only pitcher to throw a postseason no-hitter","Won 2 Cy Young Awards in both leagues","Was nicknamed Doc for his relentless work ethic and preparation","Died in a private plane crash in 2017 at age 40"] },
 
   { player:"Jake Arrieta", sport:"⚾ MLB", answer:"JAKE ARRIETA", era:"modern", stats:{ERA:"1.77",W:"22",CY:"2015",NHIT:"2"}, ctx:"2015 MLB Season — Won Cy Young with dominant second half", clues:["Had a 1.77 ERA in the second half of the season after struggling early in his career","Won the NL Cy Young Award with the Chicago Cubs","Threw a no-hitter in the postseason that year","From Farmington Missouri — was cut by the Baltimore Orioles before finding his form"] },
 
@@ -1059,14 +1045,7 @@ const MEDIUM = [
   { player:"Isiah Thomas", sport:"🏀 NBA", answer:"ISIAH THOMAS_2", era:"classic", stats:{PTS:"19.2",AST:"9.3",RINGS:"2",FINALS_MVP:"1990"}, ctx:"Career Totals — Led the Bad Boys Pistons to back-to-back championships", clues:["Won back-to-back NBA championships with the Detroit Pistons Bad Boys in 1989 and 1990","Won Finals MVP in 1990 scoring 33 points in Game 6 despite an ankle injury","Was controversially excluded from the 1992 Dream Team by Jordan and others","From Chicago Illinois — played all 13 seasons with the Pistons"] },
   { player:"Kevin McHale", sport:"🏀 NBA", answer:"KEVIN MCHALE", era:"classic", stats:{RINGS:"3",FG_PCT:".554",MOVES:"Best post ever",TEAM:"Celtics"}, ctx:"Career Totals — The best post moves in NBA history for the Celtics dynasty", clues:["Is considered to have had the best post moves and footwork of any power forward ever","Won 3 NBA championships with the Boston Celtics","His hall-of-fame low-post repertoire is still studied by big men today","From Hibbing Minnesota — the same small town that produced Bob Dylan"] },
   { player:"Len Bias", sport:"🏀 NBA", answer:"LEN BIAS", era:"classic", stats:{PICK:"2",YEAR:"1986",SCHOOL:"Maryland",TRAGEDY:"OD night of draft"}, ctx:"1986 NBA Draft — Died of cocaine OD the night after being drafted #2", clues:["Died of a cocaine overdose the night after being drafted 2nd overall by the Celtics in 1986","Was considered by many scouts to be the best prospect since Michael Jordan","His death contributed to the crack cocaine epidemic legislation and the anti-drug movement","From Landover Maryland — Bill Walton called him the best player he had ever seen"] },
-  { player:"Adrian Dantley", sport:"🏀 NBA", answer:"ADRIAN DANTLEY", era:"classic", stats:{PTS:"24.3",SCORING:"2 titles",HALL:"2008",TEAM:"Jazz/Pistons"}, ctx:"Career Totals — Two scoring titles for an underrated Hall of Famer", clues:["Won 2 NBA scoring titles and averaged 24.3 points per game for his career","Was inducted into the Hall of Fame in 2008","Is consistently cited as one of the most underrated players in NBA history","From Washington DC — won an Olympic gold medal in 1976"] },
 
-  // MEDIUM Baseball Classic (need 1)
-
-  // MEDIUM Baseball Legends (need 2)
-
-  // MEDIUM Soccer Modern (need 1)
-  { player:"Xabi Alonso", sport:"⚽ Soccer", answer:"XABI ALONSO", era:"modern", stats:{UCL:"2",WC:"2010",LA_LIGA:"1",NATION:"Spain"}, ctx:"Career Totals — Won everything with Spain and two Champions Leagues", clues:["Won the Champions League with both Liverpool and Real Madrid","Won the World Cup and two European Championships with Spain's golden generation","Was considered one of the best passers and readers of the game of his era","From Tolosa Basque Country Spain — son of former Spanish international Periko Alonso"] },
 
   // MEDIUM Soccer Classic (need 5)
   { player:"Paolo Maldini", sport:"⚽ Soccer", answer:"PAOLO MALDINI_2", era:"classic", stats:{UCL:"5",SERIE_A:"7",CAPS:"126",TEAM:"AC Milan"}, ctx:"Career Totals — Won 5 Champions Leagues and never needed to leave AC Milan", clues:["Won 5 Champions Leagues and 7 Serie A titles all with AC Milan","Played his entire 24-year career for one club — AC Milan","Is considered the greatest left back or central defender in football history by many","From Milan Italy — his father Cesare Maldini also played for and managed Milan"] },
@@ -1125,14 +1104,7 @@ const MEDIUM = [
   { player:"Dit Clapper", sport:"🏒 NHL", answer:"DIT CLAPPER_2", era:"legends", stats:{SEASONS:"20",CUPS:"3",POSITIONS:"Forward and defense",BRUINS:"Legend"}, ctx:"Career Totals — Boston Bruins legend who spanned two eras", clues:["Was the first player in NHL history to play 20 seasons in the league","Won 3 Stanley Cups with the Boston Bruins","Was so versatile he was an All-Star at both forward and defenseman in different seasons","From Newmarket Ontario — had his number 5 retired by the Bruins"] },
   { player:"Sweeney Schriner", sport:"🏒 NHL", answer:"SWEENEY SCHRINER", era:"legends", stats:{SCORING:"2 titles",CUPS:"2",TEAM:"Rangers/Leafs",NATION:"Canada"}, ctx:"Career Totals — Won two scoring titles and two Stanley Cups with different teams", clues:["Won the NHL scoring title in consecutive years 1936 and 1937","Won 2 Stanley Cups — one with New York and one with Toronto","Was one of the fastest skaters of his era","Born in Saratov Russia but raised in Calgary Alberta Canada"] },
   { player:"Bryan Hextall", sport:"🏒 NHL", answer:"BRYAN HEXTALL", era:"legends", stats:{SCORING:"Title 1942",OT:"1940 Cup winner",TEAM:"Rangers",DYNASTY:"Grandson also NHL"}, ctx:"Career Totals — Won the scoring title and scored the overtime Cup winner for the Rangers", clues:["Won the NHL scoring title in 1942","Scored the overtime goal that won the Stanley Cup for the New York Rangers in 1940","Was the patriarch of a three-generation NHL family — son Bryan Jr and grandson Ron also played","From Grenfell Saskatchewan Canada"] },
-  { player:"Charlie Gardiner", sport:"🏒 NHL", answer:"CHARLIE GARDINER", era:"legends", stats:{VEZINA:"2",CUPS:"1934",GAA:"2.02",DIED:"Was one of the most accomplished players of their generation"}, ctx:"Career Totals — Won the Vezina twice and led Chicago to the Cup then died weeks later", clues:["Won 2 Vezina Trophies as the NHL's best goaltender","Captained the Chicago Blackhawks to the Stanley Cup in 1934","Died of a brain hemorrhage just weeks after winning the Cup at age 29","From Edinburgh Scotland — emigrated to Winnipeg as a child"] },
 
-  { player:"Felix Hernandez", sport:"⚾ MLB", answer:"FELIX HERNANDEZ", era:"modern", stats:{ERA:"2.27",W:"13",IP:"232",CY:"2010"}, ctx:"2010 MLB Season — Won Cy Young with losing record", clues:["Won the Cy Young Award despite having a losing win-loss record of 13-12","Had the lowest ERA in the American League this season","Pitched for the Seattle Mariners his entire career","From Valencia Venezuela — nicknamed King Felix"] },
-
-
-  { player:"Max Scherzer", sport:"⚾ MLB", answer:"MAX SCHERZER", era:"modern", stats:{ERA:"2.53",SO:"300",W:"20",CY:"3"}, ctx:"Career Totals — Three Cy Young Awards in both leagues", clues:["Won the Cy Young Award in both the AL and NL — one of only four pitchers ever","Struck out 300 batters in a season","Had two no-hitters within 5 days in 2015","From St. Louis Missouri — known for his mismatched eye colors"] },
-
-  { player:"Zack Greinke", sport:"⚾ MLB", answer:"ZACK GREINKE", era:"modern", stats:{ERA:"1.66",CY:"2009",W:"17",YEAR:"2015"}, ctx:"2015 MLB Season — Arizona Diamondbacks ace in a historic year", clues:["Posted a 1.66 ERA in 2015 — the lowest in the NL since Bob Gibson in 1968","Won the AL Cy Young Award with Kansas City in 2009","Has played for 7 different MLB teams in his career","Overcame social anxiety disorder that nearly ended his career"] },
 
 
   { player:"Robert Lewandowski", sport:"⚽ Soccer", answer:"LEWANDOWSKI_2", era:"modern", stats:{G:"344",BUNDESLIGA:"9",CL:"2020",RECORD:"41 goals"}, ctx:"Career Totals — Broke a 49-year Bundesliga record with 41 goals", clues:["Scored 41 Bundesliga goals in a single season — breaking a 49-year record set by Gerd Muller","Won the Champions League with Bayern Munich in 2020","Won 9 consecutive Bundesliga titles with Borussia Dortmund and Bayern Munich","From Leszno Poland"] },
@@ -1144,13 +1116,9 @@ const MEDIUM = [
   { player:"Erling Haaland", sport:"⚽ Soccer", answer:"ERLING HAALAND", era:"modern", stats:{G:"52",PL_RECORD:"36 goals season",UCL:"2023",NATION:"Norway"}, ctx:"Career Totals — Broke Premier League season goals record in first season", clues:["Scored 36 Premier League goals in his debut season — shattering the previous record","Won the Champions League with Manchester City in his first season in England","Scored in 10 consecutive Champions League games — a new record","From Leeds England but representing Norway"] },
 
 
-  { player:"Brooks Koepka", sport:"⛳ Golf", answer:"BROOKS KOEPKA 2", era:"modern", stats:{MAJORS:"5",US_OPEN:"2 consec",PGA:"2 consec",LIV:"Joined"}, ctx:"Career Totals — Won four majors in consecutive pairs", clues:["Won the US Open in consecutive years 2017 and 2018 then the PGA Championship in consecutive years 2018 and 2019","Won 5 major championships in total","Was known for raising his game specifically in majors while often underperforming in regular events","From West Palm Beach Florida"] },
 
-  { player:"Kawhi Leonard", sport:"🏀 NBA", answer:"KAWHI LEONARD", era:"modern", stats:{FINALS_MVP:"2",DPOY:"2",CLUTCH:"Corner 3",QUIET:"Famously"}, ctx:"Career Totals — Two Finals MVPs with two different teams", clues:["Won Finals MVP with both the San Antonio Spurs and Toronto Raptors — different franchises","Was known for his robotic-like demeanor and the infamous corner three in the 2019 playoffs","Nicknamed The Klaw for his enormous hands","From Riverside California — is considered one of the best two-way players ever"] },
 
-  { player:"Giannis Antetokounmpo", sport:"🏀 NBA", answer:"GIANNIS_2", era:"modern", stats:{FINALS_MVP:"2021",DPOY:"1",MVP:"2x",BLOCK:"Iconic"}, ctx:"Career Totals — Two MVPs and Finals MVP for Milwaukee", clues:["Won back-to-back NBA MVPs and a Finals MVP all with the Milwaukee Bucks","Made the iconic block in the 2021 Finals that sealed the Bucks championship","From Athens Greece of Nigerian descent — came to the NBA as a virtually unknown teenager","Nicknamed The Greek Freak for his rare combination of size speed and skill"] },
-
-  { player:"Joel Embiid", sport:"🏀 NBA", answer:"JOEL EMBIID", era:"modern", stats:{MVP:"2023",SCORING:"33.1",NATION:"Cameroon",PROCESS:"The"}, ctx:"Career Totals — Cameroon-born MVP who led the Process era in Philadelphia", clues:["Won the NBA MVP award in 2022-23 with the Philadelphia 76ers","Led the NBA in scoring with 33.1 points per game that season","From Yaounde Cameroon — did not start playing basketball until age 16","Was the face of Philadelphia's rebuilding process known simply as The Process"] },
+  { player:"Andrew Bynum", sport:"🏀 NBA", answer:"ANDREW BYNUM", era:"modern", stats:{PICK:"10",RINGS:"2",ALLSTAR:"1x",TEAM:"Lakers"}, ctx:"Career Totals — Highly talented center whose career was derailed by knee injuries", clues:["Was the youngest player in NBA history at the time when he debuted for the Lakers at 17 years old","Won two NBA championships with the Los Angeles Lakers in 2009 and 2010","Was considered a future Hall of Famer before chronic knee injuries derailed his career","From Plainsboro New Jersey — was drafted directly out of high school by Los Angeles in 2005"] },
 
 
 
@@ -1171,8 +1139,7 @@ const MEDIUM = [
   { player:"Chris Sale", sport:"⚾ MLB", answer:"CHRIS SALE", era:"modern", stats:{ERA:"2.90",SO:"11.17",W:"17",K9:"Highest"}, ctx:"Career Totals — Highest strikeout rate per 9 innings ever", clues:["Had one of the highest career strikeout rates per 9 innings in MLB history","Was nicknamed The Conductor for his unusual sidearm delivery","Was traded from the White Sox to the Red Sox for 4 top prospects","From Lakeland Florida"] },
   { player:"Cole Hamels", sport:"⚾ MLB", answer:"COLE HAMELS", era:"modern", stats:{ERA:"3.43",WS_MVP:"2008",W:"20",SO:"3000"}, ctx:"Career Totals — World Series MVP who struck out 3000 batters", clues:["Won the World Series MVP with the Philadelphia Phillies in 2008","Struck out 3,000 batters in his career","Was traded for a package of 5 prospects when he went to Texas","From San Diego California"] },
   { player:"Johan Santana", sport:"⚾ MLB", answer:"JOHAN SANTANA", era:"modern", stats:{ERA:"3.20",CY:"2",SO:"1,988",NHIT:"Only Mets"}, ctx:"Career Totals — Two Cy Youngs and the only no-hitter in Mets history", clues:["Threw the only no-hitter in New York Mets history in 2012","Won 2 Cy Young Awards with the Minnesota Twins","Had one of the best changeups in baseball history","From Tovar Venezuela"] },
-  { player:"Jon Lester", sport:"⚾ MLB", answer:"JON LESTER", era:"modern", stats:{ERA:"3.64",WS:"3",CANCER:"Survived",W:"200"}, ctx:"Career Totals — Won three World Series after surviving cancer", clues:["Survived non-Hodgkin lymphoma in 2006 and returned to pitch at the highest level","Won 3 World Series championships — 2 with Boston and 1 with Chicago","Was the winning pitcher in Game 5 of the 2007 World Series in his first Series","From Tacoma Washington"] },
-  { player:"Curt Schilling", sport:"⚾ MLB", answer:"CURT SCHILLING_2", era:"modern", stats:{ERA:"3.46",W:"216",SOCK:"Famous",WS:"3"}, ctx:"Career Totals — Won three World Series including the famous bloody sock game", clues:["Pitched through a sutured tendon injury with blood soaking his sock in the 2004 ALCS","Won 3 World Series championships — with Arizona in 2001 and Boston in 2004 and 2007","Had a career strikeout-to-walk ratio among the best in baseball history","From Anchorage Alaska — was controversially not elected to the Hall of Fame despite stellar numbers"] },
+
   { player:"Bartolo Colon", sport:"⚾ MLB", answer:"BARTOLO COLON", era:"modern", stats:{CY:"2005",W:"247",AGE:"Pitched at 44",MEME:"Famous home run"}, ctx:"Career Totals — Won the Cy Young and pitched until age 44 becoming a beloved meme", clues:["Won the AL Cy Young Award in 2005 with the Los Angeles Angels","Hit his first career home run at age 42 to become an internet meme","Pitched in the major leagues until age 44 — one of the longest careers ever","From Alta Mira Dominican Republic — was famous for his unusual physique and masterful control"] },
 
   // Fill Medium Baseball Classic (need 1)
@@ -1754,8 +1721,7 @@ const HARD = [
   { player:"Rob Johnson", sport:"🏈 NFL", answer:"ROB JOHNSON", era:"modern", stats:{RTG:"79.8",YDS:"3666",TEAM:"Bills/Buccaneers",PICK:"High but bust"}, ctx:"Career Totals — High-value trade acquisition who never justified the price", clues:["The Buffalo Bills gave up a first-round pick to acquire him from Jacksonville in 1998","Never lived up to the expectations that came with that trade value","Had a career passer rating under 80 across multiple teams","From Newport Beach California — played at USC before being drafted by Jacksonville in 1995"] },
   { player:"Tommy Maddox", sport:"🏈 NFL", answer:"TOMMY MADDOX", era:"modern", stats:{XFL:"MVP",COMEBACK:"NFL comeback",RTG:"80.6",TEAM:"Steelers"}, ctx:"Career Totals — Made one of the most famous comebacks in football history via the XFL", clues:["Won the XFL MVP award in 2001 after his NFL career seemed completely finished","Returned to the NFL with Pittsburgh and started games for the Steelers in 2002","His comeback story was considered one of the most unlikely in recent NFL history","From Shreveport Louisiana — played at UCLA before being drafted by Denver in 1992"] },
   { player:"Sage Rosenfels", sport:"🏈 NFL", answer:"SAGE ROSENFELS", era:"modern", stats:{RTG:"83.5",FUMBLE:"Famous meltdown",TEAM:"Texans/Vikings",ROLE:"Backup starter"}, ctx:"2008 Season — Had a meltdown that cost Houston a win in one of the most chaotic endings ever", clues:["Had one of the most infamous fourth-quarter collapses in recent NFL history with Houston in 2008","Fumbled and threw an interception to blow a 17-point fourth-quarter lead against Indianapolis","Was a capable backup who made spot starts for multiple teams across his career","From Maquoketa Iowa — played at Iowa State before being drafted by Washington in 2001"] },
-]
-// Hard Football Classic additions (need 4 more)
+  // Hard Football Classic additions
   { player:"Erik Kramer", sport:"🏈 NFL", answer:"ERIK KRAMER", era:"classic", stats:{YDS:"4,355",TD:"29",YEAR:"1995",TEAM:"Bears/Lions"}, ctx:"1995 Season — Set Bears passing records in one of the most unexpected big years by a QB", clues:["Threw for 4355 yards and 29 touchdowns with the Chicago Bears in 1995 — franchise records at the time","Was never considered a top quarterback but had one elite season that came out of nowhere","Later dealt with serious personal tragedies after his NFL career ended","From Encino California — played at North Carolina State before going undrafted"] },
   { player:"Hugh Millen", sport:"🏈 NFL", answer:"HUGH MILLEN", era:"classic", stats:{RTG:"74.0",TEAM:"Patriots/Falcons",ROLE:"Journeyman starter",YDS:"3073"}, ctx:"Early 1990s — Serviceable journeyman who started for multiple teams without ever sticking", clues:["Started games for both the Atlanta Falcons and the New England Patriots in the early 1990s","Was considered a competent but unspectacular starter who could hold a team together","Never developed into a franchise quarterback despite multiple opportunities","From Des Moines Iowa — played at Washington before being drafted by Los Angeles Rams in 1986"] },
   { player:"Stan Humphries", sport:"🏈 NFL", answer:"STAN HUMPHRIES", era:"classic", stats:{SB:"Loss XXIX",YDS:"12585",TEAM:"Chargers",RTG:"78.4"}, ctx:"1994 Season — Led San Diego to the Super Bowl in a surprising run", clues:["Led the San Diego Chargers to Super Bowl XXIX in the 1994 season in a major upset of the Pittsburgh Steelers","Lost the Super Bowl to the San Francisco 49ers and Steve Young in a blowout","Had his career shortened by a series of concussions and head injuries","From Shreveport Louisiana — played at Northeast Louisiana before being drafted by Washington in 1988"] },
@@ -2953,143 +2919,242 @@ export default function StatsIQ() {
   };
 
   const generateShareCard = async (): Promise<string> => {
+    const W = 1080, H = 800;
     const canvas = document.createElement("canvas");
-    canvas.width = 1080;
-    canvas.height = 720;
+    canvas.width = W; canvas.height = H;
     const ctx2 = canvas.getContext("2d")!;
 
-    // Background
-    ctx2.fillStyle = "#080c14";
-    ctx2.fillRect(0, 0, 1080, 720);
+    // ── Background gradient ──────────────────────────────────────────
+    const bg = ctx2.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#0a0f1a");
+    bg.addColorStop(1, "#060a12");
+    ctx2.fillStyle = bg;
+    ctx2.fillRect(0, 0, W, H);
 
-    // Subtle grid
-    ctx2.strokeStyle = "rgba(255,255,255,0.03)";
-    ctx2.lineWidth = 1;
-    for (let x = 0; x < 1080; x += 60) { ctx2.beginPath(); ctx2.moveTo(x,0); ctx2.lineTo(x,720); ctx2.stroke(); }
-    for (let y = 0; y < 720; y += 60) { ctx2.beginPath(); ctx2.moveTo(0,y); ctx2.lineTo(1080,y); ctx2.stroke(); }
+    // Subtle dot pattern
+    ctx2.fillStyle = "rgba(255,255,255,0.018)";
+    for (let x = 40; x < W; x += 48) for (let y = 40; y < H; y += 48) {
+      ctx2.beginPath(); ctx2.arc(x, y, 1, 0, Math.PI*2); ctx2.fill();
+    }
 
-    // Gold top border
+    // Gold accent bar top
+    const goldGrad = ctx2.createLinearGradient(0, 0, W, 0);
+    goldGrad.addColorStop(0, "#ffd700");
+    goldGrad.addColorStop(0.5, "#ffe566");
+    goldGrad.addColorStop(1, "#ffd700");
+    ctx2.fillStyle = goldGrad;
+    ctx2.fillRect(0, 0, W, 6);
+
+    // ── Header ───────────────────────────────────────────────────────
+    // Logo
+    ctx2.font = "900 64px 'Arial Black', Arial, sans-serif";
     ctx2.fillStyle = "#ffd700";
-    ctx2.fillRect(0, 0, 1080, 5);
+    ctx2.letterSpacing = "8px";
+    ctx2.fillText("STATSIQ", 64, 88);
 
-    // Header — STATSIQ
-    ctx2.font = "900 56px 'Arial Black', Arial, sans-serif";
-    ctx2.fillStyle = "#ffd700";
-    ctx2.letterSpacing = "6px";
-    ctx2.fillText("STATSIQ", 72, 80);
-    ctx2.font = "400 22px Arial, sans-serif";
-    ctx2.fillStyle = "#4b5563";
-    ctx2.letterSpacing = "4px";
-    const date2 = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-    ctx2.fillText(date2.toUpperCase(), 72, 116);
+    // Tagline
+    ctx2.font = "400 18px Arial, sans-serif";
+    ctx2.fillStyle = "#374151";
+    ctx2.letterSpacing = "5px";
+    ctx2.fillText("DAILY SPORTS TRIVIA", 66, 116);
 
-    // Badge + username
+    // Date (right aligned)
+    const dateObj = new Date();
+    const dateStr3 = dateObj.getFullYear() + "_" + (dateObj.getMonth()+1) + "_" + dateObj.getDate();
+    const dateLabel = dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).toUpperCase();
+    ctx2.font = "600 20px Arial, sans-serif";
+    ctx2.fillStyle = "#6b7280";
+    ctx2.letterSpacing = "2px";
+    ctx2.textAlign = "right";
+    ctx2.fillText(dateLabel, W - 64, 88);
+    ctx2.textAlign = "left";
+
+    // ── Username + Badge + Streak row ────────────────────────────────
     const badge2 = getScoreBadge(totalScore);
-    const userDisplay = username ? (badge2 ? badge2.emoji + " " + username : username) : "";
-    if (userDisplay) {
+    if (username) {
+      // Badge pill
+      const pillY = 138;
+      const badgeText = badge2 ? badge2.emoji + " " + badge2.label.toUpperCase() : "";
+      if (badgeText) {
+        ctx2.font = "700 17px Arial, sans-serif";
+        ctx2.letterSpacing = "1px";
+        const pillW = ctx2.measureText(badgeText).width + 28;
+        roundRect(ctx2, 64, pillY, pillW, 30, 15);
+        ctx2.fillStyle = "rgba(255,215,0,0.12)";
+        ctx2.fill();
+        ctx2.strokeStyle = "rgba(255,215,0,0.35)";
+        ctx2.lineWidth = 1;
+        ctx2.stroke();
+        ctx2.fillStyle = "#ffd700";
+        ctx2.fillText(badgeText, 64 + 14, pillY + 21);
+      }
+
+      // Username
+      const unX = badgeText ? 64 + ctx2.measureText(badgeText).width + 28 + 18 : 64;
       ctx2.font = "700 26px Arial, sans-serif";
-      ctx2.fillStyle = "#9ca3af";
-      ctx2.letterSpacing = "1px";
+      ctx2.fillStyle = "#e5e7eb";
+      ctx2.letterSpacing = "0px";
+      ctx2.fillText(username, unX, pillY + 22);
+
+      // Streak flame
+      if (streakData.current > 1) {
+        ctx2.font = "700 20px Arial, sans-serif";
+        ctx2.fillStyle = "#fb923c";
+        ctx2.letterSpacing = "0px";
+        ctx2.textAlign = "right";
+        ctx2.fillText("🔥 " + streakData.current + " DAY STREAK", W - 64, pillY + 22);
+        ctx2.textAlign = "left";
+      }
+
+      // Total score (right side)
+      ctx2.font = "700 22px Arial, sans-serif";
+      ctx2.fillStyle = "#ffd700";
       ctx2.textAlign = "right";
-      ctx2.fillText(userDisplay, 1008, 80);
-      ctx2.font = "400 20px Arial, sans-serif";
-      ctx2.fillStyle = "#4b5563";
-      ctx2.fillText(totalScore.toLocaleString() + " pts", 1008, 110);
+      ctx2.letterSpacing = "0px";
+      ctx2.fillText(totalScore.toLocaleString() + " pts total", W - 64, pillY + 50);
       ctx2.textAlign = "left";
     }
 
     // Divider
-    ctx2.strokeStyle = "rgba(255,255,255,0.08)";
+    ctx2.strokeStyle = "rgba(255,255,255,0.07)";
     ctx2.lineWidth = 1;
-    ctx2.beginPath(); ctx2.moveTo(72, 138); ctx2.lineTo(1008, 138); ctx2.stroke();
+    ctx2.beginPath(); ctx2.moveTo(64, 188); ctx2.lineTo(W - 64, 188); ctx2.stroke();
 
-    // Draw each difficulty row
-    const today3 = new Date();
-    const dateStr3 = today3.getFullYear() + "_" + (today3.getMonth()+1) + "_" + today3.getDate();
-    const diffs3: Array<{key: "easy"|"medium"|"hard", label: string, color: string, guesses: number}> = [
-      { key: "easy",   label: "EASY",   color: "#22c55e", guesses: 3 },
-      { key: "medium", label: "MEDIUM", color: "#3b82f6", guesses: 3 },
-      { key: "hard",   label: "HARD",   color: "#a855f7", guesses: 3 },
+    // ── Difficulty rows ──────────────────────────────────────────────
+    const diffs3 = [
+      { key: "easy"   as const, label: "EASY",   color: "#22c55e", glow: "rgba(34,197,94,0.15)",  guesses: 3 },
+      { key: "medium" as const, label: "MEDIUM", color: "#3b82f6", glow: "rgba(59,130,246,0.15)", guesses: 3 },
+      { key: "hard"   as const, label: "HARD",   color: "#a855f7", glow: "rgba(168,85,247,0.15)", guesses: 3 },
     ];
 
     let dayTotal3 = 0;
-    diffs3.forEach((d, idx) => {
-      const rowY = 168 + idx * 168;
-      let entry: {score:number,guesses:number,won:boolean,player:string,diff:string} | null = null;
-      try {
-        const raw = localStorage.getItem("statsiq_day_" + dateStr3 + "_" + d.key);
-        if (raw) entry = JSON.parse(raw);
-      } catch {}
+    const rowH = 174, rowStart = 210, rowGap = 186;
 
-      // Row background
-      ctx2.fillStyle = entry ? "rgba(255,255,255,0.025)" : "rgba(255,255,255,0.01)";
-      roundRect(ctx2, 56, rowY, 968, 148, 14);
+    diffs3.forEach((d, ri) => {
+      const rowY = rowStart + ri * rowGap;
+      let entry: {score:number,guesses:number,won:boolean,player:string} | null = null;
+      try { const raw = localStorage.getItem("statsiq_day_" + dateStr3 + "_" + d.key); if (raw) entry = JSON.parse(raw); } catch {}
+
+      const played = !!entry;
+
+      // Card background with glow for played
+      if (played) {
+        ctx2.shadowColor = d.color;
+        ctx2.shadowBlur = 18;
+      }
+      roundRect(ctx2, 48, rowY, W - 96, rowH, 16);
+      ctx2.fillStyle = played ? d.glow : "rgba(255,255,255,0.01)";
       ctx2.fill();
-      ctx2.strokeStyle = entry ? d.color + "33" : "rgba(255,255,255,0.06)";
-      ctx2.lineWidth = 1.5;
-      roundRect(ctx2, 56, rowY, 968, 148, 14);
+      ctx2.shadowBlur = 0;
+
+      // Card border
+      ctx2.strokeStyle = played ? d.color + "55" : "rgba(255,255,255,0.05)";
+      ctx2.lineWidth = played ? 1.5 : 1;
+      roundRect(ctx2, 48, rowY, W - 96, rowH, 16);
       ctx2.stroke();
 
-      // Diff label
-      ctx2.font = "900 28px 'Arial Black', Arial, sans-serif";
-      ctx2.fillStyle = entry ? d.color : "#374151";
+      // Left accent stripe
+      if (played) {
+        roundRect(ctx2, 48, rowY, 5, rowH, 3);
+        ctx2.fillStyle = d.color;
+        ctx2.fill();
+      }
+
+      // Diff label pill
+      ctx2.font = "900 15px 'Arial Black', Arial, sans-serif";
       ctx2.letterSpacing = "3px";
-      ctx2.fillText(d.label, 90, rowY + 46);
+      const labelW = ctx2.measureText(d.label).width + 20;
+      roundRect(ctx2, 74, rowY + 22, labelW, 26, 6);
+      ctx2.fillStyle = played ? d.color + "22" : "rgba(255,255,255,0.04)";
+      ctx2.fill();
+      ctx2.fillStyle = played ? d.color : "#374151";
+      ctx2.fillText(d.label, 74 + 10, rowY + 40);
 
-      if (entry) {
-        // Player name
-        ctx2.font = "700 32px Arial, sans-serif";
-        ctx2.fillStyle = entry.won ? "#fff" : "#9ca3af";
-        ctx2.letterSpacing = "0px";
-        ctx2.fillText(entry.player.toUpperCase(), 90, rowY + 90);
+      if (played && entry) {
+        // Player name — truncate if too long
+        let playerName = entry.player.toUpperCase();
+        ctx2.font = "700 30px Arial, sans-serif";
+        ctx2.letterSpacing = "0.5px";
+        while (ctx2.measureText(playerName).width > 580 && playerName.length > 4) {
+          playerName = playerName.slice(0, -1);
+        }
+        if (playerName !== entry.player.toUpperCase()) playerName += "…";
+        ctx2.fillStyle = entry.won ? "#ffffff" : "#6b7280";
+        ctx2.fillText(playerName, 74, rowY + 88);
 
-        // Guess grid
-        const sqSize = 38;
-        const sqGap = 10;
+        // Outcome text
+        ctx2.font = "400 16px Arial, sans-serif";
+        ctx2.letterSpacing = "1px";
+        ctx2.fillStyle = entry.won ? d.color + "cc" : "#4b5563";
+        const outcomeText = entry.won ? "SOLVED IN " + entry.guesses + (entry.guesses === 1 ? " GUESS" : " GUESSES") : "NOT SOLVED";
+        ctx2.fillText(outcomeText, 74, rowY + 112);
+
+        // Guess squares
+        const sqSize = 32, sqGap = 8;
         for (let g = 0; g < d.guesses; g++) {
-          const sqX = 90 + g * (sqSize + sqGap);
-          const sqY3 = rowY + 106;
-          let col = "rgba(255,255,255,0.06)";
-          if (g < entry.guesses - 1) col = "rgba(239,68,68,0.6)";
-          else if (g === entry.guesses - 1) col = entry.won ? "rgba(34,197,94,0.8)" : "rgba(239,68,68,0.6)";
+          const sqX = 74 + g * (sqSize + sqGap);
+          const sqY3 = rowY + 126;
+          let col = "rgba(255,255,255,0.05)";
+          if (g < entry.guesses - 1) col = "rgba(239,68,68,0.55)";
+          else if (g === entry.guesses - 1) col = entry.won ? d.color + "cc" : "rgba(239,68,68,0.55)";
           ctx2.fillStyle = col;
           roundRect(ctx2, sqX, sqY3, sqSize, sqSize, 6);
           ctx2.fill();
+          // Add checkmark / x in square
+          ctx2.font = "700 16px Arial, sans-serif";
+          ctx2.letterSpacing = "0px";
+          ctx2.textAlign = "center";
+          if (g < entry.guesses - 1) { ctx2.fillStyle = "rgba(255,255,255,0.5)"; ctx2.fillText("✕", sqX + sqSize/2, sqY3 + sqSize/2 + 6); }
+          else if (g === entry.guesses - 1) { ctx2.fillStyle = "#fff"; ctx2.fillText(entry.won ? "✓" : "✕", sqX + sqSize/2, sqY3 + sqSize/2 + 6); }
+          ctx2.textAlign = "left";
         }
 
-        // Score
-        const scoreStr3 = entry.score > 0 ? "+" + entry.score.toLocaleString() + " pts" : entry.won ? "" : "✗";
-        ctx2.font = "900 36px 'Arial Black', Arial, sans-serif";
-        ctx2.fillStyle = entry.won ? d.color : "#4b5563";
-        ctx2.textAlign = "right";
-        ctx2.letterSpacing = "1px";
-        ctx2.fillText(scoreStr3, 1000, rowY + 98);
-        ctx2.textAlign = "left";
-        dayTotal3 += entry.score || 0;
+        // Score — big, right side
+        if (entry.score > 0) {
+          ctx2.font = "900 44px 'Arial Black', Arial, sans-serif";
+          ctx2.fillStyle = entry.won ? d.color : "#374151";
+          ctx2.letterSpacing = "0px";
+          ctx2.textAlign = "right";
+          ctx2.fillText("+" + entry.score.toLocaleString(), W - 74, rowY + 94);
+          ctx2.font = "500 16px Arial, sans-serif";
+          ctx2.fillStyle = entry.won ? d.color + "99" : "#374151";
+          ctx2.letterSpacing = "2px";
+          ctx2.fillText("POINTS", W - 74, rowY + 116);
+          ctx2.textAlign = "left";
+          dayTotal3 += entry.score;
+        }
       } else {
         // Not played
-        ctx2.font = "400 26px Arial, sans-serif";
-        ctx2.fillStyle = "#374151";
-        ctx2.letterSpacing = "2px";
-        ctx2.fillText("NOT PLAYED", 90, rowY + 90);
+        ctx2.font = "500 22px Arial, sans-serif";
+        ctx2.fillStyle = "#1f2937";
+        ctx2.letterSpacing = "3px";
+        ctx2.fillText("NOT PLAYED YET", 74, rowY + 94);
       }
     });
 
-    // Day total
+    // ── Footer ───────────────────────────────────────────────────────
+    const footY = H - 32;
+
+    // Today total (left)
     if (dayTotal3 > 0) {
-      ctx2.font = "700 28px Arial, sans-serif";
-      ctx2.fillStyle = "#ffd700";
-      ctx2.textAlign = "right";
+      ctx2.font = "700 20px Arial, sans-serif";
+      ctx2.fillStyle = "#9ca3af";
       ctx2.letterSpacing = "1px";
-      ctx2.fillText("TODAY: " + dayTotal3.toLocaleString() + " pts", 1008, 686);
-      ctx2.textAlign = "left";
+      ctx2.fillText("TODAY  ", 64, footY);
+      const todayLabelW = ctx2.measureText("TODAY  ").width;
+      ctx2.font = "900 20px 'Arial Black', Arial, sans-serif";
+      ctx2.fillStyle = "#ffd700";
+      ctx2.letterSpacing = "0px";
+      ctx2.fillText("+" + dayTotal3.toLocaleString() + " pts", 64 + todayLabelW, footY);
     }
 
-    // Footer
-    ctx2.font = "700 22px Arial, sans-serif";
+    // URL (right)
+    ctx2.font = "700 20px Arial, sans-serif";
     ctx2.fillStyle = "#ffd700";
     ctx2.letterSpacing = "3px";
-    ctx2.fillText("STATSIQ.IO", 72, 686);
+    ctx2.textAlign = "right";
+    ctx2.fillText("STATSIQ.IO", W - 64, footY);
+    ctx2.textAlign = "left";
 
     ctx2.letterSpacing = "0px";
     return canvas.toDataURL("image/png");
@@ -3103,16 +3168,15 @@ export default function StatsIQ() {
     const dateStr = `${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
     const badge = getScoreBadge(totalScore);
     const badgeStr = badge ? ` ${badge.emoji}` : "";
-    const streakStr = streakData.current > 1 ? ` 🔥${streakData.current}` : "";
-    const userStr = username ? `${username}${badgeStr}${streakStr}` : `StatsIQ${streakStr}`;
+    const streakStr = streakData.current > 1 ? `  🔥 ${streakData.current} day streak` : "";
+    const userLine = username ? `${username}${badgeStr}${streakStr}` : `statsiq.io${streakStr}`;
 
     const diffs: Difficulty[] = ["easy", "medium", "hard"];
-    const diffLabels: Record<Difficulty, string> = { easy: "Easy  ", medium: "Medium", hard: "Hard  " };
     let dayTotal = 0;
-    let allDone = true;
     const lines: string[] = [];
 
     for (const d of diffs) {
+      const label = d === "easy" ? "🟢" : d === "medium" ? "🔵" : "🟣";
       try {
         const entry = localStorage.getItem(`statsiq_day_${dateStr}_${d}`);
         if (entry) {
@@ -3121,23 +3185,21 @@ export default function StatsIQ() {
           const grid = Array(dc.guesses).fill(null).map((_,i) => {
             if (i < data.guesses - 1) return "🟥";
             if (i === data.guesses - 1) return data.won ? "🟩" : "🟥";
-            return "⬜";
+            return "⬛";
           }).join("");
-          const pts = data.score > 0 ? `+${data.score.toLocaleString()}` : data.won ? "" : "✗";
-          lines.push(`${diffLabels[d]}  ${grid}  ${pts}`);
+          const pts = data.score > 0 ? `  +${data.score.toLocaleString()}` : "";
+          lines.push(`${label} ${grid}${pts}`);
           dayTotal += data.score || 0;
         } else {
-          lines.push(`${diffLabels[d]}  ⬜⬜⬜  —`);
-          allDone = false;
+          lines.push(`${label} ⬛⬛⬛`);
         }
       } catch {
-        lines.push(`${diffLabels[d]}  ⬜⬜⬜  —`);
-        allDone = false;
+        lines.push(`${label} ⬛⬛⬛`);
       }
     }
 
-    const totalLine = dayTotal > 0 ? `\nToday: ${dayTotal.toLocaleString()} pts` : "";
-    return `📊 StatsIQ — ${date}\n${userStr}\n\n${lines.join("\n")}${totalLine}\nstatsiq.io`;
+    const totalLine = dayTotal > 0 ? `\n🏆 ${dayTotal.toLocaleString()} pts today` : "";
+    return `📊 StatsIQ  ${date}\n${userLine}\n\n${lines.join("\n")}${totalLine}\n\nstatsiq.io`;
   };
 
   const share = async () => {
