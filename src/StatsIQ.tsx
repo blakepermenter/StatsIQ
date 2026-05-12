@@ -2369,7 +2369,7 @@ export default function StatsIQ() {
       stats: reportStats,
       reported_at: new Date().toISOString(),
     };
-    fetch("https://formsubmit.co/ajax/blakepermenter@gmail.com", {
+    fetch("https://formsubmit.co/ajax/StatsIQ@yahoo.com", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify({
