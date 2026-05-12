@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Analytics } from "@vercel/analytics/react";
 
 // ─── EASY (45 puzzles) ────────────────────────────────────────────────────────
@@ -1897,22 +1897,30 @@ export default function StatsIQ() {
     return final;
   };
 
-  const reset = useCallback((completed?: Set<Difficulty>) => {
-    const todayCompleted = completed ?? completedToday;
-    // If this difficulty was already completed today, restore its result
-    if (todayCompleted.has(diff)) {
-      const today = new Date();
-      const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
+  // Reset game state when difficulty or filters change
+  const prevDiffRef = useRef(diff);
+  const prevFilterRef = useRef(filterKey);
+  useEffect(() => {
+    const diffChanged = prevDiffRef.current !== diff;
+    const filterChanged = prevFilterRef.current !== filterKey;
+    prevDiffRef.current = diff;
+    prevFilterRef.current = filterKey;
+
+    if (!diffChanged && !filterChanged) return;
+
+    // Check if already completed today
+    const today = new Date();
+    const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
+    const alreadyCompleted = (() => { try { return !!localStorage.getItem(key); } catch { return false; } })();
+
+    if (alreadyCompleted) {
       try {
         const entry = localStorage.getItem(key);
         if (entry) {
           const data = JSON.parse(entry);
-          setDone(true);
-          setWon(data.won);
+          setDone(true); setWon(data.won);
           setGuesses(Array(data.guesses).fill(null).map((_, i) =>
-            i === data.guesses - 1 && data.won
-              ? { text: data.player, ok: true }
-              : { text: "• • •", ok: false }
+            i === data.guesses - 1 && data.won ? { text: data.player, ok: true } : { text: "• • •", ok: false }
           ));
           setTodayScore(data.score);
           setVisible(false); setTimeout(() => setVisible(true), 300);
@@ -1924,12 +1932,13 @@ export default function StatsIQ() {
       setVisible(false); setTimeout(() => setVisible(true), 300);
       return;
     }
+
     setGuesses([]); setInput(""); setDone(false); setWon(false); setMsg("");
     setTodayScore(null); setScoreBreakdown(null);
     setVisible(false); setTimeout(() => setVisible(true), 300);
-  }, [diff, completedToday]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [diff, filterKey]);
   useEffect(() => { setTimeout(() => setVisible(true), 300); }, []);
-  useEffect(() => { reset(); }, [diff, filter, eraFilter]);
 
   // Filters lock for the entire day once any guess is made on any difficulty
   const anyDiffStarted = (): boolean => {
