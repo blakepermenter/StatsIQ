@@ -2873,8 +2873,6 @@ export default function StatsIQ() {
         )}
       </div>
 
-      </div>
-
 
       {/* Mobile game content — hidden on desktop, always rendered */}
       <header style={{ display: isDesktop ? "none" : "block", position:"relative", zIndex:10, width:"100%", maxWidth:500, padding:"14px 18px 0" }}>
