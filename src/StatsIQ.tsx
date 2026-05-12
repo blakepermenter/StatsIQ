@@ -2949,9 +2949,9 @@ export default function StatsIQ() {
             const c = DIFF_CONFIG[d]; const active = diff === d;
             const isCompleted = completedToday.has(d);
             return (
-              <button key={d} onClick={() => setDiff(d)} style={{ flex:1, padding:"8px 0", borderRadius:10, border:`2px solid ${active ? c.color : isCompleted ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.08)"}`, background:active ? c.bg : isCompleted ? "rgba(34,197,94,0.08)" : "rgba(255,255,255,0.02)", cursor:"pointer", fontFamily:"'Bebas Neue', sans-serif", transition:"all 0.2s" }}>
-                <div style={{ color:active ? c.color : isCompleted ? "#86efac" : "#4b5563", fontWeight:900, fontSize:"0.9rem", letterSpacing:"0.1em" }}>{isCompleted ? "✓ " : ""}{c.label}</div>
-                <div style={{ color:active ? c.color : isCompleted ? "#4ade80" : "#374151", fontSize:"0.55rem", letterSpacing:"0.08em", marginTop:1, opacity:0.8 }}>{isCompleted ? "DONE" : `${c.guesses} GUESSES`}</div>
+              <button key={d} onClick={() => setDiff(d)} style={{ flex:1, padding:"8px 0", borderRadius:10, border:`2px solid ${active ? c.color : isCompleted ? c.color+"55" : "rgba(255,255,255,0.08)"}`, background:active ? c.bg : isCompleted ? c.bg : "rgba(255,255,255,0.02)", cursor:"pointer", fontFamily:"'Bebas Neue', sans-serif", transition:"all 0.2s" }}>
+                <div style={{ color:active ? c.color : isCompleted ? c.color+"cc" : "#4b5563", fontWeight:900, fontSize:"0.9rem", letterSpacing:"0.1em" }}>{isCompleted ? "✓ " : ""}{c.label}</div>
+                <div style={{ color:active ? c.color : isCompleted ? c.color+"88" : "#374151", fontSize:"0.55rem", letterSpacing:"0.08em", marginTop:1, opacity:0.8 }}>{isCompleted ? "DONE" : `${c.guesses} GUESSES`}</div>
               </button>
             );
           })}
