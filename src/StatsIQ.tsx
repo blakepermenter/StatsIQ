@@ -2762,7 +2762,7 @@ export default function StatsIQ() {
               </button>
               {diff !== "hard" && (
               <button onClick={() => setDiff(diff==="easy"?"medium":"hard")} style={{ padding:"10px 20px", borderRadius:8, border:`1px solid ${cfg.border}`, background:cfg.bg, color:cfg.color, fontWeight:900, fontSize:"0.85rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
-                TRY {nextDiff} →
+                TRY {diff === "easy" ? "MEDIUM" : "HARD"} →
               </button>
               )}
             </div>
