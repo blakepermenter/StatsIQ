@@ -1285,9 +1285,6 @@ const sbBackfillUsername = async (newUsername: string, tempCode?: string) => {
       headers: { "Prefer": "return=minimal" },
       body: JSON.stringify({ username: newUsername }),
     });
-      headers: { "Prefer": "return=minimal" },
-      body: JSON.stringify({ username: newUsername }),
-    });
   } catch {}
 };
 
