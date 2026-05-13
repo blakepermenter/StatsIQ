@@ -3343,7 +3343,7 @@ export default function StatsIQ() {
 
             <p style={{ margin:"0 0 2px", fontSize:"1.6rem" }}>{won?"🏆":"😔"}</p>
             <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", color:won?"#22c55e":"#ef4444", letterSpacing:"0.1em" }}>{won?"CORRECT!":"GAME OVER"}</p>
-            <p style={{ margin:"0 0 10px", color:"#d1d5db", fontSize:"0.85rem" }}>The answer was <span style={{ color:"#ffd700", fontWeight:900 }}>{player}</span></p>
+            <p style={{ margin:"0 0 10px", color:"#d1d5db", fontSize:"0.85rem" }}>The answer was <span style={{ color:"#ffd700", fontWeight:900 }}>{(() => { try { const today = new Date(); const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`; const stored = localStorage.getItem(key); if (stored) { const data = JSON.parse(stored); if (data.player) return data.player; } } catch {} return player; })()}</span></p>
 
             {/* Streak display on win */}
             {won && streakData.current > 1 && (
