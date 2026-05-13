@@ -1252,7 +1252,7 @@ const sbRecoverAccount = async (code: string): Promise<{username:string, total_s
 };
 
 // When a player sets their username for the first time, backfill their anonymous plays
-const sbBackfillUsername = async (newUsername: string) => {
+const sbBackfillUsername = async (newUsername: string, tempCode?: string) => {
   try {
     const localDates: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -1266,13 +1266,25 @@ const sbBackfillUsername = async (newUsername: string) => {
       }
     }
     if (localDates.length === 0) return;
+    // Update rows saved under recovery code (temp ID)
+    if (tempCode) {
+      await sbFetch(`plays?username=eq.${encodeURIComponent(tempCode)}&date=in.(${localDates.join(",")})`, {
+        method: "PATCH",
+        headers: { "Prefer": "return=minimal" },
+        body: JSON.stringify({ username: newUsername }),
+      });
+      await sbFetch(`players?username=eq.${encodeURIComponent(tempCode)}`, {
+        method: "PATCH",
+        headers: { "Prefer": "return=minimal" },
+        body: JSON.stringify({ username: newUsername }),
+      });
+    }
+    // Also update any legacy anonymous rows
     await sbFetch(`plays?username=eq.anonymous&date=in.(${localDates.join(",")})`, {
       method: "PATCH",
       headers: { "Prefer": "return=minimal" },
       body: JSON.stringify({ username: newUsername }),
     });
-    await sbFetch(`players?username=eq.anonymous`, {
-      method: "PATCH",
       headers: { "Prefer": "return=minimal" },
       body: JSON.stringify({ username: newUsername }),
     });
@@ -2162,10 +2174,13 @@ export default function StatsIQ() {
       localStorage.setItem(key, JSON.stringify({ score: final, guesses: guessNum, won: true, player, diff, date: today.toISOString() }));
       localStorage.removeItem(`statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`);
     } catch {}
-    // Log to Supabase
+    // Log to Supabase — use username if set, otherwise use recovery code as temp ID
     const dateStr = today.toISOString().slice(0,10);
-    sbLogPlay(username, dateStr, diff, sport, puzzle.era, final, guessNum, true);
-    sbUpsertPlayer(username, newTotal, streakData.current);
+    const tempId = username || recoveryCode;
+    if (tempId) {
+      sbLogPlay(tempId, dateStr, diff, sport, puzzle.era, final, guessNum, true);
+      sbUpsertPlayer(tempId, newTotal, streakData.current);
+    }
     return final;
   };
 
@@ -2311,8 +2326,9 @@ export default function StatsIQ() {
         localStorage.setItem(key, JSON.stringify({ score: 0, guesses: next.length, won: false, player, diff, date: today.toISOString() }));
         localStorage.removeItem(`statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`);
       } catch {}
-      // Log loss to Supabase
-      sbLogPlay(username, today.toISOString().slice(0,10), diff, sport, puzzle.era, 0, next.length, false);
+      // Log loss to Supabase — use username if set, otherwise recovery code as temp ID
+      const tempId2 = username || recoveryCode;
+      if (tempId2) sbLogPlay(tempId2, today.toISOString().slice(0,10), diff, sport, puzzle.era, 0, next.length, false);
       markDiffCompleted(diff);
       setTimeout(() => { setDone(true); setWon(false); }, 200);
       toast(`It was ${player}!`, 3500);
@@ -2848,7 +2864,7 @@ export default function StatsIQ() {
             <input
               value={usernameInput}
               onChange={e => setUsernameInput(e.target.value.slice(0, 20))}
-              onKeyDown={e => { if (e.key === "Enter" && usernameInput.trim().length >= 2) { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) { let code = recoveryCode; if (!code) { code = generateRecoveryCode(); setRecoveryCode(code); try { localStorage.setItem("statsiq_recovery_code", code); } catch {} } sbBackfillUsername(u); sbUpsertPlayer(u, totalScore, streakData.current, code); setShowRecoveryCode(true); } else { sbUpsertPlayer(u, totalScore, streakData.current, recoveryCode || undefined); } } }}
+              onKeyDown={e => { if (e.key === "Enter" && usernameInput.trim().length >= 2) { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) { let code = recoveryCode; if (!code) { code = generateRecoveryCode(); setRecoveryCode(code); try { localStorage.setItem("statsiq_recovery_code", code); } catch {} } sbBackfillUsername(u, code); sbUpsertPlayer(u, totalScore, streakData.current, code); setShowRecoveryCode(true); } else { sbUpsertPlayer(u, totalScore, streakData.current, recoveryCode || undefined); } } }}
               placeholder="Enter username..."
               maxLength={20}
               autoFocus
@@ -2859,7 +2875,7 @@ export default function StatsIQ() {
               <button onClick={() => setShowUsernameModal(false)} style={{ flex:1, padding:"10px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#9ca3af", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif" }}>Cancel</button>
               <button
                 disabled={usernameInput.trim().length < 2}
-                onClick={() => { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) { let code = recoveryCode; if (!code) { code = generateRecoveryCode(); setRecoveryCode(code); try { localStorage.setItem("statsiq_recovery_code", code); } catch {} } sbBackfillUsername(u); sbUpsertPlayer(u, totalScore, streakData.current, code); setShowRecoveryCode(true); } else { sbUpsertPlayer(u, totalScore, streakData.current, recoveryCode || undefined); } }}
+                onClick={() => { const u = usernameInput.trim(); const prev = username; setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setShowUsernameModal(false); if (!prev) { let code = recoveryCode; if (!code) { code = generateRecoveryCode(); setRecoveryCode(code); try { localStorage.setItem("statsiq_recovery_code", code); } catch {} } sbBackfillUsername(u, code); sbUpsertPlayer(u, totalScore, streakData.current, code); setShowRecoveryCode(true); } else { sbUpsertPlayer(u, totalScore, streakData.current, recoveryCode || undefined); } }}
                 style={{ flex:2, padding:"10px", borderRadius:8, border:"none", background: usernameInput.trim().length >= 2 ? "rgba(255,200,0,0.9)" : "rgba(100,100,100,0.3)", color: usernameInput.trim().length >= 2 ? "#0a0c10" : "#555", cursor: usernameInput.trim().length >= 2 ? "pointer" : "not-allowed", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
                 SAVE
               </button>
