@@ -3712,10 +3712,21 @@ export default function StatsIQ() {
                 <button
                   onClick={() => {
                     const txt = (document.getElementById("statsiq-report-input") as HTMLTextAreaElement)?.value || reportText;
-                    const body = `Player: ${player}\nDifficulty: ${diff}\nSport: ${sport}\n\nIssue:\n${txt}\n\nClues shown:\n${clues.map((c,i) => `${i+1}. ${c}`).join('\n')}`;
-                    window.location.href = `mailto:StatsIQ@yahoo.com?subject=${encodeURIComponent(`StatsIQ Error Report — ${player}`)}&body=${encodeURIComponent(body)}`;
+                    if (!txt.trim()) return;
+                    fetch("https://formspree.io/f/xlgzkjoz", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        player,
+                        difficulty: diff,
+                        sport,
+                        issue: txt.trim(),
+                        clues: clues.join(" | "),
+                        ctx,
+                      }),
+                    }).catch(() => {});
                     setReportSent(true);
-                    setTimeout(() => { setShowReportModal(false); setReportSent(false); setReportText(""); }, 2000);
+                    setTimeout(() => { setShowReportModal(false); setReportSent(false); setReportText(""); }, 2200);
                   }}
                   style={{ marginTop:10, width:"100%", padding:"11px", borderRadius:8, border:"none", background:"rgba(239,68,68,0.85)", color:"#fff", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.9rem" }}
                 >
