@@ -2844,7 +2844,7 @@ export default function StatsIQ() {
           <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.8)", backdropFilter:"blur(4px)" }} />
           <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"24px 22px", width:300 }} onClick={e => e.stopPropagation()}>
             <h3 style={{ margin:"0 0 6px", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.3rem", letterSpacing:"0.1em" }}>SET USERNAME</h3>
-            <p style={{ margin:"0 0 16px", color:"#4b5563", fontSize:"0.7rem" }}>This will show on the leaderboard when it launches</p>
+            <p style={{ margin:"0 0 16px", color:"#4b5563", fontSize:"0.7rem" }}>Your username appears on the global leaderboard</p>
             <input
               value={usernameInput}
               onChange={e => setUsernameInput(e.target.value.slice(0, 20))}
@@ -2990,15 +2990,16 @@ export default function StatsIQ() {
               )}
             </div>
 
-            {/* Your stats */}
+            {/* Your stats — only show if they have a username or have actually played */}
+            {(username || totalScore > 0) && (
             <div style={{ background:"rgba(255,200,0,0.06)", border:"1px solid rgba(255,200,0,0.15)", borderRadius:10, padding:"12px 14px", marginBottom:14 }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                   {getScoreBadge(totalScore) && <span style={{ fontSize:"1.2rem" }}>{getScoreBadge(totalScore)!.emoji}</span>}
                   <div>
                     <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                      <p style={{ margin:0, color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem" }}>{username || "Anonymous"}</p>
-                      {globalRank && <span style={{ background:"rgba(255,215,0,0.15)", border:"1px solid rgba(255,215,0,0.3)", borderRadius:4, padding:"1px 6px", color:"#ffd700", fontSize:"0.62rem", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.08em" }}>#{globalRank} ALL TIME</span>}
+                      <p style={{ margin:0, color:username?"#fff":"#6b7280", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem" }}>{username || "Set a username to appear here"}</p>
+                      {globalRank && username && <span style={{ background:"rgba(255,215,0,0.15)", border:"1px solid rgba(255,215,0,0.3)", borderRadius:4, padding:"1px 6px", color:"#ffd700", fontSize:"0.62rem", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.08em" }}>#{globalRank} ALL TIME</span>}
                     </div>
                     <p style={{ margin:0, color:"#4b5563", fontSize:"0.6rem" }}>{streakData.current > 0 ? `${streakData.current} day streak 🔥` : "No active streak"}</p>
                   </div>
@@ -3006,6 +3007,7 @@ export default function StatsIQ() {
                 <p style={{ margin:0, color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.3rem" }}>{totalScore.toLocaleString()}</p>
               </div>
             </div>
+            )}
 
             {!username && (
               <button onClick={() => { setShowLeaderboard(false); setUsernameInput(""); setShowUsernameModal(true); }} style={{ width:"100%", padding:"10px", borderRadius:8, border:"none", background:"rgba(255,200,0,0.9)", color:"#0a0c10", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.88rem" }}>
