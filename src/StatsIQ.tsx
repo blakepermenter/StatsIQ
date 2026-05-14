@@ -2176,7 +2176,7 @@ export default function StatsIQ() {
     const tempId = username || recoveryCode;
     if (tempId) {
       sbLogPlay(tempId, dateStr, diff, sport, puzzle.era, final, guessNum, true);
-      sbUpsertPlayer(tempId, newTotal, streakData.current);
+      sbUpsertPlayer(tempId, newTotal, Math.max(streakData.current, streakData.best));
     }
     return final;
   };
@@ -2987,7 +2987,7 @@ export default function StatsIQ() {
                   <p style={{ margin:0, color:"#2d3748", fontSize:"0.68rem" }}>Be the first on the board!</p>
                 </div>
               ) : (
-                lbData.slice(0,10).map((row, i) => {
+                lbData.slice(0,25).map((row, i) => {
                   const isYou = row.username === (username || "anonymous");
                   return (
                     <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 14px", borderBottom: i < lbData.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none", background: isYou ? "rgba(255,200,0,0.06)" : "transparent" }}>
