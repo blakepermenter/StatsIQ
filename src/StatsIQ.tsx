@@ -1316,7 +1316,34 @@ const sbSaveEmail = async (email: string, username: string) => {
 };
 
 // Fetch today's rarity stats
-const sbGetRarity = async (): Promise<Record<string, {win_pct: number, total_plays: number, avg_guesses: number}>> => {
+const sbSaveWeeklySummary = async (summary: {
+  username: string;
+  week_start: string;
+  puzzles_played: number;
+  win_rate: number;
+  weekly_score: number;
+  best_puzzle: string;
+  best_puzzle_diff: string;
+  best_puzzle_clues: number;
+  easy_win_rate: number;
+  medium_win_rate: number;
+  hard_win_rate: number;
+}) => {
+  try {
+    await sbFetch("weekly_summaries?on_conflict=username,week_start", {
+      method: "POST",
+      headers: { "Prefer": "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify(summary),
+    });
+  } catch {}
+};
+
+const sbGetWeeklySummaries = async (username: string): Promise<Array<Record<string,unknown>>> => {
+  try {
+    const data = await sbFetch(`weekly_summaries?username=eq.${encodeURIComponent(username)}&order=week_start.desc&limit=12`);
+    return data || [];
+  } catch { return []; }
+};
   try {
     const data = await sbFetch("today_rarity?select=*");
     if (!data) return {};
@@ -1822,6 +1849,10 @@ export default function StatsIQ() {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportText, setReportText] = useState("");
   const [reportSent, setReportSent] = useState(false);
+  const [showWeeklyRecap, setShowWeeklyRecap] = useState(false);
+  const [weeklyData, setWeeklyData] = useState<Record<string,unknown> | null>(null);
+  const [pastSummaries, setPastSummaries] = useState<Array<Record<string,unknown>>>([]);
+  const [showPastSummaries, setShowPastSummaries] = useState(false);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(() => { try { return localStorage.getItem("statsiq_email_submitted") === "1"; } catch { return false; } });
@@ -1889,6 +1920,115 @@ export default function StatsIQ() {
     } catch { return { current: 0, best: 0 }; }
   };
   const [streakData] = useState(computeStreak);
+
+  // ── WEEKLY RECAP ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!username) return;
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday
+    if (dayOfWeek !== 1) return; // Show on Monday (recapping the previous week)
+
+    const weekStartDate = new Date(now);
+    weekStartDate.setDate(now.getDate() - 7); // Go back 7 days to start of last week
+    const weekStart = weekStartDate.toISOString().slice(0, 10);
+
+    // Check if already shown this week
+    const shownKey = `statsiq_weekly_shown_${weekStart}`;
+    if (localStorage.getItem(shownKey)) return;
+
+    // Calculate stats from last 7 days
+    try {
+      const keys = Object.keys(localStorage).filter(k => k.startsWith("statsiq_day_"));
+      let played = 0, won = 0, weekScore = 0;
+      let easyPlayed = 0, easyWon = 0;
+      let medPlayed = 0, medWon = 0;
+      let hardPlayed = 0, hardWon = 0;
+      let bestPuzzle = "", bestDiff = "", bestClues = 4, bestScore = 0;
+
+      const diffRank: Record<string, number> = { easy: 0, medium: 1, hard: 2 };
+
+      keys.forEach(k => {
+        try {
+          const parts = k.split("_"); // statsiq_day_YYYY_M_D_diff
+          if (parts.length < 6) return;
+          const dateStr = `${parts[2]}-${parts[3].padStart(2,"0")}-${parts[4].padStart(2,"0")}`;
+          if (dateStr < weekStart || dateStr >= now.toISOString().slice(0,10)) return;
+          const diff = parts[5] as string;
+          const entry = JSON.parse(localStorage.getItem(k) || "{}");
+          if (!entry || entry.score === undefined) return;
+
+          played++;
+          weekScore += entry.score || 0;
+          if (entry.won) {
+            won++;
+            if (diff === "easy") { easyPlayed++; easyWon++; }
+            if (diff === "medium") { medPlayed++; medWon++; }
+            if (diff === "hard") { hardPlayed++; hardWon++; }
+
+            // Best puzzle: highest diff, then fewest clues, then highest score
+            const isHarder = (diffRank[diff] || 0) > (diffRank[bestDiff] || 0);
+            const sameHarder = diff === bestDiff && (entry.guesses || 4) < bestClues;
+            const sameSameMore = diff === bestDiff && entry.guesses === bestClues && (entry.score || 0) > bestScore;
+            if (!bestPuzzle || isHarder || sameHarder || sameSameMore) {
+              bestPuzzle = entry.player || "";
+              bestDiff = diff;
+              bestClues = entry.guesses || 4;
+              bestScore = entry.score || 0;
+            }
+          } else {
+            if (diff === "easy") easyPlayed++;
+            if (diff === "medium") medPlayed++;
+            if (diff === "hard") hardPlayed++;
+          }
+        } catch {}
+      });
+
+      if (played === 0) return; // Nothing to show
+
+      const summary = {
+        username,
+        week_start: weekStart,
+        puzzles_played: played,
+        win_rate: played > 0 ? Math.round((won / played) * 100) : 0,
+        weekly_score: weekScore,
+        best_puzzle: bestPuzzle,
+        best_puzzle_diff: bestDiff,
+        best_puzzle_clues: bestClues,
+        easy_win_rate: easyPlayed > 0 ? Math.round((easyWon / easyPlayed) * 100) : 0,
+        medium_win_rate: medPlayed > 0 ? Math.round((medWon / medPlayed) * 100) : 0,
+        hard_win_rate: hardPlayed > 0 ? Math.round((hardWon / hardPlayed) * 100) : 0,
+        dots: keys.filter(k => {
+          const parts = k.split("_");
+          if (parts.length < 6) return false;
+          const dateStr = `${parts[2]}-${parts[3].padStart(2,"0")}-${parts[4].padStart(2,"0")}`;
+          return dateStr >= weekStart && dateStr < now.toISOString().slice(0,10);
+        }).reduce((acc: Record<string, Record<string,unknown>>, k) => {
+          const parts = k.split("_");
+          const dateStr = `${parts[2]}-${parts[3].padStart(2,"0")}-${parts[4].padStart(2,"0")}`;
+          const diff = parts[5];
+          const entry = JSON.parse(localStorage.getItem(k) || "{}");
+          if (!acc[dateStr]) acc[dateStr] = {};
+          acc[dateStr][diff] = { won: entry.won, guesses: entry.guesses };
+          return acc;
+        }, {}),
+      };
+
+      setWeeklyData(summary);
+      setShowWeeklyRecap(true);
+      localStorage.setItem(shownKey, "1");
+
+      // Save to Supabase
+      sbSaveWeeklySummary(summary);
+
+    } catch {}
+  }, [username]);
+
+  // Load past summaries when requested
+  useEffect(() => {
+    if (showPastSummaries && username) {
+      sbGetWeeklySummaries(username).then(setPastSummaries);
+    }
+  }, [showPastSummaries, username]);
 
   // Streak shield — earned at 7-day streak, usable once to skip a missed day
   const [streakShield, setStreakShield] = useState<boolean>(() => {
@@ -3688,6 +3828,155 @@ export default function StatsIQ() {
               </button>
             </div>
             <p style={{ margin:0, color:"#374151", fontSize:"0.65rem", textAlign:"center" }}>Save the image and post it — tag someone who'd know this stat line</p>
+          </div>
+        </div>
+      )}
+
+      {/* WEEKLY RECAP MODAL */}
+      {showWeeklyRecap && weeklyData && (() => {
+        const wd = weeklyData as Record<string,unknown>;
+        const weekStart = wd.week_start as string;
+        const weekEnd = new Date(new Date(weekStart).getTime() + 6 * 86400000).toISOString().slice(0,10);
+        const fmt = (d: string) => { const [,m,day] = d.split("-"); return `${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parseInt(m)-1]} ${parseInt(day)}`; };
+        const dots = (wd.dots || {}) as Record<string, Record<string,unknown>>;
+        const days = Array.from({length:7}, (_,i) => { const d = new Date(weekStart); d.setDate(d.getDate()+i); return d.toISOString().slice(0,10); });
+        const badge = getScoreBadge(totalScore);
+        const diffColor: Record<string,string> = { easy:"#22c55e", medium:"#f59e0b", hard:"#ef4444" };
+        return (
+          <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(0,0,0,0.9)", backdropFilter:"blur(8px)" }}>
+            <div style={{ position:"relative", width:"min(420px,95vw)", background:"#0a0c14", border:"1px solid rgba(255,215,0,0.15)", borderRadius:20, overflow:"hidden", boxShadow:"0 0 80px rgba(255,215,0,0.08), 0 40px 80px rgba(0,0,0,0.6)" }}>
+
+              {/* Header */}
+              <div style={{ background:"linear-gradient(135deg, #1a1400, #0f0c00, #1a1400)", borderBottom:"1px solid rgba(255,215,0,0.2)", padding:"22px 24px 18px", position:"relative", overflow:"hidden" }}>
+                <div style={{ position:"absolute", top:-40, right:-40, width:120, height:120, background:"radial-gradient(circle, rgba(255,215,0,0.12) 0%, transparent 70%)", pointerEvents:"none" }} />
+                <p style={{ margin:"0 0 4px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.62rem", letterSpacing:"0.25em", color:"rgba(255,215,0,0.5)", textTransform:"uppercase" }}>Weekly Recap · {fmt(weekStart)} – {fmt(weekEnd)}</p>
+                <div style={{ display:"flex", alignItems:"baseline", gap:10 }}>
+                  <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"2rem", color:"#ffd700", letterSpacing:"0.05em", lineHeight:1 }}>StatsIQ</span>
+                  <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", color:"rgba(255,255,255,0.4)", letterSpacing:"0.08em" }}>WEEK IN REVIEW</span>
+                </div>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:8 }}>
+                  <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.85rem", fontWeight:700, color:"#fff", letterSpacing:"0.05em" }}>{username}</span>
+                  {badge && <span style={{ background:"rgba(255,215,0,0.12)", border:"1px solid rgba(255,215,0,0.25)", borderRadius:4, padding:"1px 7px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.65rem", color:"#ffd700", letterSpacing:"0.1em" }}>{badge.emoji} {badge.label.toUpperCase()}</span>}
+                  {globalRank && <span style={{ background:"rgba(255,215,0,0.1)", border:"1px solid rgba(255,215,0,0.2)", borderRadius:6, padding:"2px 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", color:"#ffd700" }}>#{globalRank} ALL TIME</span>}
+                  {streakData.current > 0 && <span style={{ fontSize:"0.8rem" }}>{streakData.current}🔥</span>}
+                </div>
+              </div>
+
+              {/* Big stats */}
+              <div style={{ padding:"18px 24px 12px" }}>
+                <div style={{ display:"flex", gap:10 }}>
+                  {[
+                    { val: String(wd.puzzles_played), key:"PLAYED", color:"#ffd700" },
+                    { val: `${wd.win_rate}%`, key:"WIN RATE", color:"#22c55e" },
+                    { val: (wd.weekly_score as number).toLocaleString(), key:"SCORE", color:"#fb923c" },
+                  ].map(({val,key,color}) => (
+                    <div key={key} style={{ flex:1, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"12px 8px", textAlign:"center" }}>
+                      <span style={{ display:"block", fontFamily:"'Bebas Neue',sans-serif", fontSize: String(val).length > 5 ? "1.1rem" : "1.6rem", color, lineHeight:1 }}>{val}</span>
+                      <span style={{ display:"block", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.52rem", letterSpacing:"0.18em", color:"rgba(255,255,255,0.3)", marginTop:4 }}>{key}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Daily dots */}
+              <div style={{ padding:"0 24px 12px" }}>
+                <p style={{ margin:"0 0 6px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.55rem", letterSpacing:"0.18em", color:"rgba(255,255,255,0.2)", textTransform:"uppercase" }}>Daily Results · E M H</p>
+                <div style={{ display:"flex", gap:4 }}>
+                  {days.map(day => {
+                    const dayData = dots[day] || {};
+                    return (
+                      <div key={day} style={{ display:"flex", flexDirection:"column", gap:3, flex:1, alignItems:"center" }}>
+                        {(["easy","medium","hard"] as const).map(d => {
+                          const entry = (dayData[d] || {}) as {won?: boolean; guesses?: number};
+                          const hasEntry = dayData[d] !== undefined;
+                          let bg = "rgba(255,255,255,0.08)";
+                          if (hasEntry) {
+                            if (!entry.won) bg = "#ef4444";
+                            else if (entry.guesses === 1) bg = "#ffd700";
+                            else if (entry.guesses === 2) bg = "#22c55e";
+                            else bg = "#f59e0b";
+                          }
+                          return <div key={d} style={{ width:"100%", height:8, borderRadius:2, background:bg }} />;
+                        })}
+                        <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.45rem", color:"rgba(255,255,255,0.2)", marginTop:2 }}>{["M","T","W","T","F","S","S"][new Date(day).getDay()]}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Difficulty bars */}
+              <div style={{ padding:"0 24px 14px" }}>
+                {(["easy","medium","hard"] as const).map(d => {
+                  const pct = wd[`${d}_win_rate`] as number;
+                  return (
+                    <div key={d} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:7 }}>
+                      <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.72rem", letterSpacing:"0.1em", color:diffColor[d], width:55, flexShrink:0 }}>{d.toUpperCase()}</span>
+                      <div style={{ flex:1, height:6, background:"rgba(255,255,255,0.06)", borderRadius:3, overflow:"hidden" }}>
+                        <div style={{ height:"100%", borderRadius:3, background:diffColor[d], width:`${pct}%`, opacity:0.8 }} />
+                      </div>
+                      <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.72rem", color:"rgba(255,255,255,0.35)", width:32, textAlign:"right" }}>{pct}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Best puzzle */}
+              {wd.best_puzzle && (
+                <div style={{ margin:"0 24px 18px", background:"linear-gradient(135deg, rgba(255,215,0,0.06), rgba(255,215,0,0.02))", border:"1px solid rgba(255,215,0,0.12)", borderRadius:10, padding:"12px 14px" }}>
+                  <p style={{ margin:"0 0 3px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.6rem", letterSpacing:"0.2em", color:"rgba(255,215,0,0.4)" }}>🏆 BEST PUZZLE THIS WEEK</p>
+                  <p style={{ margin:0, fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", color:"#ffd700", letterSpacing:"0.05em" }}>{String(wd.best_puzzle).toUpperCase()}</p>
+                  <p style={{ margin:"2px 0 0", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.72rem", color:"rgba(255,255,255,0.4)" }}>{String(wd.best_puzzle_diff).toUpperCase()} · Got it in {wd.best_puzzle_clues} clue{wd.best_puzzle_clues === 1 ? "" : "s"}</p>
+                </div>
+              )}
+
+              {/* Footer */}
+              <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)", padding:"14px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                <button onClick={() => setShowPastSummaries(true)} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.25)", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.6rem", letterSpacing:"0.12em", cursor:"pointer", textDecoration:"underline", padding:0 }}>VIEW PAST WEEKS</button>
+                <div style={{ display:"flex", gap:8 }}>
+                  <button onClick={() => {
+                    const text = `📊 StatsIQ Week in Review\n${fmt(weekStart)}–${fmt(weekEnd)}\n\n${username} · ${wd.puzzles_played} puzzles · ${wd.win_rate}% win rate\nScore: ${(wd.weekly_score as number).toLocaleString()}\n\nstatsiq.io`;
+                    navigator.clipboard?.writeText(text).then(() => toast("Copied to clipboard! 📋", 2000));
+                  }} style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.8rem", letterSpacing:"0.1em", background:"#ffd700", color:"#0a0c14", border:"none", borderRadius:8, padding:"8px 16px", cursor:"pointer" }}>📤 SHARE</button>
+                  <button onClick={() => setShowWeeklyRecap(false)} style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.8rem", letterSpacing:"0.1em", background:"rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.6)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:8, padding:"8px 16px", cursor:"pointer" }}>PLAY TODAY →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* PAST SUMMARIES MODAL */}
+      {showPastSummaries && (
+        <div style={{ position:"fixed", inset:0, zIndex:700, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowPastSummaries(false)}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.8)", backdropFilter:"blur(4px)" }} />
+          <div style={{ position:"relative", width:"min(420px,95vw)", maxHeight:"80vh", background:"#0a0c14", border:"1px solid rgba(255,255,255,0.1)", borderRadius:16, overflow:"hidden", display:"flex", flexDirection:"column" }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding:"18px 20px 14px", borderBottom:"1px solid rgba(255,255,255,0.07)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <p style={{ margin:0, fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", color:"#fff", letterSpacing:"0.08em" }}>PAST WEEKLY RECAPS</p>
+              <button onClick={() => setShowPastSummaries(false)} style={{ background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
+            </div>
+            <div style={{ overflowY:"auto", flex:1, padding:"12px 20px" }}>
+              {pastSummaries.length === 0 ? (
+                <p style={{ color:"#4b5563", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.85rem", textAlign:"center", padding:"20px 0" }}>No past summaries yet</p>
+              ) : pastSummaries.map((s, i) => {
+                const ws = s.week_start as string;
+                const we = new Date(new Date(ws).getTime() + 6 * 86400000).toISOString().slice(0,10);
+                const fmt2 = (d: string) => { const [,m,day] = d.split("-"); return `${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][parseInt(m)-1]} ${parseInt(day)}`; };
+                return (
+                  <div key={i} style={{ background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"12px 14px", marginBottom:10 }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
+                      <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.75rem", color:"rgba(255,255,255,0.5)", letterSpacing:"0.1em" }}>{fmt2(ws)} – {fmt2(we)}</span>
+                      <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", color:"#ffd700" }}>{(s.weekly_score as number).toLocaleString()} pts</span>
+                    </div>
+                    <div style={{ display:"flex", gap:16 }}>
+                      <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.72rem", color:"rgba(255,255,255,0.4)" }}>{s.puzzles_played as number} played</span>
+                      <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.72rem", color:"#22c55e" }}>{s.win_rate as number}% wins</span>
+                      {s.best_puzzle && <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.72rem", color:"rgba(255,215,0,0.6)" }}>🏆 {String(s.best_puzzle)}</span>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
