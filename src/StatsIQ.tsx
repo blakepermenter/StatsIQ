@@ -2995,7 +2995,7 @@ export default function StatsIQ() {
                       <span style={{ flex:1, color:isYou?"#ffd700":"#d1d5db", fontSize:"0.82rem", fontWeight:isYou?700:400, textAlign:"left", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                         {row.username}{isYou ? " (you)" : ""}
                       </span>
-                      {lbType === "alltime" && row.streak != null && Number(row.streak) > 1 && <span style={{ fontSize:"0.65rem", color:"#fb923c" }}>{row.streak}🔥</span>}
+                      {lbType === "alltime" && row.streak != null && Number(row.streak) > 0 && <span style={{ fontSize:"0.65rem", color:"#fb923c" }}>{row.streak}🔥</span>}
                       <span style={{ color:isYou?"#ffd700":"#6b7280", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", flexShrink:0 }}>{row.score > 0 ? row.score.toLocaleString() : "—"}</span>
                     </div>
                   );
@@ -3487,6 +3487,10 @@ export default function StatsIQ() {
             </div>
 
             <p style={{ margin:"6px 0 0", color:"#374151", fontSize:"0.62rem", letterSpacing:"0.15em" }}>NEW STAT LINE EVERY DAY AT MIDNIGHT</p>
+            <a href="https://twitter.com/StatsIQTriviq" target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex", alignItems:"center", gap:4, marginTop:8, color:"#4b5563", fontSize:"0.62rem", textDecoration:"none", letterSpacing:"0.08em", fontFamily:"'Barlow Condensed',sans-serif" }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              @StatsIQTriviq
+            </a>
 
             {/* Rank defend nudge */}
             {globalRank && completedToday.size === 3 && (
