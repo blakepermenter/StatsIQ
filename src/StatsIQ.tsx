@@ -1831,6 +1831,9 @@ export default function StatsIQ() {
   const [historyTab, setHistoryTab] = useState<"stats"|"calendar">("stats");
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showWeeklyRecap, setShowWeeklyRecap] = useState(false);
+  const [weeklyData, setWeeklyData] = useState<Record<string,unknown> | null>(null);
+  const [pastSummaries, setPastSummaries] = useState<Array<Record<string,unknown>>>([]);
+  const [showPastSummaries, setShowPastSummaries] = useState(false);
   const [lbData, setLbData] = useState<Array<{username:string,score:number,streak?:number}>>([]);
   const [lbType, setLbType] = useState<"today"|"alltime">("alltime");
   const [lbLoading, setLbLoading] = useState(false);
@@ -1851,10 +1854,6 @@ export default function StatsIQ() {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportText, setReportText] = useState("");
   const [reportSent, setReportSent] = useState(false);
-  const [showWeeklyRecap, setShowWeeklyRecap] = useState(false);
-  const [weeklyData, setWeeklyData] = useState<Record<string,unknown> | null>(null);
-  const [pastSummaries, setPastSummaries] = useState<Array<Record<string,unknown>>>([]);
-  const [showPastSummaries, setShowPastSummaries] = useState(false);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(() => { try { return localStorage.getItem("statsiq_email_submitted") === "1"; } catch { return false; } });
