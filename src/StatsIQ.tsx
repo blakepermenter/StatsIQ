@@ -1344,6 +1344,8 @@ const sbGetWeeklySummaries = async (username: string): Promise<Array<Record<stri
     return data || [];
   } catch { return []; }
 };
+
+const sbGetRarity = async (): Promise<Record<string, {win_pct: number, total_plays: number, avg_guesses: number}>> => {
   try {
     const data = await sbFetch("today_rarity?select=*");
     if (!data) return {};
