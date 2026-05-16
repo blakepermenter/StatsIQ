@@ -1844,6 +1844,7 @@ export default function StatsIQ() {
   const [showPastSummaries, setShowPastSummaries] = useState(false);
   const [showProModal, setShowProModal] = useState(false);
   const [showExtendedStats, setShowExtendedStats] = useState(false);
+  const [isPro, setIsPro] = useState(false);
   const [showProActivate, setShowProActivate] = useState(() => {
     if (typeof window !== "undefined") {
       return new URLSearchParams(window.location.search).get("upgraded") === "true";
@@ -1962,6 +1963,14 @@ export default function StatsIQ() {
     } catch { return { current: 0, best: 0 }; }
   };
   const [streakData] = useState(computeStreak);
+
+  // Check Pro status
+  useEffect(() => {
+    if (!username) return;
+    sbFetch(`players?username=eq.${encodeURIComponent(username)}&select=is_pro&limit=1`)
+      .then(data => { if (data?.[0]?.is_pro) setIsPro(true); })
+      .catch(() => {});
+  }, [username]);
 
   // Show recovery code if user has one but never saw it
   useEffect(() => {
@@ -3418,7 +3427,7 @@ export default function StatsIQ() {
           <button onClick={() => { if (hasStarted) { toast("Filters lock once you start guessing", 2000); return; } setShowFilter(true); }} style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 12px", borderRadius:8, border:`1px solid ${hasStarted ? "rgba(255,255,255,0.06)" : hasFilter ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.12)"}`, background:hasStarted ? "rgba(255,255,255,0.02)" : hasFilter ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)", color:hasStarted ? "#374151" : hasFilter ? "#86efac" : "#9ca3af", cursor: hasStarted ? "not-allowed" : "pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.1em", fontFamily:"'Barlow Condensed', sans-serif" }}>
             ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
           </button>
-          <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"5px 9px", borderRadius:8, border:"1px solid rgba(255,200,0,0.4)", background:"rgba(255,200,0,0.08)", color:"#ffd700", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ PRO</button>
+          <button onClick={() => isPro ? setShowExtendedStats(true) : setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"5px 9px", borderRadius:8, border:`1px solid ${isPro ? "rgba(255,200,0,0.6)" : "rgba(255,200,0,0.4)"}`, background:isPro ? "rgba(255,200,0,0.15)" : "rgba(255,200,0,0.08)", color:"#ffd700", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ {isPro ? "MY PRO" : "PRO"}</button>
           <button onClick={() => {
             if (getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowProModal(true); return; }
             const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPStreak(0); setPBestStreak(0); setPSessionWins(0); setPSessionPlayed(0); setShowPractice(true);
@@ -4141,8 +4150,9 @@ export default function StatsIQ() {
               {/* Header */}
               <div style={{ padding:"18px 20px 14px", borderBottom:"1px solid rgba(255,255,255,0.07)", display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
                 <div>
+                  {isPro && <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.65rem", color:"rgba(255,215,0,0.5)", letterSpacing:"0.2em" }}>⭐ PRO MEMBER</p>}
                   <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.2rem", color:"#fff", letterSpacing:"0.08em" }}>📊 EXTENDED STATS</p>
-                  <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563" }}>Based on your all-time play history</p>
+                  <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563" }}>Your all-time play history</p>
                 </div>
                 <button onClick={() => setShowExtendedStats(false)} style={{ background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
               </div>
@@ -4217,45 +4227,76 @@ export default function StatsIQ() {
             {proActivated ? (
               <>
                 <p style={{ fontSize:"2.5rem", margin:"0 0 12px" }}>🎉</p>
-                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", color:"#a78bfa", letterSpacing:"0.08em" }}>YOU'RE PRO!</p>
+                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", color:"#ffd700", letterSpacing:"0.08em" }}>YOU'RE PRO!</p>
                 <p style={{ margin:"0 0 20px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem", color:"#6b7280" }}>Pro features are now active on your account.</p>
-                <button onClick={() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }} style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"linear-gradient(135deg, #7c3aed, #a78bfa)", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", cursor:"pointer" }}>
+                <button onClick={() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }} style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"linear-gradient(135deg, #b8860b, #ffd700)", color:"#0a0c14", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", cursor:"pointer", fontWeight:900 }}>
                   LET'S GO →
                 </button>
               </>
             ) : (
               <>
                 <p style={{ fontSize:"2rem", margin:"0 0 10px" }}>⭐</p>
-                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", color:"#a78bfa", letterSpacing:"0.08em" }}>ACTIVATE PRO</p>
-                <p style={{ margin:"0 0 20px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem", color:"#6b7280", lineHeight:1.5 }}>Thanks for subscribing! Enter your StatsIQ username to activate your Pro features.</p>
-                <input
-                  defaultValue={username}
-                  id="pro-activate-input"
-                  placeholder="Your StatsIQ username"
-                  style={{ width:"100%", boxSizing:"border-box", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(167,139,250,0.3)", borderRadius:10, padding:"12px 14px", color:"#fff", fontSize:"0.9rem", fontFamily:"'Barlow Condensed',sans-serif", outline:"none", marginBottom:12 }}
-                />
-                <button
-                  onClick={async () => {
-                    const u = (document.getElementById("pro-activate-input") as HTMLInputElement)?.value?.trim();
-                    if (!u) return;
-                    setProActivating(true);
-                    try {
-                      const res = await fetch("/api/activate-pro", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ username: u }),
-                      });
-                      if (res.ok) setProActivated(true);
-                      else alert("Something went wrong — please contact StatsIQ@yahoo.com");
-                    } catch {
-                      alert("Something went wrong — please contact StatsIQ@yahoo.com");
-                    }
-                    setProActivating(false);
-                  }}
-                  disabled={proActivating}
-                  style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"linear-gradient(135deg, #7c3aed, #a78bfa)", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", cursor:"pointer", opacity:proActivating?0.7:1 }}>
-                  {proActivating ? "ACTIVATING..." : "ACTIVATE MY PRO →"}
-                </button>
+                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", color:"#ffd700", letterSpacing:"0.08em" }}>WELCOME TO PRO</p>
+                <p style={{ margin:"0 0 6px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem", color:"#9ca3af" }}>Thanks for subscribing!</p>
+                {username ? (
+                  <>
+                    <div style={{ background:"rgba(255,215,0,0.06)", border:"1px solid rgba(255,215,0,0.15)", borderRadius:10, padding:"12px 16px", marginBottom:16 }}>
+                      <p style={{ margin:"0 0 2px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"rgba(255,215,0,0.5)", letterSpacing:"0.15em" }}>ACTIVATING FOR</p>
+                      <p style={{ margin:0, fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.2rem", color:"#ffd700", letterSpacing:"0.08em" }}>{username}</p>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        setProActivating(true);
+                        try {
+                          const res = await fetch("/api/activate-pro", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ username }),
+                          });
+                          if (res.ok) { setProActivated(true); setIsPro(true); }
+                          else alert("Something went wrong — please contact StatsIQ@yahoo.com");
+                        } catch {
+                          alert("Something went wrong — please contact StatsIQ@yahoo.com");
+                        }
+                        setProActivating(false);
+                      }}
+                      disabled={proActivating}
+                      style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"linear-gradient(135deg, #b8860b, #ffd700)", color:"#0a0c14", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", cursor:"pointer", fontWeight:900, opacity:proActivating?0.7:1 }}>
+                      {proActivating ? "ACTIVATING..." : "ACTIVATE MY PRO →"}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p style={{ margin:"0 0 12px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.78rem", color:"#6b7280" }}>Set a username first to activate your Pro features.</p>
+                    <input
+                      id="pro-activate-input"
+                      placeholder="Enter your StatsIQ username"
+                      style={{ width:"100%", boxSizing:"border-box", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,215,0,0.3)", borderRadius:10, padding:"12px 14px", color:"#fff", fontSize:"0.9rem", fontFamily:"'Barlow Condensed',sans-serif", outline:"none", marginBottom:12 }}
+                    />
+                    <button
+                      onClick={async () => {
+                        const u = (document.getElementById("pro-activate-input") as HTMLInputElement)?.value?.trim();
+                        if (!u) return;
+                        setProActivating(true);
+                        try {
+                          const res = await fetch("/api/activate-pro", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ username: u }),
+                          });
+                          if (res.ok) { setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setProActivated(true); setIsPro(true); }
+                          else alert("Something went wrong — please contact StatsIQ@yahoo.com");
+                        } catch {
+                          alert("Something went wrong — please contact StatsIQ@yahoo.com");
+                        }
+                        setProActivating(false);
+                      }}
+                      disabled={proActivating}
+                      style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"linear-gradient(135deg, #b8860b, #ffd700)", color:"#0a0c14", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", cursor:"pointer", fontWeight:900, opacity:proActivating?0.7:1 }}>
+                      {proActivating ? "ACTIVATING..." : "ACTIVATE MY PRO →"}
+                    </button>
+                  </>
+                )}
               </>
             )}
           </div>
