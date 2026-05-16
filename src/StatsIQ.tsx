@@ -1834,6 +1834,7 @@ export default function StatsIQ() {
   const [weeklyData, setWeeklyData] = useState<Record<string,unknown> | null>(null);
   const [pastSummaries, setPastSummaries] = useState<Array<Record<string,unknown>>>([]);
   const [showPastSummaries, setShowPastSummaries] = useState(false);
+  const [showProModal, setShowProModal] = useState(false);
   const [lbData, setLbData] = useState<Array<{username:string,score:number,streak?:number}>>([]);
   const [lbType, setLbType] = useState<"today"|"alltime">("alltime");
   const [lbLoading, setLbLoading] = useState(false);
@@ -1846,6 +1847,10 @@ export default function StatsIQ() {
   const [pInput, setPInput] = useState("");
   const [pDone, setPDone] = useState(false);
   const [pWon, setPWon] = useState(false);
+  const [pStreak, setPStreak] = useState(0);
+  const [pBestStreak, setPBestStreak] = useState(0);
+  const [pSessionWins, setPSessionWins] = useState(0);
+  const [pSessionPlayed, setPSessionPlayed] = useState(0);
   const [pSportFilter, setPSportFilter] = useState<Set<string>>(new Set<string>());
   const [pEraFilter, setPEraFilter] = useState<Set<Era>>(new Set<Era>());
   const [pDiffFilter, setPDiffFilter] = useState<Set<Difficulty>>(new Set<Difficulty>());
@@ -3368,7 +3373,7 @@ export default function StatsIQ() {
             ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
           </button>
           <button onClick={() => setShowHow(true)} style={{ width:30, height:30, borderRadius:"50%", border:"1px solid rgba(255,200,0,0.2)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.82rem", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
-          <button onClick={() => { const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setShowPractice(true); }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
+          <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
             🎮 PRACTICE
           </button>
           {completedToday.size > 0 && (
@@ -3625,8 +3630,8 @@ export default function StatsIQ() {
             </div>
             {completedToday.size === 3 && (
               <div style={{ marginTop:10, textAlign:"center" }}>
-                <button onClick={() => { const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setShowPractice(true); }} style={{ padding:"9px 18px", borderRadius:8, border:"1px solid rgba(167,139,250,0.4)", background:"rgba(167,139,250,0.1)", color:"#a78bfa", fontWeight:900, fontSize:"0.82rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
-                  🎮 KEEP PLAYING — PRACTICE MODE
+                <button onClick={() => setShowProModal(true)} style={{ padding:"9px 18px", borderRadius:8, border:"1px solid rgba(167,139,250,0.4)", background:"rgba(167,139,250,0.1)", color:"#a78bfa", fontWeight:900, fontSize:"0.82rem", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+                  🎮 KEEP PLAYING — UPGRADE TO PRO
                 </button>
               </div>
             )}
@@ -3705,14 +3710,26 @@ export default function StatsIQ() {
           const win = exact || fuzzy;
           const next = [...pGuesses, {text:g, ok:win}];
           setPGuesses(next); setPInput("");
-          if (win) { setPDone(true); setPWon(true); }
-          else if (next.length >= 3) { setPDone(true); setPWon(false); }
+          if (win) {
+            setPDone(true); setPWon(true);
+            setPSessionPlayed(p => p + 1);
+            setPSessionWins(w => w + 1);
+            setPStreak(s => {
+              const newStreak = s + 1;
+              setPBestStreak(b => Math.max(b, newStreak));
+              return newStreak;
+            });
+          } else if (next.length >= 3) {
+            setPDone(true); setPWon(false);
+            setPSessionPlayed(p => p + 1);
+            setPStreak(0);
+          }
         };
         return (
           <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowPractice(false)}>
             <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(6px)" }} />
             <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"20px", width:"min(420px,94vw)", maxHeight:"85vh", overflowY:"auto" }} onClick={e => e.stopPropagation()}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
                 <div>
                   <h3 style={{ margin:0, color:"#a78bfa", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.2rem", letterSpacing:"0.1em" }}>🎮 PRACTICE MODE</h3>
                   <p style={{ margin:0, color:"#4b5563", fontSize:"0.65rem" }}>Unscored · filters are free · today's puzzles excluded</p>
@@ -3724,6 +3741,23 @@ export default function StatsIQ() {
                   <button onClick={() => setShowPractice(false)} style={{ background:"none", border:"none", color:"#6b7280", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
                 </div>
               </div>
+
+              {/* Session stats bar */}
+              {pSessionPlayed > 0 && (
+                <div style={{ display:"flex", gap:6, marginBottom:12 }}>
+                  {[
+                    { val: pStreak > 0 ? `${pStreak}🔥` : "0", key:"STREAK" },
+                    { val: String(pBestStreak), key:"BEST" },
+                    { val: `${Math.round((pSessionWins/pSessionPlayed)*100)}%`, key:"WIN RATE" },
+                    { val: `${pSessionWins}/${pSessionPlayed}`, key:"SESSION" },
+                  ].map(({val,key}) => (
+                    <div key={key} style={{ flex:1, background:"rgba(167,139,250,0.06)", border:"1px solid rgba(167,139,250,0.12)", borderRadius:8, padding:"6px 4px", textAlign:"center" }}>
+                      <span style={{ display:"block", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", color:"#a78bfa" }}>{val}</span>
+                      <span style={{ display:"block", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.48rem", color:"rgba(167,139,250,0.4)", letterSpacing:"0.15em", marginTop:1 }}>{key}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* Independent practice filters */}
               {showPFilter && (
@@ -3775,7 +3809,25 @@ export default function StatsIQ() {
                   <p style={{ margin:"0 0 4px", fontSize:"1.4rem" }}>{pWon?"🎯":"😅"}</p>
                   <p style={{ margin:"0 0 10px", color: pWon?"#22c55e":"#ef4444", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem" }}>{pWon?"CORRECT!":"ANSWER: "+pp.player}</p>
                   {!pWon && <p style={{ margin:"0 0 12px", color:"#9ca3af", fontSize:"0.82rem" }}>{pp.player}</p>}
-                  <button onClick={() => { setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPracticeIdx(i => i+1); }} style={{ padding:"10px 24px", borderRadius:8, border:"none", background:"rgba(167,139,250,0.8)", color:"#fff", fontWeight:900, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
+
+                  {/* Session stats */}
+                  <div style={{ display:"flex", gap:8, marginBottom:14 }}>
+                    {[
+                      { val: pStreak > 0 ? `${pStreak}🔥` : "0", key:"STREAK" },
+                      { val: String(pBestStreak), key:"BEST" },
+                      { val: `${pSessionPlayed > 0 ? Math.round((pSessionWins/pSessionPlayed)*100) : 0}%`, key:"WIN RATE" },
+                      { val: `${pSessionWins}/${pSessionPlayed}`, key:"SESSION" },
+                    ].map(({val,key}) => (
+                      <div key={key} style={{ flex:1, background:"rgba(167,139,250,0.06)", border:"1px solid rgba(167,139,250,0.15)", borderRadius:8, padding:"8px 4px", textAlign:"center" }}>
+                        <span style={{ display:"block", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", color:"#a78bfa" }}>{val}</span>
+                        <span style={{ display:"block", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.5rem", color:"rgba(167,139,250,0.4)", letterSpacing:"0.15em", marginTop:2 }}>{key}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button onClick={() => {
+                    setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPracticeIdx(i => i+1);
+                  }} style={{ padding:"10px 24px", borderRadius:8, border:"none", background:"rgba(167,139,250,0.8)", color:"#fff", fontWeight:900, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
                     NEXT PUZZLE →
                   </button>
                 </div>
@@ -3978,6 +4030,54 @@ export default function StatsIQ() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* PRO UPGRADE MODAL */}
+      {showProModal && (
+        <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowProModal(false)}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.8)", backdropFilter:"blur(4px)" }} />
+          <div style={{ position:"relative", background:"#0a0c14", border:"1px solid rgba(167,139,250,0.2)", borderRadius:20, padding:"28px 24px", width:"min(400px,92vw)", boxShadow:"0 40px 80px rgba(0,0,0,0.8)" }} onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowProModal(false)} style={{ position:"absolute", top:14, right:14, background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
+
+            {/* Header */}
+            <div style={{ textAlign:"center", marginBottom:22 }}>
+              <p style={{ margin:"0 0 6px", fontSize:"2rem" }}>🏆</p>
+              <p style={{ margin:"0 0 4px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", color:"#a78bfa", letterSpacing:"0.08em" }}>StatsIQ Pro</p>
+              <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.8rem", color:"#4b5563", letterSpacing:"0.1em" }}>UNLOCK THE FULL EXPERIENCE</p>
+            </div>
+
+            {/* Features */}
+            <div style={{ marginBottom:22 }}>
+              {[
+                { icon:"🎮", title:"Unlimited Practice Mode", desc:"Play beyond the 3 daily puzzles anytime" },
+                { icon:"📊", title:"Extended Personal Stats", desc:"Win rate by sport, era, and difficulty" },
+                { icon:"📅", title:"Weekly Recap History", desc:"Revisit every past weekly summary" },
+                { icon:"⭐", title:"Pro Badge", desc:"Stand out on the global leaderboard" },
+              ].map(({icon, title, desc}) => (
+                <div key={title} style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:14 }}>
+                  <span style={{ fontSize:"1.2rem", flexShrink:0, marginTop:1 }}>{icon}</span>
+                  <div>
+                    <p style={{ margin:"0 0 1px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.85rem", fontWeight:700, color:"#fff", letterSpacing:"0.03em" }}>{title}</p>
+                    <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.72rem", color:"#4b5563" }}>{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Price */}
+            <div style={{ background:"rgba(167,139,250,0.06)", border:"1px solid rgba(167,139,250,0.15)", borderRadius:12, padding:"14px 16px", marginBottom:16, textAlign:"center" }}>
+              <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"2rem", color:"#a78bfa", letterSpacing:"0.05em" }}>$4.99</span>
+              <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.8rem", color:"#4b5563", marginLeft:4 }}>/month</span>
+              <p style={{ margin:"4px 0 0", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#374151", letterSpacing:"0.1em" }}>CANCEL ANYTIME</p>
+            </div>
+
+            {/* CTA */}
+            <a href="https://buy.stripe.com/5kQ3cv55g7Q01La8kH1Fe00" target="_blank" rel="noopener noreferrer" style={{ display:"block", textAlign:"center", background:"linear-gradient(135deg, #7c3aed, #a78bfa)", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", letterSpacing:"0.1em", padding:"14px", borderRadius:10, textDecoration:"none", marginBottom:10 }}>
+              UPGRADE TO PRO →
+            </a>
+            <p style={{ margin:0, textAlign:"center", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.62rem", color:"#374151", letterSpacing:"0.08em" }}>Secured by Stripe · Apple Pay & Google Pay accepted</p>
           </div>
         </div>
       )}
