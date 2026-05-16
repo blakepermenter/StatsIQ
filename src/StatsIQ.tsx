@@ -4197,10 +4197,33 @@ export default function StatsIQ() {
                     ))}
                   </div>
 
-                  {/* Feedback button */}
-                  <a href={`mailto:StatsIQ@yahoo.com?subject=StatsIQ Pro Feedback — ${username}&body=Hi Blake,%0D%0A%0D%0AI'm a Pro subscriber and wanted to share some feedback or feature requests:%0D%0A%0D%0A`} style={{ display:"block", textAlign:"center", background:"rgba(255,215,0,0.08)", border:"1px solid rgba(255,215,0,0.2)", borderRadius:10, padding:"11px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", letterSpacing:"0.1em", color:"#ffd700", textDecoration:"none", marginBottom:16 }}>
-                    💬 SEND FEEDBACK OR FEATURE REQUEST
-                  </a>
+                  {/* Feedback form */}
+                  <div style={{ background:"rgba(255,215,0,0.04)", border:"1px solid rgba(255,215,0,0.12)", borderRadius:10, padding:"12px 14px", marginBottom:16 }}>
+                    <p style={{ margin:"0 0 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.15em", color:"rgba(255,215,0,0.5)" }}>💬 SEND FEEDBACK OR FEATURE REQUEST</p>
+                    <textarea
+                      id="pro-feedback-input"
+                      placeholder="What would you like to see? Feature requests, bugs, anything..."
+                      rows={3}
+                      style={{ width:"100%", boxSizing:"border-box", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:8, padding:"10px 12px", color:"#fff", fontSize:"0.78rem", resize:"vertical", fontFamily:"'Barlow Condensed',sans-serif", outline:"none", lineHeight:1.5, marginBottom:8 }}
+                    />
+                    <button
+                      onClick={() => {
+                        const txt = (document.getElementById("pro-feedback-input") as HTMLTextAreaElement)?.value?.trim();
+                        if (!txt) return;
+                        fetch("https://formspree.io/f/xlgzkjoz", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ type:"Pro Feedback", username, message: txt }),
+                        }).then(() => {
+                          const el = document.getElementById("pro-feedback-input") as HTMLTextAreaElement;
+                          if (el) el.value = "";
+                          toast("Feedback sent! Thanks 🙏", 2500);
+                        }).catch(() => toast("Something went wrong", 2000));
+                      }}
+                      style={{ width:"100%", padding:"9px", borderRadius:8, border:"none", background:"rgba(255,215,0,0.15)", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", letterSpacing:"0.1em", cursor:"pointer", fontWeight:700 }}>
+                      SEND FEEDBACK →
+                    </button>
+                  </div>
 
                   <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)", paddingTop:12, marginBottom:14 }}>
                     <p style={{ margin:0, fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>YOUR EXTENDED STATS</p>
