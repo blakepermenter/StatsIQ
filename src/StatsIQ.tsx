@@ -3405,7 +3405,8 @@ export default function StatsIQ() {
             <button onClick={() => { setUsernameInput(username); setShowUsernameModal(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:60, maxWidth:110 }}>
               <p style={{ margin:0, fontSize:"0.52rem", color:"#4b5563", letterSpacing:"0.15em" }}>PLAYER</p>
               <p style={{ margin:0, fontSize:"0.78rem", fontWeight:900, color: username ? "#fff" : "#4b5563", fontFamily:"'Bebas Neue',sans-serif", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                {getScoreBadge(totalScore) && <span style={{ marginRight:3 }}>{getScoreBadge(totalScore)!.emoji}</span>}
+                {isPro && <span style={{ marginRight:3 }}>👑</span>}
+                {!isPro && getScoreBadge(totalScore) && <span style={{ marginRight:3 }}>{getScoreBadge(totalScore)!.emoji}</span>}
                 {username || "SET NAME"}
                 {globalRank && <span style={{ marginLeft:4, color:"#ffd700", fontSize:"0.65rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700 }}>#{globalRank}</span>}
               </p>
@@ -3429,10 +3430,10 @@ export default function StatsIQ() {
           </button>
           <button onClick={() => isPro ? setShowExtendedStats(true) : setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"5px 9px", borderRadius:8, border:`1px solid ${isPro ? "rgba(255,200,0,0.6)" : "rgba(255,200,0,0.4)"}`, background:isPro ? "rgba(255,200,0,0.15)" : "rgba(255,200,0,0.08)", color:"#ffd700", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ {isPro ? "MY PRO" : "PRO"}</button>
           <button onClick={() => {
-            if (getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowProModal(true); return; }
+            if (!isPro && getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowProModal(true); return; }
             const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPStreak(0); setPBestStreak(0); setPSessionWins(0); setPSessionPlayed(0); setShowPractice(true);
           }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
-            🎮 PRACTICE {getPracticeCount() > 0 && getPracticeCount() < FREE_PRACTICE_LIMIT ? `(${FREE_PRACTICE_LIMIT - getPracticeCount()} left)` : getPracticeCount() >= FREE_PRACTICE_LIMIT ? "(PRO)" : ""}
+            🎮 PRACTICE {isPro ? "" : getPracticeCount() > 0 && getPracticeCount() < FREE_PRACTICE_LIMIT ? `(${FREE_PRACTICE_LIMIT - getPracticeCount()} left)` : getPracticeCount() >= FREE_PRACTICE_LIMIT ? "(PRO)" : ""}
           </button>
           {completedToday.size > 0 && (
             <button onClick={async () => {
@@ -3903,10 +3904,10 @@ export default function StatsIQ() {
                   </div>
 
                   <button onClick={() => {
-                    if (getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowPractice(false); setShowProModal(true); return; }
+                    if (!isPro && getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowPractice(false); setShowProModal(true); return; }
                     setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPracticeIdx(i => i+1);
                   }} style={{ padding:"10px 24px", borderRadius:8, border:"none", background:"rgba(167,139,250,0.8)", color:"#fff", fontWeight:900, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
-                    {getPracticeCount() >= FREE_PRACTICE_LIMIT ? "UPGRADE FOR MORE →" : `NEXT PUZZLE (${FREE_PRACTICE_LIMIT - getPracticeCount()} left) →`}
+                    {isPro ? "NEXT PUZZLE →" : getPracticeCount() >= FREE_PRACTICE_LIMIT ? "UPGRADE FOR MORE →" : `NEXT PUZZLE (${FREE_PRACTICE_LIMIT - getPracticeCount()} left) →`}
                   </button>
                 </div>
               ) : (
@@ -4150,14 +4151,62 @@ export default function StatsIQ() {
               {/* Header */}
               <div style={{ padding:"18px 20px 14px", borderBottom:"1px solid rgba(255,255,255,0.07)", display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
                 <div>
-                  {isPro && <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.65rem", color:"rgba(255,215,0,0.5)", letterSpacing:"0.2em" }}>⭐ PRO MEMBER</p>}
-                  <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.2rem", color:"#fff", letterSpacing:"0.08em" }}>📊 EXTENDED STATS</p>
+                  {isPro && <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.65rem", color:"rgba(255,215,0,0.5)", letterSpacing:"0.2em" }}>👑 PRO MEMBER</p>}
+                  <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.2rem", color:"#fff", letterSpacing:"0.08em" }}>{isPro ? "MY PRO DASHBOARD" : "📊 EXTENDED STATS"}</p>
                   <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563" }}>Your all-time play history</p>
                 </div>
                 <button onClick={() => setShowExtendedStats(false)} style={{ background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
               </div>
 
               <div style={{ overflowY:"auto", flex:1, padding:"16px 20px" }}>
+
+              {/* Pro member dashboard section */}
+              {isPro && (
+                <>
+                  {/* Stats row */}
+                  <div style={{ display:"flex", gap:8, marginBottom:14 }}>
+                    {[
+                      { val: totalScore.toLocaleString(), key:"ALL TIME PTS", color:"#ffd700" },
+                      { val: streakData.current > 0 ? `${streakData.current}🔥` : "0", key:"STREAK", color:"#fb923c" },
+                      { val: globalRank ? `#${globalRank}` : "—", key:"RANK", color:"#22c55e" },
+                    ].map(({val,key,color}) => (
+                      <div key={key} style={{ flex:1, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"10px 6px", textAlign:"center" }}>
+                        <span style={{ display:"block", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", color, lineHeight:1 }}>{val}</span>
+                        <span style={{ display:"block", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.5rem", color:"rgba(255,255,255,0.25)", letterSpacing:"0.15em", marginTop:3 }}>{key}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Active perks */}
+                  <p style={{ margin:"0 0 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>YOUR PRO PERKS</p>
+                  <div style={{ marginBottom:16, display:"flex", flexDirection:"column", gap:6 }}>
+                    {[
+                      { icon:"🎮", title:"Unlimited Practice Mode", desc:"Play as many puzzles as you want" },
+                      { icon:"📊", title:"Extended Stats", desc:"Win rate by sport, era and difficulty" },
+                      { icon:"📅", title:"Weekly Recap History", desc:"Every week saved from your subscription date" },
+                      { icon:"⭐", title:"Pro Badge on Leaderboard", desc:"Gold star next to your name" },
+                    ].map(({icon, title, desc}) => (
+                      <div key={title} style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(255,215,0,0.04)", border:"1px solid rgba(255,215,0,0.1)", borderRadius:8, padding:"9px 12px" }}>
+                        <span style={{ fontSize:"1.1rem", flexShrink:0 }}>{icon}</span>
+                        <div style={{ flex:1 }}>
+                          <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem", fontWeight:700, color:"#fff" }}>{title}</p>
+                          <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563" }}>{desc}</p>
+                        </div>
+                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.6rem", color:"#22c55e", letterSpacing:"0.1em", flexShrink:0 }}>ACTIVE</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Feedback button */}
+                  <a href={`mailto:StatsIQ@yahoo.com?subject=StatsIQ Pro Feedback — ${username}&body=Hi Blake,%0D%0A%0D%0AI'm a Pro subscriber and wanted to share some feedback or feature requests:%0D%0A%0D%0A`} style={{ display:"block", textAlign:"center", background:"rgba(255,215,0,0.08)", border:"1px solid rgba(255,215,0,0.2)", borderRadius:10, padding:"11px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", letterSpacing:"0.1em", color:"#ffd700", textDecoration:"none", marginBottom:16 }}>
+                    💬 SEND FEEDBACK OR FEATURE REQUEST
+                  </a>
+
+                  <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)", paddingTop:12, marginBottom:14 }}>
+                    <p style={{ margin:0, fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>YOUR EXTENDED STATS</p>
+                  </div>
+                </>
+              )}
 
                 {/* By Difficulty */}
                 <p style={{ margin:"0 0 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>WIN RATE BY DIFFICULTY</p>
@@ -4253,7 +4302,7 @@ export default function StatsIQ() {
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({ username }),
                           });
-                          if (res.ok) { setProActivated(true); setIsPro(true); }
+                if (res.ok) { setProActivated(true); setIsPro(true); setTimeout(() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }, 2000); }
                           else alert("Something went wrong — please contact StatsIQ@yahoo.com");
                         } catch {
                           alert("Something went wrong — please contact StatsIQ@yahoo.com");
@@ -4284,7 +4333,7 @@ export default function StatsIQ() {
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({ username: u }),
                           });
-                          if (res.ok) { setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setProActivated(true); setIsPro(true); }
+                          if (res.ok) { setUsername(u); try { localStorage.setItem("statsiq_username", u); } catch {} setProActivated(true); setIsPro(true); setTimeout(() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }, 2000); }
                           else alert("Something went wrong — please contact StatsIQ@yahoo.com");
                         } catch {
                           alert("Something went wrong — please contact StatsIQ@yahoo.com");
