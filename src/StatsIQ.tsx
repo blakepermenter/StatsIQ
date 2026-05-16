@@ -4169,7 +4169,7 @@ export default function StatsIQ() {
               {[
                 { icon:"🎮", title:"Unlimited Practice Mode", desc:"Play beyond the 3 daily puzzles anytime" },
                 { icon:"📊", title:"Extended Personal Stats", desc:"Win rate by sport, era, and difficulty" },
-                { icon:"📅", title:"Weekly Recap History", desc:"Revisit every past weekly summary" },
+                { icon:"📅", title:"Weekly Recap History", desc:"Every week saved from the day you subscribe" },
                 { icon:"⭐", title:"Pro Badge", desc:"Stand out on the global leaderboard" },
               ].map(({icon, title, desc}) => (
                 <div key={title} style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:14 }}>
