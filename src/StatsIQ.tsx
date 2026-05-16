@@ -4616,10 +4616,21 @@ export default function StatsIQ() {
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({ username }),
                           });
-                if (res.ok) { setProActivated(true); setIsPro(true); setTimeout(() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }, 2000); }
-                          else alert("Something went wrong — please contact StatsIQ@yahoo.com");
+                          if (res.ok) {
+                            setProActivated(true); setIsPro(true);
+                            setTimeout(() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }, 2000);
+                          } else {
+                            // API failed but still activate locally and notify
+                            setProActivated(true); setIsPro(true);
+                            setTimeout(() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }, 2000);
+                            // Notify you to manually set in Supabase
+                            fetch("https://formspree.io/f/xlgzkjoz", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ type:"Pro Activation Needed", username, message:`Please manually set is_pro=true for ${username}` }) });
+                          }
                         } catch {
-                          alert("Something went wrong — please contact StatsIQ@yahoo.com");
+                          // Network error — still activate locally
+                          setProActivated(true); setIsPro(true);
+                          setTimeout(() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }, 2000);
+                          fetch("https://formspree.io/f/xlgzkjoz", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ type:"Pro Activation Needed", username, message:`Please manually set is_pro=true for ${username}` }) });
                         }
                         setProActivating(false);
                       }}
@@ -4706,7 +4717,7 @@ export default function StatsIQ() {
             </div>
 
             {/* CTA */}
-            <a href="https://buy.stripe.com/5kQ3cv55g7Q01La8kH1Fe00" target="_blank" rel="noopener noreferrer" style={{ display:"block", textAlign:"center", background:"linear-gradient(135deg, #7c3aed, #a78bfa)", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", letterSpacing:"0.1em", padding:"14px", borderRadius:10, textDecoration:"none", marginBottom:10 }}>
+            <a href="https://buy.stripe.com/dRmaEXgNY7Q02Pe44r1Fe01" target="_blank" rel="noopener noreferrer" style={{ display:"block", textAlign:"center", background:"linear-gradient(135deg, #7c3aed, #a78bfa)", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", letterSpacing:"0.1em", padding:"14px", borderRadius:10, textDecoration:"none", marginBottom:10 }}>
               UPGRADE TO PRO →
             </a>
             <p style={{ margin:0, textAlign:"center", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.62rem", color:"#374151", letterSpacing:"0.08em" }}>Secured by Stripe · Apple Pay & Google Pay accepted</p>
