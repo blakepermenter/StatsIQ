@@ -2386,7 +2386,7 @@ export default function StatsIQ() {
     const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
     try {
       localStorage.setItem("statsiq_score", String(newTotal));
-      localStorage.setItem(key, JSON.stringify({ score: final, guesses: guessNum, won: true, player, diff, date: today.toISOString() }));
+      localStorage.setItem(key, JSON.stringify({ score: final, guesses: guessNum, won: true, player, diff, sport, era: puzzle.era, date: today.toISOString() }));
       localStorage.removeItem(`statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`);
     } catch {}
     // Log to Supabase — use username if set, otherwise use recovery code as temp ID
@@ -2538,7 +2538,7 @@ export default function StatsIQ() {
       const today = new Date();
       const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
       try { 
-        localStorage.setItem(key, JSON.stringify({ score: 0, guesses: next.length, won: false, player, diff, date: today.toISOString() }));
+        localStorage.setItem(key, JSON.stringify({ score: 0, guesses: next.length, won: false, player, diff, sport, era: puzzle.era, date: today.toISOString() }));
         localStorage.removeItem(`statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`);
       } catch {}
       // Log loss to Supabase — use username if set, otherwise recovery code as temp ID
@@ -3211,7 +3211,7 @@ export default function StatsIQ() {
                     <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 14px", borderBottom: i < lbData.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none", background: isYou ? "rgba(255,200,0,0.06)" : "transparent" }}>
                       <span style={{ color: i===0?"#ffd700":i===1?"#9ca3af":i===2?"#cd7f32":"#374151", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.88rem", width:22, flexShrink:0 }}>#{i+1}</span>
                       <span style={{ flex:1, color:isYou?"#ffd700":"#d1d5db", fontSize:"0.82rem", fontWeight:isYou?700:400, textAlign:"left", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                        {row.is_pro && <span style={{ fontSize:"0.75rem", marginRight:3 }}>👑</span>}{row.username}{isYou ? " (you)" : ""}
+                      <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", color: row.is_pro ? "#ffd700" : "#fff" }}>{row.username}{isYou ? " (you)" : ""}</span>
                       </span>
                       {lbType === "alltime" && row.streak != null && Number(row.streak) > 0 && <span style={{ fontSize:"0.65rem", color:"#fb923c" }}>{row.streak}🔥</span>}
                       <span style={{ color:isYou?"#ffd700":"#6b7280", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", flexShrink:0 }}>{row.score > 0 ? row.score.toLocaleString() : "—"}</span>
@@ -4237,7 +4237,7 @@ export default function StatsIQ() {
 
       {/* EXTENDED STATS POPUP */}
       {showStatsPopup && (() => {
-        const entries: {diff:string, sport:string, era:string, won:boolean}[] = [];
+        const entries: {diff:string, sport:string, era:string, won:boolean, guesses:number, score:number}[] = [];
         try {
           for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i) || "";
@@ -4247,15 +4247,22 @@ export default function StatsIQ() {
             const diff = parts[5];
             const entry = JSON.parse(localStorage.getItem(k) || "{}");
             if (!entry || entry.score === undefined) continue;
-            entries.push({ diff, sport: entry.sport || "", era: entry.era || "", won: !!entry.won });
+            entries.push({ diff, sport: entry.sport || "", era: entry.era || "", won: !!entry.won, guesses: entry.guesses || 3, score: entry.score || 0 });
           }
         } catch {}
 
-        const calcWinRate = (filter: (e: typeof entries[0]) => boolean) => {
+        const calcStats = (filter: (e: typeof entries[0]) => boolean) => {
           const filtered = entries.filter(filter);
           if (filtered.length === 0) return null;
           const wins = filtered.filter(e => e.won).length;
-          return { wins, total: filtered.length, pct: Math.round((wins / filtered.length) * 100) };
+          const avgGuesses = filtered.reduce((sum, e) => sum + (e.guesses || 3), 0) / filtered.length;
+          const avgScore = filtered.filter(e => e.won).reduce((sum, e) => sum + e.score, 0) / Math.max(wins, 1);
+          return {
+            wins, total: filtered.length,
+            pct: Math.round((wins / filtered.length) * 100),
+            avgGuesses: avgGuesses.toFixed(1),
+            avgScore: Math.round(avgScore),
+          };
         };
 
         const sportRows = [
@@ -4278,93 +4285,120 @@ export default function StatsIQ() {
           { label:"Legends", key:"legends", color:"#a78bfa" },
         ];
 
-        const overall = calcWinRate(() => true);
+        const overall = calcStats(() => true);
+
+        const StatRow = ({ label, color, stat, showEmoji }: { label:string, color:string, stat:ReturnType<typeof calcStats>, showEmoji?:string }) => {
+          if (!stat) return null;
+          return (
+            <div style={{ padding:"11px 14px", borderBottom:"1px solid rgba(255,255,255,0.05)", display:"flex", alignItems:"center", gap:10 }}>
+              {showEmoji && <span style={{ fontSize:"1rem", width:22, flexShrink:0 }}>{showEmoji}</span>}
+              <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.78rem", color, width:showEmoji ? 55 : 65, flexShrink:0 }}>{label.toUpperCase()}</span>
+              <div style={{ flex:1, height:5, background:"rgba(255,255,255,0.06)", borderRadius:3, overflow:"hidden" }}>
+                <div style={{ height:"100%", borderRadius:3, background:color, width:`${stat.pct}%`, opacity:0.85 }} />
+              </div>
+              <div style={{ textAlign:"right", flexShrink:0, minWidth:120 }}>
+                <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem", color:"#fff" }}>{stat.pct}%</span>
+                <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563", marginLeft:6 }}>{stat.wins}/{stat.total}</span>
+                <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563", marginLeft:6 }}>avg {stat.avgGuesses} clues</span>
+              </div>
+            </div>
+          );
+        };
 
         return (
           <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowStatsPopup(false)}>
             <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(6px)" }} />
-            <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.1)", borderRadius:16, width:"min(440px,95vw)", maxHeight:"88vh", display:"flex", flexDirection:"column", overflow:"hidden" }} onClick={e => e.stopPropagation()}>
+            <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(255,255,255,0.1)", borderRadius:16, width:"min(460px,95vw)", maxHeight:"88vh", display:"flex", flexDirection:"column", overflow:"hidden" }} onClick={e => e.stopPropagation()}>
 
-              {/* Header */}
               <div style={{ padding:"16px 20px 12px", borderBottom:"1px solid rgba(255,255,255,0.07)", display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
                 <div>
                   <p style={{ margin:"0 0 1px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", color:"#fff", letterSpacing:"0.08em" }}>📊 EXTENDED STATS</p>
-                  <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563" }}>{entries.length} total puzzles played</p>
+                  <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563" }}>{entries.length} puzzles in history</p>
                 </div>
                 <button onClick={() => setShowStatsPopup(false)} style={{ background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
               </div>
 
               <div style={{ overflowY:"auto", flex:1, padding:"14px 20px" }}>
 
-                {/* Overall */}
+                {/* Overall summary */}
                 {overall && (
                   <div style={{ display:"flex", gap:8, marginBottom:18 }}>
                     {[
-                      { val:`${overall.pct}%`, label:"Overall Win Rate", color:"#ffd700" },
-                      { val:`${overall.wins}`, label:"Total Wins", color:"#22c55e" },
-                      { val:`${overall.total - overall.wins}`, label:"Total Losses", color:"#ef4444" },
+                      { val:`${overall.pct}%`, label:"WIN RATE", color:"#ffd700" },
+                      { val:`${overall.wins}`, label:"WINS", color:"#22c55e" },
+                      { val:`${overall.total - overall.wins}`, label:"LOSSES", color:"#ef4444" },
+                      { val:overall.avgGuesses, label:"AVG CLUES", color:"#a78bfa" },
+                      { val:overall.avgScore.toLocaleString(), label:"AVG SCORE", color:"#fb923c" },
                     ].map(({val,label,color}) => (
-                      <div key={label} style={{ flex:1, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"10px 6px", textAlign:"center" }}>
-                        <span style={{ display:"block", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.3rem", color, lineHeight:1 }}>{val}</span>
-                        <span style={{ display:"block", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.5rem", color:"rgba(255,255,255,0.25)", letterSpacing:"0.12em", marginTop:3 }}>{label.toUpperCase()}</span>
+                      <div key={label} style={{ flex:1, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"9px 4px", textAlign:"center" }}>
+                        <span style={{ display:"block", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.1rem", color, lineHeight:1 }}>{val}</span>
+                        <span style={{ display:"block", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.45rem", color:"rgba(255,255,255,0.2)", letterSpacing:"0.1em", marginTop:3 }}>{label}</span>
                       </div>
                     ))}
                   </div>
                 )}
 
                 {/* By Sport */}
-                <p style={{ margin:"0 0 10px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.65rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>BY SPORT</p>
+                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.62rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>BY SPORT</p>
                 <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10, marginBottom:14, overflow:"hidden" }}>
-                  {sportRows.map(({label, emoji, color}, idx) => {
-                    const stat = calcWinRate(e => e.sport && e.sport.includes(emoji));
-                    if (!stat) return null;
-                    return (
-                      <div key={label} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderBottom: idx < sportRows.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
-                        <span style={{ fontSize:"1rem", flexShrink:0, width:22 }}>{emoji}</span>
-                        <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.8rem", color:"rgba(255,255,255,0.7)", width:55, flexShrink:0 }}>{label}</span>
-                        <div style={{ flex:1, height:6, background:"rgba(255,255,255,0.06)", borderRadius:3, overflow:"hidden" }}>
-                          <div style={{ height:"100%", borderRadius:3, background:color, width:`${stat.pct}%`, opacity:0.8 }} />
-                        </div>
-                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.72rem", color:"rgba(255,255,255,0.4)", width:70, textAlign:"right", flexShrink:0 }}>{stat.wins}/{stat.total} · {stat.pct}%</span>
-                      </div>
-                    );
+                  {sportRows.map(({label, emoji, color}) => {
+                    const stat = calcStats(e => e.sport.includes(emoji));
+                    return <StatRow key={label} label={label} color={color} stat={stat} showEmoji={emoji} />;
                   })}
                 </div>
 
                 {/* By Difficulty */}
-                <p style={{ margin:"0 0 10px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.65rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>BY DIFFICULTY</p>
+                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.62rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>BY DIFFICULTY</p>
                 <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10, marginBottom:14, overflow:"hidden" }}>
-                  {diffRows.map(({label, key, color}, idx) => {
-                    const stat = calcWinRate(e => e.diff === key);
-                    if (!stat) return null;
-                    return (
-                      <div key={key} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderBottom: idx < diffRows.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
-                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.8rem", color, width:60, flexShrink:0 }}>{label.toUpperCase()}</span>
-                        <div style={{ flex:1, height:6, background:"rgba(255,255,255,0.06)", borderRadius:3, overflow:"hidden" }}>
-                          <div style={{ height:"100%", borderRadius:3, background:color, width:`${stat.pct}%`, opacity:0.8 }} />
-                        </div>
-                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.72rem", color:"rgba(255,255,255,0.4)", width:70, textAlign:"right", flexShrink:0 }}>{stat.wins}/{stat.total} · {stat.pct}%</span>
-                      </div>
-                    );
+                  {diffRows.map(({label, key, color}) => {
+                    const stat = calcStats(e => e.diff === key);
+                    return <StatRow key={key} label={label} color={color} stat={stat} />;
                   })}
                 </div>
 
                 {/* By Era */}
-                <p style={{ margin:"0 0 10px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.65rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>BY ERA</p>
-                <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10, marginBottom:8, overflow:"hidden" }}>
-                  {eraRows.map(({label, key, color}, idx) => {
-                    const stat = calcWinRate(e => e.era === key);
-                    if (!stat) return null;
-                    return (
-                      <div key={key} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderBottom: idx < eraRows.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
-                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.8rem", color, width:60, flexShrink:0 }}>{label.toUpperCase()}</span>
-                        <div style={{ flex:1, height:6, background:"rgba(255,255,255,0.06)", borderRadius:3, overflow:"hidden" }}>
-                          <div style={{ height:"100%", borderRadius:3, background:color, width:`${stat.pct}%`, opacity:0.8 }} />
-                        </div>
-                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.72rem", color:"rgba(255,255,255,0.4)", width:70, textAlign:"right", flexShrink:0 }}>{stat.wins}/{stat.total} · {stat.pct}%</span>
-                      </div>
-                    );
+                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.62rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>BY ERA</p>
+                <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10, marginBottom:14, overflow:"hidden" }}>
+                  {eraRows.map(({label, key, color}) => {
+                    const stat = calcStats(e => e.era === key);
+                    return <StatRow key={key} label={label} color={color} stat={stat} />;
                   })}
+                </div>
+
+                {/* By Diff + Sport combo — most/least wins */}
+                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.62rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>BEST & WORST COMBOS</p>
+                <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10, marginBottom:8, overflow:"hidden" }}>
+                  {(() => {
+                    const combos = sportRows.flatMap(({label, emoji, color}) =>
+                      diffRows.map(({label:dl, key:dk, color:dc}) => {
+                        const stat = calcStats(e => e.sport.includes(emoji) && e.diff === dk);
+                        if (!stat || stat.total < 2) return null;
+                        return { label:`${emoji} ${label} ${dl}`, color:dc, stat };
+                      }).filter(Boolean)
+                    ) as {label:string, color:string, stat:NonNullable<ReturnType<typeof calcStats>>}[];
+                    combos.sort((a,b) => b.stat.pct - a.stat.pct);
+                    const best = combos.slice(0,3);
+                    const worst = combos.slice(-3).reverse();
+                    return (
+                      <>
+                        {best.map(({label,color,stat}) => (
+                          <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 14px", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
+                            <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.78rem", color:"rgba(255,255,255,0.6)" }}>{label}</span>
+                            <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.78rem", color:"#22c55e" }}>{stat.pct}% · {stat.wins}/{stat.total}</span>
+                          </div>
+                        ))}
+                        <div style={{ padding:"6px 14px", background:"rgba(255,255,255,0.02)" }}>
+                          <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.55rem", letterSpacing:"0.15em", color:"rgba(255,255,255,0.15)" }}>NEEDS WORK</span>
+                        </div>
+                        {worst.map(({label,color,stat}) => (
+                          <div key={label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 14px", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
+                            <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.78rem", color:"rgba(255,255,255,0.6)" }}>{label}</span>
+                            <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.78rem", color:"#ef4444" }}>{stat.pct}% · {stat.wins}/{stat.total}</span>
+                          </div>
+                        ))}
+                      </>
+                    );
+                  })()}
                 </div>
 
               </div>
