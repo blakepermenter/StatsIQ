@@ -1844,6 +1844,14 @@ export default function StatsIQ() {
   const [showPastSummaries, setShowPastSummaries] = useState(false);
   const [showProModal, setShowProModal] = useState(false);
   const [showExtendedStats, setShowExtendedStats] = useState(false);
+  const [showProActivate, setShowProActivate] = useState(() => {
+    if (typeof window !== "undefined") {
+      return new URLSearchParams(window.location.search).get("upgraded") === "true";
+    }
+    return false;
+  });
+  const [proActivating, setProActivating] = useState(false);
+  const [proActivated, setProActivated] = useState(false);
   const [lbData, setLbData] = useState<Array<{username:string,score:number,streak?:number}>>([]);
   const [lbType, setLbType] = useState<"today"|"alltime">("alltime");
   const [lbLoading, setLbLoading] = useState(false);
@@ -3404,7 +3412,6 @@ export default function StatsIQ() {
               </button>
             )}
             <button onClick={() => { setShowLeaderboard(true); setLbLoading(true); sbGetLeaderboard("alltime").then(d => { setLbData(d); setLbLoading(false); }); }} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>🏅</button>
-            <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"4px 8px", height:26, borderRadius:6, border:"1px solid rgba(167,139,250,0.35)", background:"rgba(167,139,250,0.08)", color:"#a78bfa", cursor:"pointer", fontSize:"0.62rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ PRO</button>
           </div>
         </div>
         <div style={{ display:"flex", gap:8, marginTop:8, alignItems:"center", justifyContent:"center" }}>
@@ -3412,6 +3419,7 @@ export default function StatsIQ() {
             ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
           </button>
           <button onClick={() => setShowHow(true)} style={{ width:30, height:30, borderRadius:"50%", border:"1px solid rgba(255,200,0,0.2)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.82rem", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
+          <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"5px 9px", borderRadius:8, border:"1px solid rgba(167,139,250,0.35)", background:"rgba(167,139,250,0.08)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ PRO</button>
           <button onClick={() => {
             if (getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowProModal(true); return; }
             incrementPracticeCount();
@@ -3519,6 +3527,23 @@ export default function StatsIQ() {
               disabled={input.trim().length < 3}
               style={{ padding:"12px 20px", borderRadius:10, border:"none", background: input.trim().length >= 3 ? `linear-gradient(135deg, ${cfg.color}, ${cfg.color}bb)` : "rgba(255,255,255,0.1)", color: input.trim().length >= 3 ? "#0a0c10" : "#4b5563", fontWeight:900, fontSize:"0.9rem", cursor: input.trim().length >= 3 ? "pointer" : "not-allowed", fontFamily:"'Bebas Neue', sans-serif", letterSpacing:"0.1em", transition:"all 0.2s" }}>
               GUESS
+            </button>
+            <button
+              onClick={() => {
+                // Give up = force 3 wrong guesses, trigger game over
+                const fakeGuesses = Array(Math.max(0, 3 - guesses.length)).fill({text:"—", ok:false});
+                const next = [...guesses, ...fakeGuesses];
+                const today = new Date();
+                const key = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}_${diff}`;
+                try { localStorage.setItem(key, JSON.stringify({ score:0, guesses:3, won:false, player, diff, date:today.toISOString(), era: puzzle.era, sport })); } catch {}
+                const tempId = username || recoveryCode;
+                if (tempId) sbLogPlay(tempId, today.toISOString().slice(0,10), diff, sport, puzzle.era, 0, 3, false);
+                toast(`It was ${player}!`, 3500);
+                markDiffCompleted(diff);
+                setTimeout(() => { setDone(true); setWon(false); }, 200);
+              }}
+              style={{ padding:"12px 14px", borderRadius:10, border:"1px solid rgba(255,255,255,0.1)", background:"rgba(255,255,255,0.04)", color:"#4b5563", fontWeight:700, fontSize:"0.8rem", cursor:"pointer", fontFamily:"'Bebas Neue', sans-serif", letterSpacing:"0.08em", flexShrink:0 }}>
+              GIVE UP
             </button>
           </div>
         )}
@@ -3880,6 +3905,7 @@ export default function StatsIQ() {
                 <div style={{ display:"flex", gap:8 }}>
                   <input value={pInput} onChange={e => setPInput(e.target.value)} onKeyDown={e => e.key==="Enter" && pInput.trim().length >= 3 && pSubmit()} placeholder="Type athlete name..." style={{ flex:1, padding:"10px 12px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(255,255,255,0.05)", color:"#fff", fontSize:"0.9rem", fontFamily:"'Barlow Condensed',sans-serif" }} autoFocus />
                   <button onClick={pSubmit} disabled={pInput.trim().length < 3} style={{ padding:"10px 16px", borderRadius:8, border:"none", background: pInput.trim().length >= 3 ? "rgba(167,139,250,0.8)" : "rgba(100,100,100,0.3)", color: pInput.trim().length >= 3 ? "#fff" : "#555", fontWeight:900, cursor: pInput.trim().length >= 3 ? "pointer" : "not-allowed", fontFamily:"'Bebas Neue',sans-serif" }}>GUESS</button>
+                  <button onClick={() => { setPDone(true); setPWon(false); setPSessionPlayed(p => p+1); setPStreak(0); }} style={{ padding:"10px 12px", borderRadius:8, border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.03)", color:"#374151", fontWeight:700, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem" }}>GIVE UP</button>
                 </div>
               )}
               <p style={{ margin:"12px 0 0", color:"#374151", fontSize:"0.62rem", textAlign:"center" }}>Practice puzzles are drawn from the full puzzle bank · scores don't count</p>
@@ -4184,6 +4210,58 @@ export default function StatsIQ() {
           </div>
         );
       })()}
+
+      {/* PRO ACTIVATION MODAL */}
+      {showProActivate && (
+        <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(0,0,0,0.9)", backdropFilter:"blur(8px)" }}>
+          <div style={{ position:"relative", background:"#0a0c14", border:"1px solid rgba(167,139,250,0.3)", borderRadius:20, padding:"32px 28px", width:"min(380px,92vw)", textAlign:"center", boxShadow:"0 40px 80px rgba(0,0,0,0.8)" }}>
+            {proActivated ? (
+              <>
+                <p style={{ fontSize:"2.5rem", margin:"0 0 12px" }}>🎉</p>
+                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", color:"#a78bfa", letterSpacing:"0.08em" }}>YOU'RE PRO!</p>
+                <p style={{ margin:"0 0 20px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem", color:"#6b7280" }}>Pro features are now active on your account.</p>
+                <button onClick={() => { setShowProActivate(false); window.history.replaceState({}, "", "/"); }} style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"linear-gradient(135deg, #7c3aed, #a78bfa)", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", cursor:"pointer" }}>
+                  LET'S GO →
+                </button>
+              </>
+            ) : (
+              <>
+                <p style={{ fontSize:"2rem", margin:"0 0 10px" }}>⭐</p>
+                <p style={{ margin:"0 0 6px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.4rem", color:"#a78bfa", letterSpacing:"0.08em" }}>ACTIVATE PRO</p>
+                <p style={{ margin:"0 0 20px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem", color:"#6b7280", lineHeight:1.5 }}>Thanks for subscribing! Enter your StatsIQ username to activate your Pro features.</p>
+                <input
+                  defaultValue={username}
+                  id="pro-activate-input"
+                  placeholder="Your StatsIQ username"
+                  style={{ width:"100%", boxSizing:"border-box", background:"rgba(255,255,255,0.06)", border:"1px solid rgba(167,139,250,0.3)", borderRadius:10, padding:"12px 14px", color:"#fff", fontSize:"0.9rem", fontFamily:"'Barlow Condensed',sans-serif", outline:"none", marginBottom:12 }}
+                />
+                <button
+                  onClick={async () => {
+                    const u = (document.getElementById("pro-activate-input") as HTMLInputElement)?.value?.trim();
+                    if (!u) return;
+                    setProActivating(true);
+                    try {
+                      const res = await fetch("/api/activate-pro", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ username: u }),
+                      });
+                      if (res.ok) setProActivated(true);
+                      else alert("Something went wrong — please contact StatsIQ@yahoo.com");
+                    } catch {
+                      alert("Something went wrong — please contact StatsIQ@yahoo.com");
+                    }
+                    setProActivating(false);
+                  }}
+                  disabled={proActivating}
+                  style={{ width:"100%", padding:"13px", borderRadius:10, border:"none", background:"linear-gradient(135deg, #7c3aed, #a78bfa)", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1rem", letterSpacing:"0.1em", cursor:"pointer", opacity:proActivating?0.7:1 }}>
+                  {proActivating ? "ACTIVATING..." : "ACTIVATE MY PRO →"}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* PRO UPGRADE MODAL */}
       {showProModal && (
