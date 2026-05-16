@@ -3210,7 +3210,7 @@ export default function StatsIQ() {
                     <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 14px", borderBottom: i < lbData.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none", background: isYou ? "rgba(255,200,0,0.06)" : "transparent" }}>
                       <span style={{ color: i===0?"#ffd700":i===1?"#9ca3af":i===2?"#cd7f32":"#374151", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.88rem", width:22, flexShrink:0 }}>#{i+1}</span>
                       <span style={{ flex:1, color:isYou?"#ffd700":"#d1d5db", fontSize:"0.82rem", fontWeight:isYou?700:400, textAlign:"left", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                        {row.username}{isYou ? " (you)" : ""}{row.is_pro && <span style={{ marginLeft:4, fontSize:"0.65rem" }}>⭐</span>}
+                        {lbType === "alltime" && row.is_pro && <span style={{ fontSize:"0.75rem", marginRight:3 }}>👑</span>}{row.username}{isYou ? " (you)" : ""}
                       </span>
                       {lbType === "alltime" && row.streak != null && Number(row.streak) > 0 && <span style={{ fontSize:"0.65rem", color:"#fb923c" }}>{row.streak}🔥</span>}
                       <span style={{ color:isYou?"#ffd700":"#6b7280", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", flexShrink:0 }}>{row.score > 0 ? row.score.toLocaleString() : "—"}</span>
@@ -4182,7 +4182,7 @@ export default function StatsIQ() {
                   <div style={{ marginBottom:16, display:"flex", flexDirection:"column", gap:6 }}>
                     {[
                       { icon:"🎮", title:"Unlimited Practice Mode", desc:"Play as many puzzles as you want", action:() => { setShowExtendedStats(false); const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPStreak(0); setPBestStreak(0); setPSessionWins(0); setPSessionPlayed(0); setShowPractice(true); } },
-                      { icon:"📊", title:"Extended Stats", desc:"Deep dive into your win rates by sport, era and difficulty", action:() => {} },
+                      { icon:"📊", title:"Extended Stats", desc:"Deep dive into your win rates by sport, era and difficulty", action:() => { document.getElementById("pro-extended-stats")?.scrollIntoView({ behavior:"smooth" }); } },
                       { icon:"📅", title:"Weekly Recap History", desc:"Every week saved from your subscription date", action:() => { setShowPastSummaries(true); } },
                       { icon:"⭐", title:"Pro Badge on Leaderboard", desc:"Gold star next to your name — view the leaderboard", action:() => { setShowExtendedStats(false); setShowLeaderboard(true); setLbLoading(true); sbGetLeaderboard("alltime").then(d => { setLbData(d); setLbLoading(false); }); } },
                     ].map(({icon, title, desc, action}) => (
@@ -4226,7 +4226,7 @@ export default function StatsIQ() {
                   </div>
 
                   <div style={{ borderTop:"1px solid rgba(255,255,255,0.05)", paddingTop:12, marginBottom:14 }}>
-                    <p style={{ margin:0, fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>YOUR EXTENDED STATS</p>
+                    <p id="pro-extended-stats" style={{ margin:0, fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>YOUR EXTENDED STATS</p>
                   </div>
                 </>
               )}
