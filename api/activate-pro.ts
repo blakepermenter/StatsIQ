@@ -1,15 +1,23 @@
-import { NextApiRequest, NextApiResponse } from "next";
+export default async function handler(req: Request): Promise<Response> {
+  if (req.method !== "POST") {
+    return new Response("Method not allowed", { status: 405 });
+  }
 
-const SUPABASE_URL = process.env.SUPABASE_URL!;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY!;
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).end();
-
-  const username = req.body?.username?.trim();
-  if (!username) return res.status(400).json({ error: "No username" });
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    return new Response(JSON.stringify({ error: "Missing env vars" }), { status: 500 });
+  }
 
   try {
+    const body = await req.json();
+    const username = body?.username?.trim();
+
+    if (!username) {
+      return new Response(JSON.stringify({ error: "No username" }), { status: 400 });
+    }
+
     const response = await fetch(
       `${SUPABASE_URL}/rest/v1/players?username=eq.${encodeURIComponent(username)}`,
       {
@@ -24,9 +32,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     );
 
-    if (!response.ok) return res.status(500).json({ error: "Supabase update failed" });
-    return res.status(200).json({ success: true });
+    if (!response.ok) {
+      return new Response(JSON.stringify({ error: "Supabase update failed" }), { status: 500 });
+    }
+
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (e) {
-    return res.status(500).json({ error: "Server error" });
+    return new Response(JSON.stringify({ error: "Server error" }), { status: 500 });
   }
 }
