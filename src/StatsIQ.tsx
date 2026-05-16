@@ -3503,7 +3503,7 @@ export default function StatsIQ() {
             if (!isPro && getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowProModal(true); return; }
             const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPStreak(0); setPBestStreak(0); setPSessionWins(0); setPSessionPlayed(0); setShowPractice(true);
           }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
-            🎮 PRACTICE {isPro ? "" : getPracticeCount() > 0 && getPracticeCount() < FREE_PRACTICE_LIMIT ? `(${FREE_PRACTICE_LIMIT - getPracticeCount()} left)` : getPracticeCount() >= FREE_PRACTICE_LIMIT ? "(PRO)" : ""}
+            🎮 PRACTICE {isPro ? "" : getPracticeCount() > 0 && getPracticeCount() < FREE_PRACTICE_LIMIT ? `(${FREE_PRACTICE_LIMIT - getPracticeCount()} left)` : getPracticeCount() >= FREE_PRACTICE_LIMIT ? "(upgrade)" : ""}
           </button>
           {completedToday.size > 0 && (
             <button onClick={async () => {
@@ -4845,7 +4845,7 @@ export default function StatsIQ() {
             ? <button onClick={() => setShowRecoveryCode(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>🔑 MY CODE</button>
             : <button onClick={() => setShowRecoverModal(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>🔑 RECOVER</button>
           }
-          {username && <button onClick={() => setShowLogoutModal(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>↩ LOG OUT</button>}
+          {username && <button onClick={() => setShowLogoutModal(true)} style={{ background:"none", border:"1px solid rgba(239,68,68,0.2)", borderRadius:6, padding:"4px 10px", color:"#ef4444", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>↩ LOG OUT</button>}
         </div>
       </div>
 
