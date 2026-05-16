@@ -1864,6 +1864,7 @@ export default function StatsIQ() {
   const [globalRank, setGlobalRank] = useState<number|null>(null);
   const [rarity, setRarity] = useState<Record<string,{win_pct:number,total_plays:number,avg_guesses:number}>>({});
   const [showUsernameModal, setShowUsernameModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showPractice, setShowPractice] = useState(false);
   const [practiceIdx, setPracticeIdx] = useState(0);
   const [pGuesses, setPGuesses] = useState<{text:string,ok:boolean}[]>([]);
@@ -3102,11 +3103,48 @@ export default function StatsIQ() {
                 SAVE
               </button>
             </div>
+            {username && (
+              <button onClick={() => { setShowUsernameModal(false); setShowLogoutModal(true); }} style={{ marginTop:10, width:"100%", padding:"8px", borderRadius:8, border:"1px solid rgba(239,68,68,0.2)", background:"transparent", color:"#ef4444", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.72rem", letterSpacing:"0.08em" }}>
+                Log out of {username}
+              </button>
+            )}
           </div>
         </div>
       )}
-
-      {/* RECOVERY CODE DISPLAY — shown once after first username set */}
+      {showLogoutModal && (
+        <div style={{ position:"fixed", inset:0, zIndex:600, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowLogoutModal(false)}>
+          <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(6px)" }} />
+          <div style={{ position:"relative", background:"#0f1629", border:"1px solid rgba(239,68,68,0.25)", borderRadius:16, padding:"28px 24px", width:"min(340px,92vw)", textAlign:"center" }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize:"2rem", marginBottom:10 }}>⚠️</div>
+            <h3 style={{ margin:"0 0 8px", color:"#fff", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.3rem", letterSpacing:"0.1em" }}>BEFORE YOU LOG OUT</h3>
+            <p style={{ margin:"0 0 16px", color:"#9ca3af", fontSize:"0.75rem", lineHeight:1.6 }}>
+              Make sure you have your recovery code saved. Without it you will permanently lose your score, streak, and rank.
+            </p>
+            {recoveryCode && (
+              <div style={{ background:"rgba(255,215,0,0.06)", border:"1px solid rgba(255,215,0,0.2)", borderRadius:10, padding:"12px", marginBottom:16 }}>
+                <p style={{ margin:"0 0 4px", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.6rem", color:"rgba(255,215,0,0.5)", letterSpacing:"0.15em" }}>YOUR RECOVERY CODE</p>
+                <p style={{ margin:"0 0 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem", color:"#ffd700", letterSpacing:"0.25em" }}>{recoveryCode}</p>
+                <button onClick={() => { navigator.clipboard?.writeText(recoveryCode); toast("Code copied! 📋", 2000); }} style={{ padding:"6px 16px", borderRadius:6, border:"none", background:"rgba(255,215,0,0.15)", color:"#ffd700", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem", letterSpacing:"0.1em", cursor:"pointer" }}>
+                  📋 COPY CODE
+                </button>
+              </div>
+            )}
+            <div style={{ display:"flex", gap:8 }}>
+              <button onClick={() => setShowLogoutModal(false)} style={{ flex:1, padding:"11px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#9ca3af", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem" }}>
+                Cancel
+              </button>
+              <button onClick={() => {
+                setUsername(""); setIsPro(false);
+                try { localStorage.removeItem("statsiq_username"); localStorage.removeItem("statsiq_recovery_code"); localStorage.removeItem("statsiq_recovery_seen"); } catch {}
+                setShowLogoutModal(false);
+                toast("Logged out successfully", 2000);
+              }} style={{ flex:1, padding:"11px", borderRadius:8, border:"none", background:"rgba(239,68,68,0.15)", color:"#ef4444", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.08em", fontWeight:700 }}>
+                LOG OUT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {showRecoveryCode && recoveryCode && (
         <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowRecoveryCode(false)}>
           <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", backdropFilter:"blur(4px)" }} />
@@ -4245,6 +4283,11 @@ export default function StatsIQ() {
                       SEND FEEDBACK →
                     </button>
                   </div>
+
+                  {/* Log out */}
+                  <button onClick={() => { setShowExtendedStats(false); setShowLogoutModal(true); }} style={{ width:"100%", padding:"9px", borderRadius:8, border:"1px solid rgba(255,255,255,0.07)", background:"transparent", color:"#374151", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.72rem", letterSpacing:"0.1em", marginTop:4 }}>
+                    Log out of {username}
+                  </button>
 
                 </>
               )}
