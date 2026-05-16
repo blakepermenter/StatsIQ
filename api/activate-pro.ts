@@ -1,13 +1,28 @@
+export const config = { runtime: "edge" };
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Content-Type": "application/json",
+};
+
 export default async function handler(req: Request): Promise<Response> {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
+
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   }
 
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-    return new Response(JSON.stringify({ error: "Missing env vars" }), { status: 500 });
+    return new Response(JSON.stringify({ error: "Missing env vars" }), {
+      status: 500, headers: corsHeaders,
+    });
   }
 
   try {
@@ -15,7 +30,9 @@ export default async function handler(req: Request): Promise<Response> {
     const username = body?.username?.trim();
 
     if (!username) {
-      return new Response(JSON.stringify({ error: "No username" }), { status: 400 });
+      return new Response(JSON.stringify({ error: "No username" }), {
+        status: 400, headers: corsHeaders,
+      });
     }
 
     const response = await fetch(
@@ -33,11 +50,18 @@ export default async function handler(req: Request): Promise<Response> {
     );
 
     if (!response.ok) {
-      return new Response(JSON.stringify({ error: "Supabase update failed" }), { status: 500 });
+      const text = await response.text();
+      return new Response(JSON.stringify({ error: "Supabase failed", detail: text }), {
+        status: 500, headers: corsHeaders,
+      });
     }
 
-    return new Response(JSON.stringify({ success: true }), { status: 200 });
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200, headers: corsHeaders,
+    });
   } catch (e) {
-    return new Response(JSON.stringify({ error: "Server error" }), { status: 500 });
+    return new Response(JSON.stringify({ error: String(e) }), {
+      status: 500, headers: corsHeaders,
+    });
   }
 }
