@@ -1955,7 +1955,17 @@ export default function StatsIQ() {
   };
   const [streakData] = useState(computeStreak);
 
-  // ── WEEKLY RECAP ──────────────────────────────────────────────────────────
+  // Show recovery code if user has one but never saw it
+  useEffect(() => {
+    if (!username || !recoveryCode) return;
+    try {
+      const seen = localStorage.getItem("statsiq_recovery_seen");
+      if (!seen) {
+        setShowRecoveryCode(true);
+        localStorage.setItem("statsiq_recovery_seen", "1");
+      }
+    } catch {}
+  }, [username, recoveryCode]);
   useEffect(() => {
     if (!username) return;
     const now = new Date();
@@ -3087,7 +3097,7 @@ export default function StatsIQ() {
             <button onClick={() => { navigator.clipboard?.writeText(recoveryCode); toast("Code copied! 📋", 2000); }} style={{ width:"100%", padding:"11px", borderRadius:8, border:"none", background:"rgba(255,200,0,0.9)", color:"#0a0c10", fontWeight:900, fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em", cursor:"pointer", fontSize:"0.9rem", marginBottom:8 }}>
               📋 COPY CODE
             </button>
-            <button onClick={() => setShowRecoveryCode(false)} style={{ width:"100%", padding:"10px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#6b7280", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem" }}>
+            <button onClick={() => { setShowRecoveryCode(false); try { localStorage.setItem("statsiq_recovery_seen", "1"); } catch {} }} style={{ width:"100%", padding:"10px", borderRadius:8, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"#6b7280", cursor:"pointer", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem" }}>
               I've saved it — close
             </button>
           </div>
@@ -3394,6 +3404,7 @@ export default function StatsIQ() {
               </button>
             )}
             <button onClick={() => { setShowLeaderboard(true); setLbLoading(true); sbGetLeaderboard("alltime").then(d => { setLbData(d); setLbLoading(false); }); }} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>🏅</button>
+            <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"4px 8px", height:26, borderRadius:6, border:"1px solid rgba(167,139,250,0.35)", background:"rgba(167,139,250,0.08)", color:"#a78bfa", cursor:"pointer", fontSize:"0.62rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ PRO</button>
           </div>
         </div>
         <div style={{ display:"flex", gap:8, marginTop:8, alignItems:"center", justifyContent:"center" }}>
@@ -3408,7 +3419,6 @@ export default function StatsIQ() {
           }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
             🎮 PRACTICE {getPracticeCount() > 0 && getPracticeCount() < FREE_PRACTICE_LIMIT ? `(${FREE_PRACTICE_LIMIT - getPracticeCount()} left)` : getPracticeCount() >= FREE_PRACTICE_LIMIT ? "(PRO)" : ""}
           </button>
-          <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"5px 8px", height:30, borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ PRO</button>
           {completedToday.size > 0 && (
             <button onClick={async () => {
               try {
