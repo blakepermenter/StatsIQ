@@ -1358,22 +1358,26 @@ const sbGetRarity = async (): Promise<Record<string, {win_pct: number, total_pla
 // Fetch leaderboard
 const sbGetLeaderboard = async (type: "today" | "alltime"): Promise<Array<{username:string, score:number, streak?:number, is_pro?:boolean}>> => {
   try {
-    const view = type === "today" ? "today_leaderboard?select=username,day_score" : "alltime_leaderboard?select=username,total_score,best_streak";
+    const view = type === "today"
+      ? "today_leaderboard?select=username,day_score"
+      : "alltime_leaderboard?select=username,total_score,best_streak,is_pro";
     const data = await sbFetch(view);
     if (!data) return [];
-    // Get pro status for all users
+
+    // For both views, also fetch Pro status from players table as a backup
     const usernames = data.map((r: Record<string,unknown>) => r.username as string);
     let proUsers: Set<string> = new Set();
     try {
       const proData = await sbFetch(`players?username=in.(${usernames.map((u: string) => `"${u}"`).join(",")})&select=username,is_pro`);
       if (proData) proData.forEach((r: Record<string,unknown>) => { if (r.is_pro) proUsers.add(r.username as string); });
     } catch {}
+
     return data
       .map((r: Record<string,unknown>) => ({
         username: r.username as string,
         score: (r.day_score ?? r.total_score) as number,
         streak: r.best_streak != null ? Number(r.best_streak) : undefined,
-        is_pro: proUsers.has(r.username as string),
+        is_pro: !!(r.is_pro) || proUsers.has(r.username as string),
       }))
       .filter((r: {score:number}) => r.score > 0);
   } catch { return []; }
@@ -4357,7 +4361,7 @@ export default function StatsIQ() {
 
                 {/* Big 5 headline stats */}
                 <div style={{ padding:"14px 16px 12px", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
-                  <div style={{ display:"flex", gap:6 }}>
+                  <div style={{ display:"flex", gap:6, marginBottom:6 }}>
                     {[
                       { val:`${winRate}%`, label:"WIN RATE", color:"#ffd700" },
                       { val:String(avgGuesses), label:"AVG CLUES", color:"#a78bfa" },
@@ -4371,6 +4375,37 @@ export default function StatsIQ() {
                       </div>
                     ))}
                   </div>
+                  {/* Streak row */}
+                  {(() => {
+                    const streakKeys = Object.keys(localStorage).filter(k => k.startsWith("statsiq_day_"));
+                    const daySet = new Set(streakKeys.map(k => { const p = k.split("_"); return p.length >= 6 ? `${p[2]}-${p[3].padStart(2,"0")}-${p[4].padStart(2,"0")}` : ""; }).filter(Boolean));
+                    const days = Array.from(daySet).sort();
+                    let best = 0, cur = 0, prevDate = "";
+                    days.forEach(d => {
+                      if (prevDate) {
+                        const diff = (new Date(d).getTime() - new Date(prevDate).getTime()) / 86400000;
+                        cur = diff === 1 ? cur + 1 : 1;
+                      } else { cur = 1; }
+                      best = Math.max(best, cur);
+                      prevDate = d;
+                    });
+                    return (
+                      <div style={{ display:"flex", gap:6 }}>
+                        {[
+                          { val:`${streakData.current}🔥`, label:"CURRENT STREAK", color:"#fb923c" },
+                          { val:`${best} days`, label:"LONGEST STREAK EVER", color:"#ffd700" },
+                          { val:`${wins.length}`, label:"TOTAL WINS", color:"#22c55e" },
+                          { val:`${losses.length}`, label:"TOTAL LOSSES", color:"#ef4444" },
+                          { val:`${totalPlayed}`, label:"TOTAL PLAYED", color:"#60a5fa" },
+                        ].map(({val,label,color}) => (
+                          <div key={label} style={{ flex:1, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"8px 4px", textAlign:"center" }}>
+                            <span style={{ display:"block", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.82rem", color, lineHeight:1 }}>{val}</span>
+                            <span style={{ display:"block", fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.4rem", color:"rgba(255,255,255,0.2)", letterSpacing:"0.08em", marginTop:3 }}>{label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* By Difficulty */}
