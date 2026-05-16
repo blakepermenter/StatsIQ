@@ -3387,13 +3387,10 @@ export default function StatsIQ() {
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", borderBottom:"1px solid rgba(255,255,255,0.07)", paddingBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <span style={{ fontSize:"1.5rem" }}>📊</span>
-            <div style={{ display:"flex", alignItems:"baseline", gap:5 }}>
             <div>
               <h1 style={{ margin:0, fontFamily:"'Bebas Neue', sans-serif", fontSize:"1.8rem", color:"#ffd700", letterSpacing:"0.15em", lineHeight:1 }}>STATSIQ</h1>
               <p style={{ margin:0, fontSize:"0.55rem", color:"#4b5563", letterSpacing:"0.3em" }}>DAILY SPORTS TRIVIA</p>
             </div>
-            <button onClick={() => setShowHow(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"50%", width:14, height:14, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#374151", fontSize:"0.55rem", fontWeight:900, padding:0, flexShrink:0, lineHeight:1 }}>?</button>
-          </div>
           </div>
           <div style={{ display:"flex", gap:7, alignItems:"center" }}>
             <button onClick={() => { setUsernameInput(username); setShowUsernameModal(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:60, maxWidth:110 }}>
@@ -3424,7 +3421,6 @@ export default function StatsIQ() {
           <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"5px 9px", borderRadius:8, border:"1px solid rgba(255,200,0,0.4)", background:"rgba(255,200,0,0.08)", color:"#ffd700", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ PRO</button>
           <button onClick={() => {
             if (getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowProModal(true); return; }
-            incrementPracticeCount();
             const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPStreak(0); setPBestStreak(0); setPSessionWins(0); setPSessionPlayed(0); setShowPractice(true);
           }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
             🎮 PRACTICE {getPracticeCount() > 0 && getPracticeCount() < FREE_PRACTICE_LIMIT ? `(${FREE_PRACTICE_LIMIT - getPracticeCount()} left)` : getPracticeCount() >= FREE_PRACTICE_LIMIT ? "(PRO)" : ""}
@@ -3784,6 +3780,7 @@ export default function StatsIQ() {
             setPDone(true); setPWon(true);
             setPSessionPlayed(p => p + 1);
             setPSessionWins(w => w + 1);
+            incrementPracticeCount();
             setPStreak(s => {
               const newStreak = s + 1;
               setPBestStreak(b => Math.max(b, newStreak));
@@ -3792,6 +3789,7 @@ export default function StatsIQ() {
           } else if (next.length >= 3) {
             setPDone(true); setPWon(false);
             setPSessionPlayed(p => p + 1);
+            incrementPracticeCount();
             setPStreak(0);
           }
         };
@@ -3896,18 +3894,17 @@ export default function StatsIQ() {
                   </div>
 
                   <button onClick={() => {
-                    const newCount = incrementPracticeCount();
-                    if (newCount > FREE_PRACTICE_LIMIT) { setShowPractice(false); setShowProModal(true); return; }
+                    if (getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowPractice(false); setShowProModal(true); return; }
                     setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPracticeIdx(i => i+1);
                   }} style={{ padding:"10px 24px", borderRadius:8, border:"none", background:"rgba(167,139,250,0.8)", color:"#fff", fontWeight:900, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
-                    {getPracticeCount() >= FREE_PRACTICE_LIMIT - 1 ? "LAST FREE PUZZLE →" : `NEXT PUZZLE (${FREE_PRACTICE_LIMIT - getPracticeCount()} left) →`}
+                    {getPracticeCount() >= FREE_PRACTICE_LIMIT ? "UPGRADE FOR MORE →" : `NEXT PUZZLE (${FREE_PRACTICE_LIMIT - getPracticeCount()} left) →`}
                   </button>
                 </div>
               ) : (
                 <div style={{ display:"flex", gap:8 }}>
                   <input value={pInput} onChange={e => setPInput(e.target.value)} onKeyDown={e => e.key==="Enter" && pInput.trim().length >= 3 && pSubmit()} placeholder="Type athlete name..." style={{ flex:1, padding:"10px 12px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(255,255,255,0.05)", color:"#fff", fontSize:"0.9rem", fontFamily:"'Barlow Condensed',sans-serif" }} autoFocus />
                   <button onClick={pSubmit} disabled={pInput.trim().length < 3} style={{ padding:"10px 16px", borderRadius:8, border:"none", background: pInput.trim().length >= 3 ? "rgba(167,139,250,0.8)" : "rgba(100,100,100,0.3)", color: pInput.trim().length >= 3 ? "#fff" : "#555", fontWeight:900, cursor: pInput.trim().length >= 3 ? "pointer" : "not-allowed", fontFamily:"'Bebas Neue',sans-serif" }}>GUESS</button>
-                  <button onClick={() => { setPDone(true); setPWon(false); setPSessionPlayed(p => p+1); setPStreak(0); }} style={{ padding:"10px 12px", borderRadius:8, border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.03)", color:"#374151", fontWeight:700, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem" }}>GIVE UP</button>
+                  <button onClick={() => { incrementPracticeCount(); setPDone(true); setPWon(false); setPSessionPlayed(p => p+1); setPStreak(0); }} style={{ padding:"10px 12px", borderRadius:8, border:"1px solid rgba(255,255,255,0.08)", background:"rgba(255,255,255,0.03)", color:"#374151", fontWeight:700, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem" }}>GIVE UP</button>
                 </div>
               )}
               <p style={{ margin:"12px 0 0", color:"#374151", fontSize:"0.62rem", textAlign:"center" }}>Practice puzzles are drawn from the full puzzle bank · scores don't count</p>
@@ -4437,6 +4434,7 @@ export default function StatsIQ() {
           <p style={{ margin:0, color:"#1f2937", fontSize:"0.58rem", marginTop:2 }}>statsiq.io · daily sports trivia</p>
         </div>
         <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", justifyContent:"flex-end" }}>
+          <button onClick={() => setShowHow(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>? HOW TO PLAY</button>
           <a href="https://twitter.com" target="_blank" rel="noreferrer" style={{ display:"none" }}>𝕏</a>
           <button onClick={() => setShowEmailCapture(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>📬 GET REMINDERS</button>
           {recoveryCode
