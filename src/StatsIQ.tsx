@@ -3136,12 +3136,38 @@ export default function StatsIQ() {
                 setRecoveryCode("");
                 setGlobalRank(null);
                 setTotalScore(0);
+                setCompletedToday(new Set());
+                setDone(false);
+                setWon(false);
+                setGuesses([]);
+                setInput("");
+                setTodayScore(null);
+                setScoreBreakdown(null);
+                setMsg("");
                 try {
+                  // Clear username and session data
                   localStorage.removeItem("statsiq_username");
                   localStorage.removeItem("statsiq_recovery_code");
                   localStorage.removeItem("statsiq_recovery_seen");
                   localStorage.removeItem("statsiq_visited");
                   localStorage.removeItem("statsiq_score");
+                  // Clear today's puzzle completions so they start fresh
+                  const today = new Date();
+                  const prefix = `statsiq_day_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
+                  const keys = [];
+                  for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith(prefix)) keys.push(k);
+                  }
+                  keys.forEach(k => localStorage.removeItem(k));
+                  // Also clear today's progress
+                  const progressPrefix = `statsiq_progress_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
+                  const progressKeys = [];
+                  for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith(progressPrefix)) progressKeys.push(k);
+                  }
+                  progressKeys.forEach(k => localStorage.removeItem(k));
                 } catch {}
                 setShowLogoutModal(false);
                 setShowSplash(true);
