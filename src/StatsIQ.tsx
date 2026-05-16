@@ -3387,10 +3387,13 @@ export default function StatsIQ() {
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", borderBottom:"1px solid rgba(255,255,255,0.07)", paddingBottom:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <span style={{ fontSize:"1.5rem" }}>📊</span>
+            <div style={{ display:"flex", alignItems:"baseline", gap:5 }}>
             <div>
               <h1 style={{ margin:0, fontFamily:"'Bebas Neue', sans-serif", fontSize:"1.8rem", color:"#ffd700", letterSpacing:"0.15em", lineHeight:1 }}>STATSIQ</h1>
               <p style={{ margin:0, fontSize:"0.55rem", color:"#4b5563", letterSpacing:"0.3em" }}>DAILY SPORTS TRIVIA</p>
             </div>
+            <button onClick={() => setShowHow(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.08)", borderRadius:"50%", width:14, height:14, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#374151", fontSize:"0.55rem", fontWeight:900, padding:0, flexShrink:0, lineHeight:1 }}>?</button>
+          </div>
           </div>
           <div style={{ display:"flex", gap:7, alignItems:"center" }}>
             <button onClick={() => { setUsernameInput(username); setShowUsernameModal(true); }} style={{ textAlign:"center", background:"none", border:"none", cursor:"pointer", padding:0, minWidth:60, maxWidth:110 }}>
@@ -3418,7 +3421,6 @@ export default function StatsIQ() {
           <button onClick={() => { if (hasStarted) { toast("Filters lock once you start guessing", 2000); return; } setShowFilter(true); }} style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 12px", borderRadius:8, border:`1px solid ${hasStarted ? "rgba(255,255,255,0.06)" : hasFilter ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.12)"}`, background:hasStarted ? "rgba(255,255,255,0.02)" : hasFilter ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)", color:hasStarted ? "#374151" : hasFilter ? "#86efac" : "#9ca3af", cursor: hasStarted ? "not-allowed" : "pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.1em", fontFamily:"'Barlow Condensed', sans-serif" }}>
             ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
           </button>
-          <button onClick={() => setShowHow(true)} style={{ width:26, height:26, borderRadius:"50%", border:"1px solid rgba(255,255,255,0.08)", background:"transparent", color:"#374151", cursor:"pointer", fontSize:"0.75rem", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
           <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:3, padding:"5px 9px", borderRadius:8, border:"1px solid rgba(255,200,0,0.4)", background:"rgba(255,200,0,0.08)", color:"#ffd700", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif", flexShrink:0 }}>⭐ PRO</button>
           <button onClick={() => {
             if (getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowProModal(true); return; }
