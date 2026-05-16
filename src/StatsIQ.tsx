@@ -3135,8 +3135,10 @@ export default function StatsIQ() {
               </button>
               <button onClick={() => {
                 setUsername(""); setIsPro(false);
-                try { localStorage.removeItem("statsiq_username"); localStorage.removeItem("statsiq_recovery_code"); localStorage.removeItem("statsiq_recovery_seen"); } catch {}
+                try { localStorage.removeItem("statsiq_username"); localStorage.removeItem("statsiq_recovery_code"); localStorage.removeItem("statsiq_recovery_seen"); localStorage.removeItem("statsiq_visited"); } catch {}
                 setShowLogoutModal(false);
+                setShowSplash(true);
+                setOnboardingStep(0);
                 toast("Logged out successfully", 2000);
               }} style={{ flex:1, padding:"11px", borderRadius:8, border:"none", background:"rgba(239,68,68,0.15)", color:"#ef4444", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.08em", fontWeight:700 }}>
                 LOG OUT
@@ -4834,6 +4836,7 @@ export default function StatsIQ() {
             ? <button onClick={() => setShowRecoveryCode(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>🔑 MY CODE</button>
             : <button onClick={() => setShowRecoverModal(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>🔑 RECOVER</button>
           }
+          {username && <button onClick={() => setShowLogoutModal(true)} style={{ background:"none", border:"1px solid rgba(255,255,255,0.06)", borderRadius:6, padding:"4px 10px", color:"#374151", cursor:"pointer", fontSize:"0.62rem", fontFamily:"'Barlow Condensed',sans-serif", fontWeight:700, letterSpacing:"0.1em" }}>↩ LOG OUT</button>}
         </div>
       </div>
 
