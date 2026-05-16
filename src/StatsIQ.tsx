@@ -1356,16 +1356,24 @@ const sbGetRarity = async (): Promise<Record<string, {win_pct: number, total_pla
 };
 
 // Fetch leaderboard
-const sbGetLeaderboard = async (type: "today" | "alltime"): Promise<Array<{username:string, score:number, streak?:number}>> => {
+const sbGetLeaderboard = async (type: "today" | "alltime"): Promise<Array<{username:string, score:number, streak?:number, is_pro?:boolean}>> => {
   try {
     const view = type === "today" ? "today_leaderboard?select=username,day_score" : "alltime_leaderboard?select=username,total_score,best_streak";
     const data = await sbFetch(view);
     if (!data) return [];
+    // Get pro status for all users
+    const usernames = data.map((r: Record<string,unknown>) => r.username as string);
+    let proUsers: Set<string> = new Set();
+    try {
+      const proData = await sbFetch(`players?username=in.(${usernames.map((u: string) => `"${u}"`).join(",")})&select=username,is_pro`);
+      if (proData) proData.forEach((r: Record<string,unknown>) => { if (r.is_pro) proUsers.add(r.username as string); });
+    } catch {}
     return data
       .map((r: Record<string,unknown>) => ({
         username: r.username as string,
         score: (r.day_score ?? r.total_score) as number,
         streak: r.best_streak != null ? Number(r.best_streak) : undefined,
+        is_pro: proUsers.has(r.username as string),
       }))
       .filter((r: {score:number}) => r.score > 0);
   } catch { return []; }
@@ -1835,6 +1843,7 @@ export default function StatsIQ() {
   const [pastSummaries, setPastSummaries] = useState<Array<Record<string,unknown>>>([]);
   const [showPastSummaries, setShowPastSummaries] = useState(false);
   const [showProModal, setShowProModal] = useState(false);
+  const [showExtendedStats, setShowExtendedStats] = useState(false);
   const [lbData, setLbData] = useState<Array<{username:string,score:number,streak?:number}>>([]);
   const [lbType, setLbType] = useState<"today"|"alltime">("alltime");
   const [lbLoading, setLbLoading] = useState(false);
@@ -3155,7 +3164,7 @@ export default function StatsIQ() {
                     <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 14px", borderBottom: i < lbData.length-1 ? "1px solid rgba(255,255,255,0.05)" : "none", background: isYou ? "rgba(255,200,0,0.06)" : "transparent" }}>
                       <span style={{ color: i===0?"#ffd700":i===1?"#9ca3af":i===2?"#cd7f32":"#374151", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.88rem", width:22, flexShrink:0 }}>#{i+1}</span>
                       <span style={{ flex:1, color:isYou?"#ffd700":"#d1d5db", fontSize:"0.82rem", fontWeight:isYou?700:400, textAlign:"left", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                        {row.username}{isYou ? " (you)" : ""}
+                        {row.username}{isYou ? " (you)" : ""}{row.is_pro && <span style={{ marginLeft:4, fontSize:"0.65rem" }}>⭐</span>}
                       </span>
                       {lbType === "alltime" && row.streak != null && Number(row.streak) > 0 && <span style={{ fontSize:"0.65rem", color:"#fb923c" }}>{row.streak}🔥</span>}
                       <span style={{ color:isYou?"#ffd700":"#6b7280", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.85rem", flexShrink:0 }}>{row.score > 0 ? row.score.toLocaleString() : "—"}</span>
@@ -3366,6 +3375,7 @@ export default function StatsIQ() {
               </button>
             )}
             <button onClick={() => { setShowLeaderboard(true); setLbLoading(true); sbGetLeaderboard("alltime").then(d => { setLbData(d); setLbLoading(false); }); }} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(255,200,0,0.25)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>🏅</button>
+            <button onClick={() => setShowExtendedStats(true)} style={{ width:30, height:30, borderRadius:8, border:"1px solid rgba(167,139,250,0.25)", background:"rgba(167,139,250,0.05)", color:"rgba(167,139,250,0.6)", cursor:"pointer", fontSize:"0.85rem", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>📊</button>
           </div>
         </div>
         <div style={{ display:"flex", gap:8, marginTop:8, alignItems:"center", justifyContent:"center" }}>
@@ -4033,6 +4043,112 @@ export default function StatsIQ() {
           </div>
         </div>
       )}
+
+      {/* EXTENDED STATS MODAL */}
+      {showExtendedStats && (() => {
+        // Calculate stats from localStorage
+        const entries: {diff:string, sport:string, era:string, won:boolean, guesses:number}[] = [];
+        try {
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i) || "";
+            if (!k.startsWith("statsiq_day_")) continue;
+            const parts = k.split("_");
+            if (parts.length < 6) continue;
+            const diff = parts[5];
+            const entry = JSON.parse(localStorage.getItem(k) || "{}");
+            if (!entry || entry.score === undefined) continue;
+            entries.push({ diff, sport: entry.sport || "", era: entry.era || "", won: !!entry.won, guesses: entry.guesses || 3 });
+          }
+        } catch {}
+
+        const sports = ["🏀 NBA","🏈 NFL","⚾ MLB","⚽ Soccer","🎾 Tennis","⛳ Golf","🏒 NHL"];
+        const sportEmojis: Record<string,string> = { "🏀 NBA":"🏀","🏈 NFL":"🏈","⚾ MLB":"⚾","⚽ Soccer":"⚽","🎾 Tennis":"🎾","⛳ Golf":"⛳","🏒 NHL":"🏒" };
+        const diffs = ["easy","medium","hard"];
+        const diffColors: Record<string,string> = { easy:"#22c55e", medium:"#f59e0b", hard:"#ef4444" };
+        const eras = ["modern","classic","legends"];
+
+        const calcWinRate = (filter: (e: typeof entries[0]) => boolean) => {
+          const filtered = entries.filter(filter);
+          if (filtered.length === 0) return null;
+          return { wins: filtered.filter(e => e.won).length, total: filtered.length, pct: Math.round((filtered.filter(e => e.won).length / filtered.length) * 100) };
+        };
+
+        return (
+          <div style={{ position:"fixed", inset:0, zIndex:500, display:"flex", alignItems:"center", justifyContent:"center" }} onClick={() => setShowExtendedStats(false)}>
+            <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.8)", backdropFilter:"blur(4px)" }} />
+            <div style={{ position:"relative", width:"min(440px,95vw)", maxHeight:"88vh", background:"#0a0c14", border:"1px solid rgba(255,255,255,0.08)", borderRadius:18, overflow:"hidden", display:"flex", flexDirection:"column", boxShadow:"0 40px 80px rgba(0,0,0,0.8)" }} onClick={e => e.stopPropagation()}>
+
+              {/* Header */}
+              <div style={{ padding:"18px 20px 14px", borderBottom:"1px solid rgba(255,255,255,0.07)", display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
+                <div>
+                  <p style={{ margin:"0 0 2px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.2rem", color:"#fff", letterSpacing:"0.08em" }}>📊 EXTENDED STATS</p>
+                  <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563" }}>Based on your all-time play history</p>
+                </div>
+                <button onClick={() => setShowExtendedStats(false)} style={{ background:"none", border:"none", color:"#4b5563", cursor:"pointer", fontSize:"1.2rem" }}>✕</button>
+              </div>
+
+              <div style={{ overflowY:"auto", flex:1, padding:"16px 20px" }}>
+
+                {/* By Difficulty */}
+                <p style={{ margin:"0 0 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>WIN RATE BY DIFFICULTY</p>
+                <div style={{ marginBottom:18 }}>
+                  {diffs.map(d => {
+                    const stat = calcWinRate(e => e.diff === d);
+                    if (!stat) return null;
+                    return (
+                      <div key={d} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
+                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem", color:diffColors[d], width:55, flexShrink:0 }}>{d.toUpperCase()}</span>
+                        <div style={{ flex:1, height:8, background:"rgba(255,255,255,0.05)", borderRadius:4, overflow:"hidden" }}>
+                          <div style={{ height:"100%", borderRadius:4, background:diffColors[d], width:`${stat.pct}%`, opacity:0.8 }} />
+                        </div>
+                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem", color:"rgba(255,255,255,0.4)", width:55, textAlign:"right" }}>{stat.wins}/{stat.total} · {stat.pct}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* By Sport */}
+                <p style={{ margin:"0 0 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>WIN RATE BY SPORT</p>
+                <div style={{ marginBottom:18 }}>
+                  {sports.map(s => {
+                    const emoji = sportEmojis[s];
+                    const stat = calcWinRate(e => e.sport.includes(emoji));
+                    if (!stat) return null;
+                    return (
+                      <div key={s} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
+                        <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.75rem", color:"rgba(255,255,255,0.6)", width:65, flexShrink:0 }}>{s}</span>
+                        <div style={{ flex:1, height:8, background:"rgba(255,255,255,0.05)", borderRadius:4, overflow:"hidden" }}>
+                          <div style={{ height:"100%", borderRadius:4, background:"#ffd700", width:`${stat.pct}%`, opacity:0.7 }} />
+                        </div>
+                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem", color:"rgba(255,255,255,0.4)", width:55, textAlign:"right" }}>{stat.wins}/{stat.total} · {stat.pct}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* By Era */}
+                <p style={{ margin:"0 0 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>WIN RATE BY ERA</p>
+                <div style={{ marginBottom:8 }}>
+                  {eras.map(era => {
+                    const stat = calcWinRate(e => e.era === era);
+                    if (!stat) return null;
+                    return (
+                      <div key={era} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
+                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem", color:"rgba(255,255,255,0.6)", width:65, flexShrink:0, textTransform:"uppercase" }}>{era}</span>
+                        <div style={{ flex:1, height:8, background:"rgba(255,255,255,0.05)", borderRadius:4, overflow:"hidden" }}>
+                          <div style={{ height:"100%", borderRadius:4, background:"#a78bfa", width:`${stat.pct}%`, opacity:0.8 }} />
+                        </div>
+                        <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.75rem", color:"rgba(255,255,255,0.4)", width:55, textAlign:"right" }}>{stat.wins}/{stat.total} · {stat.pct}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* PRO UPGRADE MODAL */}
       {showProModal && (
