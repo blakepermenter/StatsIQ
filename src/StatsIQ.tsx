@@ -644,7 +644,7 @@ const MEDIUM = [
   { player:"Jurgen Klinsmann", sport:"⚽ Soccer", answer:"JURGEN KLINSMANN", era:"classic", stats:{G:"47",WC:"1990",DIVE:"Mocking celebration",NATION:"Germany"}, ctx:"Career Totals — Won the World Cup with Germany and was a prolific international scorer", clues:["Won the 1990 World Cup with West Germany","Was accused of diving so often he invented a self-mocking dive celebration when he scored","Scored 47 goals in 108 international appearances for Germany","From Göppingen Germany — later became a successful manager of Germany and the USA"] },
   { player:"Don Budge", sport:"🎾 ATP", answer:"DON BUDGE", era:"legends", stats:{GRAND_SLAM:"First Calendar",DAVIS_CUP:"Hero",BACKHAND:"Greatest",NATION:"USA"}, ctx:"Career Totals — First player to win the Calendar Grand Slam in 1938", clues:["Was the first player in history to win all four Grand Slam titles in one year","Was so dominant that he virtually won the Davis Cup single-handedly for years","Had one of the most powerful backhands ever seen — described as a howitzer","From Oakland California — is credited with saving American tennis in the late 1930s"] },
   { player:"Keegan Bradley", sport:"⛳ Golf", answer:"KEEGAN BRADLEY", era:"modern", stats:{MAJORS:"1",PGA:"2011",ROUTINE:"Longest in golf",RYDER:"USA"}, ctx:"Career Totals — Won the PGA Championship in his debut major", clues:["Won the PGA Championship in 2011 in his very first major championship appearance","Has arguably the longest and most elaborate pre-shot routine on the PGA Tour","Was a consistent US Ryder Cup contributor","His aunt won six LPGA major championships — making golf very much a family tradition"] },
-  { player:"Stewart Cink", sport:"⛳ Golf", answer:"STEWART CINK", era:"modern", stats:{BRITISH_OPEN:"2009",WATSON:"Beat 59-year-old",WINS:"7",NATION:"USA"}, ctx:"Career Totals — Captured The Open Championship at Turnberry in 2009", clues:["Won The Open Championship in 2009 by beating 59-year-old Tom Watson in a playoff","Watson was one hole away from the most amazing major victory in history before Cink caught him","Won 7 PGA Tour events in his career","From Huntsville Alabama"] },
+  { player:"Stewart Cink", sport:"⛳ Golf", answer:"STEWART CINK", era:"modern", stats:{BRITISH_OPEN:"2009",WATSON:"Beat 59-year-old",WINS:"7",NATION:"USA"}, ctx:"Career Totals — Captured The Open Championship at Turnberry in 2009", clues:["Won The Open Championship in 2009 by beating 59-year-old Tom Watson in a playoff at Turnberry","Watson was one hole away from the most remarkable major victory in history before the eventual champion birdied to force extra holes","Won 7 PGA Tour events across a career spanning two decades","From Huntsville Alabama — was largely overlooked until his stunning Open Championship victory"] },
 
   // MEDIUM Golf Legends already added 12 above
   // MEDIUM Hockey Modern (need 1)
@@ -2930,23 +2930,22 @@ export default function StatsIQ() {
 
       {showFilter && <FilterModal selectedSports={filter} selectedEras={eraFilter} onToggleSport={handleToggleSport} onToggleEra={handleToggleEra} onClose={() => setShowFilter(false)} totalCount={totalFiltered} />}
       {showHistory && <ScoreHistoryModal totalScore={totalScore} initialTab={historyTab} onClose={() => setShowHistory(false)} onReset={() => {
-        // Delete from Supabase so they disappear from leaderboard
+        // Delete plays from Supabase but keep the player row with username
         if (username) {
-          sbFetch(`players?username=eq.${encodeURIComponent(username)}`, { method: "DELETE" }).catch(() => {});
           sbFetch(`plays?username=eq.${encodeURIComponent(username)}`, { method: "DELETE" }).catch(() => {});
-        } else {
-          sbFetch(`players?username=eq.anonymous`, { method: "DELETE" }).catch(() => {});
+          sbFetch(`players?username=eq.${encodeURIComponent(username)}`, { method: "PATCH", headers: { "Content-Type": "application/json", "Prefer": "return=minimal" }, body: JSON.stringify({ total_score: 0, best_streak: 0 }) }).catch(() => {});
         }
-        // Clear all statsiq localStorage keys
+        // Clear all statsiq localStorage keys EXCEPT username and recovery code
         try {
           const keys = [];
           for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
-            if (k && k.startsWith("statsiq_")) keys.push(k);
+            if (k && k.startsWith("statsiq_") && k !== "statsiq_username" && k !== "statsiq_recovery_code" && k !== "statsiq_recovery_seen" && k !== "statsiq_visited") keys.push(k);
           }
           keys.forEach(k => localStorage.removeItem(k));
+          localStorage.setItem("statsiq_score", "0");
         } catch {}
-        // Reset all in-memory state so UI reflects fresh start immediately
+        // Reset score state but keep username and recovery code
         setTotalScore(0);
         setCompletedToday(new Set());
         setDone(false);
@@ -2956,9 +2955,7 @@ export default function StatsIQ() {
         setTodayScore(null);
         setScoreBreakdown(null);
         setMsg("");
-        setUsername("");
         setGlobalRank(null);
-        setRecoveryCode("");
         setShowHistory(false);
       }} />}
 
@@ -4254,7 +4251,8 @@ export default function StatsIQ() {
                       { icon:"🎮", title:"Unlimited Practice Mode", desc:"Play as many puzzles as you want", action:() => { setShowExtendedStats(false); const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPStreak(0); setPBestStreak(0); setPSessionWins(0); setPSessionPlayed(0); setShowPractice(true); } },
                       { icon:"📊", title:"Extended Stats", desc:"Deep dive into your win rates by sport, era and difficulty", action:() => { setShowStatsPopup(true); } },
                       { icon:"📅", title:"Weekly Recap History", desc:"Every week saved from your subscription date", action:() => { setShowPastSummaries(true); } },
-                      { icon:"⭐", title:"Pro Badge on Leaderboard", desc:"Gold star next to your name — view the leaderboard", action:() => { setShowExtendedStats(false); setShowLeaderboard(true); setLbLoading(true); sbGetLeaderboard("alltime").then(d => { setLbData(d); setLbLoading(false); }); } },
+                      { icon:"⭐", title:"Pro Badge on Leaderboard", desc:"Gold username on the global leaderboard", action:() => { setShowExtendedStats(false); setShowLeaderboard(true); setLbLoading(true); sbGetLeaderboard("alltime").then(d => { setLbData(d); setLbLoading(false); }); } },
+                      { icon:"💬", title:"Direct Feedback Line", desc:"Send feature requests straight to the developer", action:() => { document.getElementById("pro-feedback-input")?.focus(); } },
                     ].map(({icon, title, desc, action}) => (
                       <button key={title} onClick={action} style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(255,215,0,0.04)", border:"1px solid rgba(255,215,0,0.1)", borderRadius:8, padding:"9px 12px", cursor:"pointer", textAlign:"left", width:"100%" }}>
                         <span style={{ fontSize:"1.1rem", flexShrink:0 }}>{icon}</span>
@@ -4698,6 +4696,7 @@ export default function StatsIQ() {
                 { icon:"📊", title:"Extended Personal Stats", desc:"Win rate by sport, era, and difficulty" },
                 { icon:"📅", title:"Weekly Recap History", desc:"Every week saved from the day you subscribe" },
                 { icon:"⭐", title:"Pro Badge", desc:"Stand out on the global leaderboard" },
+                { icon:"💬", title:"Direct Feedback Line", desc:"Send feature requests straight to the developer in-app" },
               ].map(({icon, title, desc}) => (
                 <div key={title} style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:14 }}>
                   <span style={{ fontSize:"1.2rem", flexShrink:0, marginTop:1 }}>{icon}</span>
