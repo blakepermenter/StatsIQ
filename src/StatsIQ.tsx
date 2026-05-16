@@ -1860,6 +1860,25 @@ export default function StatsIQ() {
   const [pBestStreak, setPBestStreak] = useState(0);
   const [pSessionWins, setPSessionWins] = useState(0);
   const [pSessionPlayed, setPSessionPlayed] = useState(0);
+
+  // Free practice limit — 10 per day, resets at midnight
+  const getPracticeCount = () => {
+    try {
+      const today = new Date();
+      const key = `statsiq_practice_count_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
+      return parseInt(localStorage.getItem(key) || "0");
+    } catch { return 0; }
+  };
+  const incrementPracticeCount = () => {
+    try {
+      const today = new Date();
+      const key = `statsiq_practice_count_${today.getFullYear()}_${today.getMonth()+1}_${today.getDate()}`;
+      const current = parseInt(localStorage.getItem(key) || "0");
+      localStorage.setItem(key, String(current + 1));
+      return current + 1;
+    } catch { return 0; }
+  };
+  const FREE_PRACTICE_LIMIT = 10;
   const [pSportFilter, setPSportFilter] = useState<Set<string>>(new Set<string>());
   const [pEraFilter, setPEraFilter] = useState<Set<Era>>(new Set<Era>());
   const [pDiffFilter, setPDiffFilter] = useState<Set<Difficulty>>(new Set<Difficulty>());
@@ -3383,8 +3402,12 @@ export default function StatsIQ() {
             ⚙️ {hasStarted ? "LOCKED" : filterLabel()}
           </button>
           <button onClick={() => setShowHow(true)} style={{ width:30, height:30, borderRadius:"50%", border:"1px solid rgba(255,200,0,0.2)", background:"rgba(255,200,0,0.05)", color:"rgba(255,215,0,0.6)", cursor:"pointer", fontSize:"0.82rem", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>?</button>
-          <button onClick={() => setShowProModal(true)} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
-            🎮 PRACTICE
+          <button onClick={() => {
+            if (getPracticeCount() >= FREE_PRACTICE_LIMIT) { setShowProModal(true); return; }
+            incrementPracticeCount();
+            const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPStreak(0); setPBestStreak(0); setPSessionWins(0); setPSessionPlayed(0); setShowPractice(true);
+          }} style={{ display:"flex", alignItems:"center", gap:4, padding:"5px 10px", borderRadius:8, border:"1px solid rgba(167,139,250,0.3)", background:"rgba(167,139,250,0.07)", color:"#a78bfa", cursor:"pointer", fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", fontFamily:"'Barlow Condensed', sans-serif" }}>
+            🎮 PRACTICE {getPracticeCount() > 0 && getPracticeCount() < FREE_PRACTICE_LIMIT ? `(${FREE_PRACTICE_LIMIT - getPracticeCount()} left)` : getPracticeCount() >= FREE_PRACTICE_LIMIT ? "(PRO)" : ""}
           </button>
           {completedToday.size > 0 && (
             <button onClick={async () => {
@@ -3836,9 +3859,11 @@ export default function StatsIQ() {
                   </div>
 
                   <button onClick={() => {
+                    const newCount = incrementPracticeCount();
+                    if (newCount > FREE_PRACTICE_LIMIT) { setShowPractice(false); setShowProModal(true); return; }
                     setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPracticeIdx(i => i+1);
                   }} style={{ padding:"10px 24px", borderRadius:8, border:"none", background:"rgba(167,139,250,0.8)", color:"#fff", fontWeight:900, cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", letterSpacing:"0.1em" }}>
-                    NEXT PUZZLE →
+                    {getPracticeCount() >= FREE_PRACTICE_LIMIT - 1 ? "LAST FREE PUZZLE →" : `NEXT PUZZLE (${FREE_PRACTICE_LIMIT - getPracticeCount()} left) →`}
                   </button>
                 </div>
               ) : (
@@ -4167,7 +4192,7 @@ export default function StatsIQ() {
             {/* Features */}
             <div style={{ marginBottom:22 }}>
               {[
-                { icon:"🎮", title:"Unlimited Practice Mode", desc:"Play beyond the 3 daily puzzles anytime" },
+                { icon:"🎮", title:"Unlimited Practice Mode", desc:"Free users get 10 per day — Pro unlocks unlimited" },
                 { icon:"📊", title:"Extended Personal Stats", desc:"Win rate by sport, era, and difficulty" },
                 { icon:"📅", title:"Weekly Recap History", desc:"Every week saved from the day you subscribe" },
                 { icon:"⭐", title:"Pro Badge", desc:"Stand out on the global leaderboard" },
