@@ -4181,19 +4181,19 @@ export default function StatsIQ() {
                   <p style={{ margin:"0 0 8px", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.7rem", letterSpacing:"0.2em", color:"rgba(255,255,255,0.2)" }}>YOUR PRO PERKS</p>
                   <div style={{ marginBottom:16, display:"flex", flexDirection:"column", gap:6 }}>
                     {[
-                      { icon:"🎮", title:"Unlimited Practice Mode", desc:"Play as many puzzles as you want" },
-                      { icon:"📊", title:"Extended Stats", desc:"Win rate by sport, era and difficulty" },
-                      { icon:"📅", title:"Weekly Recap History", desc:"Every week saved from your subscription date" },
-                      { icon:"⭐", title:"Pro Badge on Leaderboard", desc:"Gold star next to your name" },
-                    ].map(({icon, title, desc}) => (
-                      <div key={title} style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(255,215,0,0.04)", border:"1px solid rgba(255,215,0,0.1)", borderRadius:8, padding:"9px 12px" }}>
+                      { icon:"🎮", title:"Unlimited Practice Mode", desc:"Play as many puzzles as you want", action:() => { setShowExtendedStats(false); const idx = Math.floor(Math.random()*500); setPracticeIdx(idx); setPGuesses([]); setPInput(""); setPDone(false); setPWon(false); setPStreak(0); setPBestStreak(0); setPSessionWins(0); setPSessionPlayed(0); setShowPractice(true); } },
+                      { icon:"📊", title:"Extended Stats", desc:"Deep dive into your win rates by sport, era and difficulty", action:() => {} },
+                      { icon:"📅", title:"Weekly Recap History", desc:"Every week saved from your subscription date", action:() => { setShowPastSummaries(true); } },
+                      { icon:"⭐", title:"Pro Badge on Leaderboard", desc:"Gold star next to your name — view the leaderboard", action:() => { setShowExtendedStats(false); setShowLeaderboard(true); setLbLoading(true); sbGetLeaderboard("alltime").then(d => { setLbData(d); setLbLoading(false); }); } },
+                    ].map(({icon, title, desc, action}) => (
+                      <button key={title} onClick={action} style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(255,215,0,0.04)", border:"1px solid rgba(255,215,0,0.1)", borderRadius:8, padding:"9px 12px", cursor:"pointer", textAlign:"left", width:"100%" }}>
                         <span style={{ fontSize:"1.1rem", flexShrink:0 }}>{icon}</span>
                         <div style={{ flex:1 }}>
-                          <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem", fontWeight:700, color:"#fff" }}>{title}</p>
+                          <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.82rem", fontWeight:700, color:"#ffd700" }}>{title} →</p>
                           <p style={{ margin:0, fontFamily:"'Barlow Condensed',sans-serif", fontSize:"0.65rem", color:"#4b5563" }}>{desc}</p>
                         </div>
                         <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.6rem", color:"#22c55e", letterSpacing:"0.1em", flexShrink:0 }}>ACTIVE</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
 
