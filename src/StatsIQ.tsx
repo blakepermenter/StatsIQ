@@ -3134,12 +3134,21 @@ export default function StatsIQ() {
                 Cancel
               </button>
               <button onClick={() => {
-                setUsername(""); setIsPro(false);
-                try { localStorage.removeItem("statsiq_username"); localStorage.removeItem("statsiq_recovery_code"); localStorage.removeItem("statsiq_recovery_seen"); localStorage.removeItem("statsiq_visited"); } catch {}
+                setUsername("");
+                setIsPro(false);
+                setRecoveryCode("");
+                setGlobalRank(null);
+                setTotalScore(0);
+                try {
+                  localStorage.removeItem("statsiq_username");
+                  localStorage.removeItem("statsiq_recovery_code");
+                  localStorage.removeItem("statsiq_recovery_seen");
+                  localStorage.removeItem("statsiq_visited");
+                  localStorage.removeItem("statsiq_score");
+                } catch {}
                 setShowLogoutModal(false);
                 setShowSplash(true);
                 setOnboardingStep(0);
-                toast("Logged out successfully", 2000);
               }} style={{ flex:1, padding:"11px", borderRadius:8, border:"none", background:"rgba(239,68,68,0.15)", color:"#ef4444", cursor:"pointer", fontFamily:"'Bebas Neue',sans-serif", fontSize:"0.9rem", letterSpacing:"0.08em", fontWeight:700 }}>
                 LOG OUT
               </button>
